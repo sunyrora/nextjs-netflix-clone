@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .primary-button {
+    @apply text-white text-lg bg-[#e50914] px-3;
+  }
+}
