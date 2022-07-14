@@ -4,6 +4,10 @@
 
 @layer components {
   .primary-button {
-    @apply text-white text-lg bg-[#e50914] px-3;
+    @apply rounded h-10 text-white text-lg bg-[#e50914] px-3;
+  }
+
+  .login-button {
+    @apply rounded h-9 text-white bg-[#e50914] text-sm px-4 py-2;
   }
 }

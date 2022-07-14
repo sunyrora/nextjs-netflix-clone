@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Header from '../components/Header';
+import BackgroundImage from '../components/BackgroundImage';
 
 const Login = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -26,16 +28,22 @@ const Login = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border-gray-200 shadow-md w-full p-5 m-5">
-      {!session?.user && (
-        <button
-          className="primary-button m-2 text-lg"
-          onClick={(e) => handleAuth('google')}
-        >
-          SignIn with Google
-        </button>
-      )}
-      <Link href={'/'}>Main</Link>
+    <div className="absolute w-full">
+      <BackgroundImage />
+      <Header />
+      <div className="flex flex-col items-center justify-center w-full p-5 m-5 mt-20">
+        {!session?.user && (
+          <button
+            className="primary-button m-2 text-lg"
+            onClick={(e) => handleAuth('google')}
+          >
+            SignIn with Google
+          </button>
+        )}
+        <Link href={'/'}>
+          <a className="text-white">Go to Main</a>
+        </Link>
+      </div>
     </div>
   );
 };
