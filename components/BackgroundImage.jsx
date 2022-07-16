@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from 'next/future/image';
 import { useEffect, useState } from 'react';
 import imgFallback from '../public/images/bg.jpeg';
 
@@ -23,24 +23,25 @@ import imgFallback from '../public/images/bg.jpeg';
 
 const BackgroundImage = ({ bgImg = null }) => {
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
+  const [imgWidth, setImgWidth] = useState(3000);
+  const [imgHeight, setImgHeight] = useState(100);
 
   useEffect(() => {
     setImgSrc(bgImg ?? imgFallback);
   }, [bgImg]);
 
   return (
-    <div className="absolute overflow-hidden z-[-10] w-full bg-gradient-to-t from-gray-900 to-gray-200 ">
+    <div className="absolute overflow-hidden z-[-10] w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200 ">
       <Image
-        className="mix-blend-multiply"
         src={imgSrc}
-        layout="responsive"
-        width={'100%'}
-        height={'100%'}
-        objectFit="cover"
+        // layout="cover"
+        width={imgWidth}
+        height={imgHeight}
+        className={`mix-blend-multiply`}
+        // objectFit="contain"
         quality={100}
         placeholder="blur"
         blurDataURL={imgSrc ?? imgFallback}
-        // blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
         onError={(error) => {
           console.log('Image loading error: ', error);
           setImgSrc(imgFallback);
