@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import imgFallback from '../public/images/bg.jpeg';
 
 // const shimmer = (w, h) => `
@@ -21,8 +21,13 @@ import imgFallback from '../public/images/bg.jpeg';
 //     ? Buffer.from(str).toString('base64')
 //     : window.btoa(str);
 
-const BackgroundImage = ({ imgPath = null }) => {
-  const [imgSrc, setImgSrc] = useState(imgPath ?? imgFallback);
+const BackgroundImage = ({ bgImg = null }) => {
+  const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
+
+  useEffect(() => {
+    setImgSrc(bgImg ?? imgFallback);
+  }, [bgImg]);
+
   return (
     <div className="absolute overflow-hidden z-[-10] w-full bg-gradient-to-t from-gray-900 to-gray-200 ">
       <Image

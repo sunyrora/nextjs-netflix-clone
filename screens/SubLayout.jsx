@@ -8,7 +8,7 @@ const SubLayout = ({ bgImg, children }) => {
   const { data: session, status: sessionStatus } = useSession();
   return (
     <div className="w-full">
-      <BackgroundImage imgPath={bgImg} />
+      <BackgroundImage bgImg={bgImg} />
       {session ? <HeaderLogined /> : <Header />}
       <div className="pt-24 md:pt-32">{children}</div>
     </div>
