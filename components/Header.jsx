@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 const Header = () => {
+  const languageOptions = [
+    {
+      value: 'en',
+      text: 'English',
+    },
+    { value: 'fr', text: 'Français' },
+    {
+      value: 'kr',
+      text: 'Korean',
+    },
+  ];
+
+  const [lang, setLang] = useState(languageOptions[0].value);
+
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const { pathname: currentPath } = router;
 
   return (
-    <div className="fixed z-10 w-full max-h-fit">
-      <div className="flex items-center justify-between m-8 mx-16">
+    <div className="fixed z-10 w-full pt-5 max-h-fit">
+      <div className="flex items-center justify-between mx-11 md:m-8 md:mx-16">
         <div className="w-fit border-white">
           <svg
             viewBox="0 0 111 30"
-            className="flex fill-[#e50914] w-[134px]"
+            className="flex fill-[#e50914] w-[108px] md:w-[134px]"
             aria-hidden="true"
             focusable="false"
           >
@@ -26,10 +40,17 @@ const Header = () => {
           <div className="" id="lang-switcher">
             <select
               className="h-9 rounded bg-transparent text-white border-white border p-2"
-              tabindex="0"
+              tabIndex={0}
               placeholder="lang-switcher"
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
             >
-              <option
+              {languageOptions.map((lang) => (
+                <option key={lang.value} value={lang.value}>
+                  {lang.text}
+                </option>
+              ))}
+              {/* <option
                 lang="fr"
                 value="/fr/"
                 data-language="fr"
@@ -38,14 +59,13 @@ const Header = () => {
                 Français
               </option>
               <option
-                selected={true}
                 lang="en"
                 value="/fr-en/"
                 data-language="en"
                 data-country="FR"
               >
                 English
-              </option>
+              </option> */}
             </select>
           </div>
 
@@ -65,7 +85,7 @@ const Header = () => {
                 })
               }
             >
-              Login
+              Sign In
             </button>
           )}
 
