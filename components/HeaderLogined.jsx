@@ -76,7 +76,7 @@ const HeaderLogined = () => {
 
   return (
     <div
-      className={`fixed z-10 w-full pt-0 transition-all max-h-fit ${
+      className={`fixed z-50 w-full pt-0 transition-all max-h-fit ${
         isScrolled && 'bg-[#141414]'
       }`}
     >

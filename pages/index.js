@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      // router.push('/main');
+      router.push('/main');
     } else {
       if (session) {
         router.push('/main');
@@ -20,7 +20,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center w-full px-10">
+    <div className="absolute flex justify-center items-center w-full px-10">
       <div className="flex flex-col justify-center items-center w-full">
         <div className="w-[515px] md:max-w-[640px] md:max-w-xl">
           <div className="flex flex-col w-full items-center justify-start px-0 mt-28 mx-auto text-center font-medium h-full min-h-full">

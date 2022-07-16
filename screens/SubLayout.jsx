@@ -10,7 +10,7 @@ const SubLayout = ({ bgImg, children }) => {
     <div className="w-full">
       <BackgroundImage imgPath={bgImg} />
       {session ? <HeaderLogined /> : <Header />}
-      <div className="pt-28">{children}</div>
+      <div className="pt-24 md:pt-32">{children}</div>
     </div>
   );
 };
