@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -17,9 +16,7 @@ const Header = () => {
   ];
   const [lang, setLang] = useState(languageOptions[0].value);
 
-  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
-  const { pathname: currentPath } = router;
 
   return (
     <div className="fixed z-10 w-full pt-5 max-h-fit">
@@ -71,25 +68,12 @@ const Header = () => {
             </select>
           </div>
 
-          {session ? (
-            <button className="login-button" onClick={() => signOut()}>
-              {session.user.name} Sign out
-            </button>
-          ) : (
-            <button
-              className="login-button"
-              onClick={() =>
-                router.push({
-                  pathname: '/login',
-                  query: {
-                    redirect: currentPath ?? '/',
-                  },
-                })
-              }
-            >
-              Sign In
-            </button>
-          )}
+          <button
+            className="login-button"
+            onClick={() => router.push('/login')}
+          >
+            Sign In
+          </button>
 
           {/* <button onClick={'/login'} className="min-w-fit login-button">
             Sign In

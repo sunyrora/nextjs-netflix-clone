@@ -6,7 +6,7 @@ const MainPage = () => {
 
 if (process.env.NODE_ENV !== 'development') MainPage.auth = true;
 
-// MainPage.auth = true;
+MainPage.auth = true;
 export default MainPage;
 
 export const getServerSideProps = async () => {

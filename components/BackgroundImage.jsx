@@ -24,11 +24,13 @@ import imgFallback from '../public/images/bg.jpeg';
 const BackgroundImage = ({ imgPath = null }) => {
   const [imgSrc, setImgSrc] = useState(imgPath ?? imgFallback);
   return (
-    <div className="overflow-hidden z-[-10] w-screen h-full bg-gradient-to-r from-gray-600 to-gray-400 ">
+    <div className="absolute overflow-hidden z-[-10] w-full bg-gradient-to-t from-gray-900 to-gray-200 ">
       <Image
-        className=" bg-local"
+        className="mix-blend-multiply"
         src={imgSrc}
-        layout="fill"
+        layout="responsive"
+        width={'100%'}
+        height={'100%'}
         objectFit="cover"
         quality={100}
         placeholder="blur"

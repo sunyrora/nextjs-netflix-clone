@@ -11,11 +11,11 @@ const Home = () => {
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
+      // router.push('/main');
+    }
+
+    if (session) {
       router.push('/main');
-    } else {
-      if (session) {
-        router.push('/main');
-      }
     }
   }, []);
 
@@ -51,7 +51,7 @@ const Home = () => {
         </div>
 
         <div className="mt-32 w-screen">
-          <div className="h-[1000px] border-[8px] bg-[#141414] border-[#222]"></div>
+          <div className="h-[1000px] border-t-[8px] bg-bggray-100 border-[#222]"></div>
         </div>
       </div>
     </div>
@@ -63,6 +63,7 @@ export const getStaticProps = async () => {
     props: {
       bgImg: '/images/bg.jpeg',
     },
+    revalidate: 5,
   };
 };
 

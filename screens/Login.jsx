@@ -2,30 +2,25 @@ import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '../components/Header';
-import BackgroundImage from '../components/BackgroundImage';
 
 const Login = () => {
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
-  let { redirect } = router.query;
+  const { redirect } = router.query;
 
   useEffect(() => {
-    if (session?.user) {
-      if (redirect && redirect === '/') redirect = '/main';
-
+    if (session) {
       router.push(redirect ?? '/main');
     }
-  }, [router, session, redirect]);
+  }, []);
 
-  const handleAuth = async (providerID) => {
+  const handleAuth = async (e, providerID) => {
+    e.preventDefault();
+
     try {
-      const { error, status, ok, url } = await signIn(providerID);
-
-      console.log('ok, url: ', ok, url);
-      if (ok) {
-        router.push(url ?? '/main');
-      }
+      const { error, status } = await signIn(providerID, {
+        callbackUrl: redirect ?? '/main',
+      });
 
       if (error) {
         console.error('signIn error: ', error, ' status: ', status);
@@ -37,10 +32,10 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-5 m-5 mt-20">
-      {!session?.user && (
+      {!session && (
         <button
           className="primary-button m-2 text-lg"
-          onClick={(e) => handleAuth('google')}
+          onClick={(e) => handleAuth(e, 'google')}
         >
           SignIn with Google
         </button>

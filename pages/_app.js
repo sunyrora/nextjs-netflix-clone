@@ -31,6 +31,7 @@ export default MyApp;
 function Auth({ children }) {
   const router = useRouter();
   const { pathname } = router;
+  const redirect = pathname ?? '/';
   const { status } = useSession({
     required: true,
     onUnauthenticated: () => {
@@ -38,7 +39,7 @@ function Auth({ children }) {
         pathname: '/unauthorized',
         query: {
           message: 'Login required',
-          redirect: pathname ?? '/',
+          redirect,
         },
       });
     },

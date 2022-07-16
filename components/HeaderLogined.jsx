@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { SearchIcon, EmojiHappyIcon } from '@heroicons/react/outline';
+import { SearchIcon } from '@heroicons/react/outline';
 import { BellIcon } from '@heroicons/react/solid';
 import profileIcon from '../public/images/profile-icon.png';
 import Link from 'next/link';
@@ -12,26 +12,53 @@ const HeaderLogined = () => {
 
   const [selectedMenu, setSelectedMenu] = useState(menus[0]);
   const [isScrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
-  const { pathname: currentPath } = router;
+  const { pathname } = router;
+
+  useEffect(() => {
+    if (!session) {
+      router.push({
+        pathname: '/unauthorized',
+        query: {
+          message: 'Login required',
+          redirect: pathname ?? '/',
+        },
+      });
+    }
+
+    let handleScroll = null;
+    const addScrollEvent = () => {
+      handleScroll = () => {
+        if (window.scrollY > 0) {
+          setScrolled(true);
+        } else {
+          setScrolled(false);
+        }
+      };
+
+      window.addEventListener('scroll', handleScroll);
+    };
+
+    if (session) addScrollEvent();
+
+    return () => {
+      if (handleScroll) window.removeEventListener('scroll', handleScroll);
+    };
+  }, [session]);
+
+  if (sessionStatus === 'loading') return <div>Loading...</div>;
+
+  const handleSignOut = async () => {
+    if (!session) router.push('/');
+
+    try {
+      signOut({ callbackUrl: '/' });
+    } catch (error) {
+      console.log('signOut error: ', error);
+      router.push('/');
+    }
+  };
 
   const MenuSecletComponent = ({ menus, className }) => (
     <div className={`flex justify-center ml-6 ${className} `}>
@@ -98,15 +125,14 @@ const HeaderLogined = () => {
             </div>
           </Link>
 
-          <MenuSecletComponent menus={menus} className="sm:hidden" />
-          <MenuComponent menus={menus} className="hidden sm:flex" />
+          <MenuSecletComponent menus={menus} className="md:hidden" />
+          <MenuComponent menus={menus} className="hidden md:flex" />
         </div>
         <div className="flex items-center ml-auto space-x-4">
           <SearchIcon className="h-6" />
           <p className="hidden md:flex">Kids</p>
           <BellIcon className="h-6" />
-          <button className="flex items-center" onClick={() => signOut()}>
-            {/* {session?.user?.name} Sign out */}
+          <button className="flex items-center" onClick={handleSignOut}>
             <Image src={profileIcon} className="h-4 rounded-md" />
           </button>
         </div>
