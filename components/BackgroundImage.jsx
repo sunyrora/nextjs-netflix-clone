@@ -1,16 +1,43 @@
 import Image from 'next/image';
-import bgImg from '../public/images/bg.jpeg';
+import { useState } from 'react';
+import imgFallback from '../public/images/bg.jpeg';
 
-const BackgroundImage = () => {
+// const shimmer = (w, h) => `
+// <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+//   <defs>
+//     <linearGradient id="g">
+//       <stop stop-color="#333" offset="20%" />
+//       <stop stop-color="#222" offset="50%" />
+//       <stop stop-color="#333" offset="70%" />
+//     </linearGradient>
+//   </defs>
+//   <rect width="${w}" height="${h}" fill="#333" />
+//   <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+//   <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+// </svg>`;
+
+// const toBase64 = (str) =>
+//   typeof window === 'undefined'
+//     ? Buffer.from(str).toString('base64')
+//     : window.btoa(str);
+
+const BackgroundImage = ({ imgPath = null }) => {
+  const [imgSrc, setImgSrc] = useState(imgPath ?? imgFallback);
   return (
-    <div className="fixed overflow-hidden z-[-1] w-screen h-screen bg-gradient-to-r from-gray-600 to-gray-400">
+    <div className="fixed overflow-hidden z-[-1] w-screen h-full bg-gradient-to-r from-gray-600 to-gray-400">
       <Image
         className="mix-blend-multiply"
-        src={bgImg}
+        src={imgSrc}
         layout="fill"
         objectFit="cover"
         quality={100}
         placeholder="blur"
+        blurDataURL={imgSrc ?? imgFallback}
+        // blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
+        onError={(error) => {
+          console.log('Image loading error: ', error);
+          setImgSrc(imgFallback);
+        }}
         // objectPosition="center"
       />
     </div>

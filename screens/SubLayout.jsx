@@ -2,10 +2,10 @@ import React from 'react';
 import BackgroundImage from '../components/BackgroundImage';
 import Header from '../components/Header';
 
-const SubLayout = ({ children }) => {
+const SubLayout = ({ bgImg, children }) => {
   return (
     <div className="w-full">
-      <BackgroundImage />
+      <BackgroundImage imgPath={bgImg} />
       <Header />
       {children}
     </div>
