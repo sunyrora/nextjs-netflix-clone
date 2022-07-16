@@ -9,6 +9,12 @@ const Layout = ({ title, children }) => {
       <Head>
         <title>{title ? `${title} - ${baseTitle}` : baseTitle}</title>
         <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,400&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       <div className="w-full">
         {/* <header className="">

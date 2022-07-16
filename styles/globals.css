@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: 'Roboto', sans-serif;
+  }
+  body * {
+    @apply tracking-wide;
+  }
+}
+
 @layer components {
   .primary-button {
     @apply rounded h-10 text-white text-lg bg-[#e50914] px-3;

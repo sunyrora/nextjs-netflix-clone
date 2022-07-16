@@ -10,13 +10,13 @@ const Home = () => {
       <BackgroundImage />
       <Header />
       <div className="flex flex-col w-full items-center justify-center px-20 mt-10 text-center min-h-screen">
-        <h1 className="text-5xl text-white font-bold max-w-lg">
+        <h1 className="text-5xl text-white font-medium max-w-lg tracking-wide">
           Unlimited movies, TV shows, and more.
         </h1>
-        <h2 className="text-2xl text-white my-4">
+        <h2 className="text-2xl font-thin text-white my-4">
           Watchianywhere. cancel anvime
         </h2>
-        <p className="text-xl text-white mt-4">
+        <p className="text-base font-thin text-white my-4">
           Ready to watch? Enter your email to create or restart your membership.
         </p>
         <div className="main-input-form flex space-x-0.5 min-w-[615px]">
