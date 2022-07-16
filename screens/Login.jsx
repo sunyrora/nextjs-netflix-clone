@@ -8,42 +8,46 @@ import BackgroundImage from '../components/BackgroundImage';
 const Login = () => {
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
-  const { redirect } = router.query;
+  let { redirect } = router.query;
 
   useEffect(() => {
     if (session?.user) {
-      router.push(redirect || '/');
+      if (redirect && redirect === '/') redirect = '/main';
+
+      router.push(redirect ?? '/main');
     }
   }, [router, session, redirect]);
 
-  function handleAuth(providerID) {
+  const handleAuth = async (providerID) => {
     try {
-      const { error, status, ok, url } = signIn(providerID);
+      const { error, status, ok, url } = await signIn(providerID);
+
+      console.log('ok, url: ', ok, url);
+      if (ok) {
+        router.push(url ?? '/main');
+      }
+
       if (error) {
         console.error('signIn error: ', error, ' status: ', status);
       }
     } catch (error) {
       console.error('Login error: ', error);
     }
-  }
+  };
 
   return (
-    <div className="absolute w-full">
-      <BackgroundImage />
-      <Header />
-      <div className="flex flex-col items-center justify-center w-full p-5 m-5 mt-20">
-        {!session?.user && (
-          <button
-            className="primary-button m-2 text-lg"
-            onClick={(e) => handleAuth('google')}
-          >
-            SignIn with Google
-          </button>
-        )}
-        <Link href={'/'}>
-          <a className="text-white">Go to Main</a>
-        </Link>
-      </div>
+    <div className="flex flex-col items-center justify-center w-full p-5 m-5 mt-20">
+      {!session?.user && (
+        <button
+          className="primary-button m-2 text-lg"
+          onClick={(e) => handleAuth('google')}
+        >
+          SignIn with Google
+        </button>
+      )}
+      <Link href={'/'}>
+        <a className="text-white">Go to Main</a>
+      </Link>
     </div>
   );
 };

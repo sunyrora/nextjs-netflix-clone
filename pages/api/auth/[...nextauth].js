@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-export default NextAuth({
+
+export const authOptions = {
   session: {
     strategy: 'jwt',
   },
@@ -24,4 +25,6 @@ export default NextAuth({
     }),
     // ...add more providers here
   ],
-});
+};
+
+export default NextAuth(authOptions);

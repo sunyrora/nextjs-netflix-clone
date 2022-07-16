@@ -1,9 +1,29 @@
+// import { unstable_getServerSession } from 'next-auth';
+// import { authOptions } from './api/auth/[...nextauth]';
+
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
 const Home = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      // router.push('/main');
+    } else {
+      if (session) {
+        router.push('/main');
+      }
+    }
+  }, []);
+
   return (
     <div className="flex justify-center items-center w-full px-10">
       <div className="flex flex-col justify-center items-center w-full">
         <div className="w-[515px] md:max-w-[640px] md:max-w-xl">
-          <div className="flex flex-col w-full items-center justify-start px-0 mt-56 mx-auto text-center font-medium h-full min-h-full">
+          <div className="flex flex-col w-full items-center justify-start px-0 mt-28 mx-auto text-center font-medium h-full min-h-full">
             <h1 className="text-[3.125rem] leading-[1.1] text-white font-medium max-w-lg tracking-[0.023rem]">
               <p>Unlimited movies, TV</p>
               <p>shows, and more.</p>
@@ -31,7 +51,7 @@ const Home = () => {
         </div>
 
         <div className="mt-32 w-screen">
-          <div className="h-[1000px] bg-black border-[8px] border-[#222]"></div>
+          <div className="h-[1000px] border-[8px] bg-[#141414] border-[#222]"></div>
         </div>
       </div>
     </div>
@@ -45,5 +65,37 @@ export const getStaticProps = async () => {
     },
   };
 };
+
+// export const getServerSideProps = async (context) => {
+//   const session = await unstable_getServerSession(
+//     context.req,
+//     context.res,
+//     authOptions
+//   );
+
+//   let props = {
+//     props: {
+//       bgImg: '/images/bg.jpeg',
+//     },
+//   };
+
+//   console.log('@@@@@@@ session: ', session);
+
+//   if (session) {
+//     props = {
+//       redirect: '{
+//         permanent: false,
+//         destination: '/main',
+//       },'
+//       props: {},
+//     };
+//   }
+
+//   console.log('props: ', props);
+
+//   return {
+//     props,
+//   };
+// };
 
 export default Home;

@@ -8,14 +8,18 @@
   html {
     font-family: Roboto, sans-serif;
   }
+
+  body {
+    @apply bg-[#141414] text-white;
+  }
 }
 
 @layer components {
   .primary-button {
-    @apply rounded h-10 text-white text-lg bg-[#e50914] px-3;
+    @apply rounded md:h-10 text-lg bg-[#e50914] px-3;
   }
 
   .login-button {
-    @apply rounded h-9 tracking-[0.028rem] text-white bg-[#e50914] text-sm px-4 py-2;
+    @apply rounded md:h-9 tracking-[0.028rem] bg-[#e50914] text-sm md:px-4 p-2;
   }
 }
