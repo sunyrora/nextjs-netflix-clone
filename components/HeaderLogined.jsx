@@ -6,9 +6,45 @@ import { SearchIcon } from '@heroicons/react/outline';
 import { BellIcon } from '@heroicons/react/solid';
 import profileIcon from '../public/images/profile-icon.png';
 import Link from 'next/link';
+import DropDown from './DropDown';
 
 const HeaderLogined = () => {
-  const menus = ['Home', 'TV Shows', 'Movies', 'New & Popular', 'My List'];
+  const menusKeys = ['Home', 'TV Shows', 'Movies', 'New & Popular', 'My List'];
+
+  const menus = [
+    {
+      name: 'Home',
+      selected: false,
+      onClick: (e) => {
+        router.push('/main');
+      },
+    },
+    {
+      name: 'TV Shows',
+      onClick: (e) => {
+        console.log('TV Show Clicked');
+      },
+    },
+
+    {
+      name: 'Movies',
+      onClick: (e) => {
+        router.push('/movies');
+      },
+    },
+    {
+      name: 'New & Popular',
+      onClick: (e) => {
+        console.log('New & Popular Clicked');
+      },
+    },
+    {
+      name: 'My List',
+      onClick: (e) => {
+        console.log('My List Clicked');
+      },
+    },
+  ];
 
   const [selectedMenu, setSelectedMenu] = useState(menus[0]);
   const [isScrolled, setScrolled] = useState(false);
@@ -17,14 +53,16 @@ const HeaderLogined = () => {
   const { pathname } = router;
 
   useEffect(() => {
-    if (!session) {
-      router.push({
-        pathname: '/unauthorized',
-        query: {
-          message: 'Login required',
-          redirect: pathname ?? '/',
-        },
-      });
+    if (process.env.NODE_ENV !== 'development') {
+      if (!session) {
+        router.push({
+          pathname: '/unauthorized',
+          query: {
+            message: 'Login required',
+            redirect: pathname ?? '/',
+          },
+        });
+      }
     }
 
     let handleScroll = null;
@@ -60,41 +98,47 @@ const HeaderLogined = () => {
     }
   };
 
-  const MenuSecletComponent = ({ menus, className }) => (
-    <div className={`flex justify-center ml-6 ${className} `}>
-      <select
-        className="h-[12px] w-[50px] rounded bg-transparent text-[10px] p-0"
-        tabIndex={0}
-        placeholder="lang-switcher"
-        value={selectedMenu}
-        onChange={(e) => setSelectedMenu(e.target.value)}
-      >
-        {menus.map((menu) => (
-          <option
-            key={menu}
-            value={menu}
-            className={`${selectedMenu === menu && 'font-bold'}`}
-          >
-            {menu}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
+  // const MenuSecletComponent = ({ menus, className }) => (
+  //   <div className={`flex justify-center ml-6 ${className} `}>
+  //     <select
+  //       className="h-[12px] w-[50px] rounded bg-transparent text-[10px] p-0"
+  //       tabIndex={0}
+  //       placeholder="lang-switcher"
+  //       value={selectedMenu}
+  //       onChange={(e) => setSelectedMenu(e.target.value)}
+  //     >
+  //       {menus.map((menu) => (
+  //         <option
+  //           key={menu}
+  //           value={menu}
+  //           className={`${selectedMenu === menu && 'font-bold'}`}
+  //         >
+  //           {menu}
+  //         </option>
+  //       ))}
+  //     </select>
+  //   </div>
+  // );
 
   const MenuComponent = ({ menus, className }) => (
     <div className={`${className} ml-10`}>
       <ul className="flex items-center">
         {menus.map((menu) => (
           <li
-            key={menu}
+            key={menu.name}
             className={`text-white text-sm font-light tracking-wider transition duration-[.4s] m-2 ${
-              selectedMenu === menu
+              menu.selected
                 ? 'font-bold'
                 : 'hover:text-[#b3b3b3] hover:cursor-pointer'
             }`}
           >
-            {menu}
+            <button
+              onClick={(e) => {
+                menu.onClick(e);
+              }}
+            >
+              {menu.name}
+            </button>
           </li>
         ))}
       </ul>
@@ -125,7 +169,15 @@ const HeaderLogined = () => {
             </div>
           </Link>
 
-          <MenuSecletComponent menus={menus} className="md:hidden" />
+          <DropDown
+            menus={menus}
+            className={{
+              menu: 'md:hidden',
+              menuButton:
+                'h-[12px] w-[50px] rounded bg-transparent text-[10px] p-0',
+            }}
+          />
+          {/* <MenuSecletComponent menus={menus} className="md:hidden" /> */}
           <MenuComponent menus={menus} className="hidden md:flex" />
         </div>
         <div className="flex items-center ml-auto space-x-4">
