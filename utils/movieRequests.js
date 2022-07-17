@@ -1,5 +1,6 @@
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+export const TMDB_IMG_BASE_URL = 'https://image.tmdb.org/t/p';
 
 export const FETCH_TRENDING = `${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}&language=en-US`;
 export const FETCH_NETFLIX_ORIGINALS = `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_networks=213`;

@@ -8,7 +8,9 @@ import {
   FETCH_ROMANCEMOVIES,
   FETCH_TOPRATED,
   FETCH_TRENDING,
+  TMDB_IMG_BASE_URL,
 } from '../utils/movieRequests';
+import { randomNumber } from '../utils/utils';
 
 const MainPage = ({ movies }) => {
   return <MainScreen movies={movies} />;
@@ -20,8 +22,6 @@ if (process.env.NODE_ENV !== 'development') MainPage.auth = true;
 export default MainPage;
 
 export const getServerSideProps = async () => {
-  // your fetch function here
-
   const [
     netflixOriginals,
     trendingNow,
@@ -42,12 +42,24 @@ export const getServerSideProps = async () => {
     fetch(FETCH_DOCUMENTARIES).then((res) => res.json()),
   ]);
 
-  //   console.log('netflixOriginals: ', netflixOriginals.results.slice(0, 3));
+  let randomNum = randomNumber(1, 5);
+  let bgImg = `/images/bg-home-${randomNum}.webp`;
+
+  if (netflixOriginals) {
+    const resNetflixOriginals = netflixOriginals?.results;
+
+    randomNum = randomNumber(1, resNetflixOriginals?.length);
+    const pickedMovie = resNetflixOriginals[randomNum];
+    bgImg = `${TMDB_IMG_BASE_URL}/original${
+      pickedMovie?.backdrop_path ?? pickedMovie.poster_path
+    }`;
+  }
+  console.log('bgImg: ', bgImg);
 
   return {
     props: {
       title: 'Home',
-      bgImg: '/images/bg-home.webp',
+      bgImg,
       movies: {
         netflixOriginals: netflixOriginals?.results ?? null,
         trendingNow: trendingNow?.results ?? null,
