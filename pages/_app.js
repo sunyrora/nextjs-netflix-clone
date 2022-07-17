@@ -1,7 +1,6 @@
 import '../styles/globals.css';
 import Layout from '../screens/Layout';
 import { SessionProvider, useSession } from 'next-auth/react';
-import SubLayout from '../screens/SubLayout';
 import { useRouter } from 'next/router';
 
 function MyApp({
@@ -10,19 +9,17 @@ function MyApp({
 }) {
   return (
     <SessionProvider session={session}>
-      <Layout title={title}>
-        {Component.auth ? (
-          <Auth>
-            <SubLayout bgImg={bgImg}>
-              <Component {...pageProps} />
-            </SubLayout>
-          </Auth>
-        ) : (
-          <SubLayout bgImg={bgImg}>
+      {Component.auth ? (
+        <Auth>
+          <Layout title={title} bgImg={bgImg}>
             <Component {...pageProps} />
-          </SubLayout>
-        )}
-      </Layout>
+          </Layout>
+        </Auth>
+      ) : (
+        <Layout title={title} bgImg={bgImg}>
+          <Component {...pageProps} />
+        </Layout>
+      )}
     </SessionProvider>
   );
 }

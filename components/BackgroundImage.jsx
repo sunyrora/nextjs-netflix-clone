@@ -1,6 +1,6 @@
 import Image from 'next/future/image';
 import { useEffect, useState } from 'react';
-import imgFallback from '../public/images/bg.jpeg';
+// import imgFallback from '../public/images/bg.jpeg';
 
 // const shimmer = (w, h) => `
 // <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -22,6 +22,7 @@ import imgFallback from '../public/images/bg.jpeg';
 //     : window.btoa(str);
 
 const BackgroundImage = ({ bgImg = null }) => {
+  const imgFallback = '/images/bg.jpeg';
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
   const [imgWidth, setImgWidth] = useState(3000);
   const [imgHeight, setImgHeight] = useState(100);
@@ -40,7 +41,7 @@ const BackgroundImage = ({ bgImg = null }) => {
         className={`mix-blend-multiply`}
         // objectFit="contain"
         quality={100}
-        placeholder="blur"
+        // placeholder="blur"
         blurDataURL={imgSrc ?? imgFallback}
         onError={(error) => {
           console.log('Image loading error: ', error);
