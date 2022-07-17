@@ -5,8 +5,15 @@ import { useRouter } from 'next/router';
 
 function MyApp({
   Component,
-  pageProps: { session, title, bgImg, ...pageProps },
+  pageProps: { session, title, bgImg, redirect, ...pageProps },
 }) {
+  if (redirect) {
+    const router = useRouter();
+    router.push(redirect.destination);
+
+    return <></>;
+  }
+
   return (
     <SessionProvider session={session}>
       {Component.auth ? (

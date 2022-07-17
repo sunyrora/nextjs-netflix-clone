@@ -1,5 +1,5 @@
-// import { unstable_getServerSession } from 'next-auth';
-// import { authOptions } from './api/auth/[...nextauth]';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -10,14 +10,12 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      // router.push('/main');
-    }
-
     if (session) {
       router.push('/main');
     }
   }, []);
+
+  if (session) return <></>;
 
   return (
     <div className="flex justify-center items-center w-full px-10">
@@ -58,45 +56,42 @@ const Home = () => {
   );
 };
 
-export const getStaticProps = async () => {
-  return {
-    props: {
-      bgImg: '/images/bg.jpeg',
-    },
-    revalidate: 5,
-  };
-};
-
-// export const getServerSideProps = async (context) => {
-//   const session = await unstable_getServerSession(
-//     context.req,
-//     context.res,
-//     authOptions
-//   );
-
-//   let props = {
+// export const getStaticProps = async () => {
+//   return {
 //     props: {
 //       bgImg: '/images/bg.jpeg',
 //     },
-//   };
-
-//   console.log('@@@@@@@ session: ', session);
-
-//   if (session) {
-//     props = {
-//       redirect: '{
-//         permanent: false,
-//         destination: '/main',
-//       },'
-//       props: {},
-//     };
-//   }
-
-//   console.log('props: ', props);
-
-//   return {
-//     props,
+//     revalidate: 5,
 //   };
 // };
+
+export const getServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  let props = {
+    props: {
+      bgImg: '/images/bg.jpeg',
+    },
+  };
+
+  if (session) {
+    props = {
+      redirect: {
+        destination: '/main',
+        permanent: false,
+      },
+    };
+  }
+
+  console.log('props: ', props);
+
+  return {
+    props,
+  };
+};
 
 export default Home;
