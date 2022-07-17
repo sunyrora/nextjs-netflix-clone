@@ -12,8 +12,8 @@ import {
 } from '../utils/movieRequests';
 import { randomNumber } from '../utils/utils';
 
-const MainPage = ({ movies }) => {
-  return <MainScreen movies={movies} />;
+const MainPage = ({ movies, bgIndex }) => {
+  return <MainScreen movies={movies} bgIndex={bgIndex} />;
 };
 
 if (process.env.NODE_ENV !== 'development') MainPage.auth = true;
@@ -60,6 +60,7 @@ export const getServerSideProps = async () => {
     props: {
       title: 'Home',
       bgImg,
+      bgIndex: randomNum,
       movies: {
         netflixOriginals: netflixOriginals?.results ?? null,
         trendingNow: trendingNow?.results ?? null,

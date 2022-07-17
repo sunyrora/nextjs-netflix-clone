@@ -21,7 +21,7 @@ const Home = () => {
     <div className="flex justify-center items-center w-full px-10">
       <div className="flex flex-col justify-center items-center w-full">
         <div className="w-[515px] md:max-w-[640px] md:max-w-xl">
-          <div className="flex flex-col w-full items-center justify-start px-0 mt-28 mx-auto text-center font-medium h-full min-h-full">
+          <div className="flex flex-col w-full items-center justify-start px-0 mt-52 mx-auto text-center font-medium h-full min-h-full">
             <h1 className="text-[3.125rem] leading-[1.1] text-white font-medium max-w-lg tracking-[0.023rem]">
               <p>Unlimited movies, TV</p>
               <p>shows, and more.</p>

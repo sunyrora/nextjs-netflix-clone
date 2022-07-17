@@ -10,7 +10,7 @@
   }
 
   body {
-    @apply bg-bggray-100 text-white;
+    @apply bg-bggray-100 text-white tracking-[0.023rem];
   }
 }
 

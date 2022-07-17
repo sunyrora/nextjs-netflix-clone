@@ -25,11 +25,15 @@ const BackgroundImage = ({ bgImg = null }) => {
   const imgFallback = '/images/bg.jpeg';
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
   const [imgWidth, setImgWidth] = useState(3000);
-  const [imgHeight, setImgHeight] = useState(100);
+  const [imgHeight, setImgHeight] = useState(600);
 
   useEffect(() => {
     setImgSrc(bgImg ?? imgFallback);
   }, [bgImg]);
+
+  useEffect(() => {
+    console.log('imgWidth, imgHeight: ', imgWidth, imgHeight);
+  }, [imgWidth]);
 
   return (
     <div className="absolute overflow-hidden z-[-10] w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200 ">
