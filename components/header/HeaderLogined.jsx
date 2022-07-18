@@ -1,52 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { SearchIcon } from '@heroicons/react/outline';
 import { BellIcon } from '@heroicons/react/solid';
-import profileIcon from '../public/images/profile-icon.png';
+import profileIcon from '../../public/images/profile-icon.png';
 import Link from 'next/link';
-import DropDown from './DropDown';
+import menus from './menus';
+import Menu from './Menu';
 
 const HeaderLogined = () => {
-  const menusKeys = ['Home', 'TV Shows', 'Movies', 'New & Popular', 'My List'];
-
-  const menus = [
-    {
-      name: 'Home',
-      selected: false,
-      onClick: (e) => {
-        router.push('/main');
-      },
-    },
-    {
-      name: 'TV Shows',
-      onClick: (e) => {
-        console.log('TV Show Clicked');
-      },
-    },
-
-    {
-      name: 'Movies',
-      onClick: (e) => {
-        router.push('/movies');
-      },
-    },
-    {
-      name: 'New & Popular',
-      onClick: (e) => {
-        console.log('New & Popular Clicked');
-      },
-    },
-    {
-      name: 'My List',
-      onClick: (e) => {
-        console.log('My List Clicked');
-      },
-    },
-  ];
-
-  const [selectedMenu, setSelectedMenu] = useState(menus[0]);
   const [isScrolled, setScrolled] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -98,53 +61,6 @@ const HeaderLogined = () => {
     }
   };
 
-  // const MenuSecletComponent = ({ menus, className }) => (
-  //   <div className={`flex justify-center ml-6 ${className} `}>
-  //     <select
-  //       className="h-[12px] w-[50px] rounded bg-transparent text-[10px] p-0"
-  //       tabIndex={0}
-  //       placeholder="lang-switcher"
-  //       value={selectedMenu}
-  //       onChange={(e) => setSelectedMenu(e.target.value)}
-  //     >
-  //       {menus.map((menu) => (
-  //         <option
-  //           key={menu}
-  //           value={menu}
-  //           className={`${selectedMenu === menu && 'font-bold'}`}
-  //         >
-  //           {menu}
-  //         </option>
-  //       ))}
-  //     </select>
-  //   </div>
-  // );
-
-  const MenuComponent = ({ menus, className }) => (
-    <div className={`${className} ml-10`}>
-      <ul className="flex items-center">
-        {menus.map((menu) => (
-          <li
-            key={menu.name}
-            className={`text-white text-sm font-light tracking-wider transition duration-[.4s] m-2 ${
-              menu.selected
-                ? 'font-bold'
-                : 'hover:text-[#b3b3b3] hover:cursor-pointer'
-            }`}
-          >
-            <button
-              onClick={(e) => {
-                menu.onClick(e);
-              }}
-            >
-              {menu.name}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
   return (
     <div
       className={`fixed z-50 w-full pt-0 transition-all max-h-fit ${
@@ -169,16 +85,7 @@ const HeaderLogined = () => {
             </div>
           </Link>
 
-          <DropDown
-            menus={menus}
-            className={{
-              menu: 'md:hidden',
-              menuButton:
-                'h-[12px] w-[50px] rounded bg-transparent text-[10px] p-0',
-            }}
-          />
-          {/* <MenuSecletComponent menus={menus} className="md:hidden" /> */}
-          <MenuComponent menus={menus} className="hidden md:flex" />
+          <Menu menus={menus} />
         </div>
         <div className="flex items-center ml-auto space-x-4">
           <SearchIcon className="h-6" />

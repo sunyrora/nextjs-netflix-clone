@@ -1,14 +1,14 @@
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
-const DropDown = ({ menus, className }) => {
-  const defaultOnClcik = () => {
-    console.log('No onClick Handler');
-  };
+const DropDown = ({ children, className = '' }) => {
   return (
     <div className="flex justify-center ml-6">
-      <Menu as="div" className={`${className.menu}`}>
-        <Menu.Button className={`${className.menuButton}`}>
+      <Menu as="div" className={`${className}`}>
+        {/* <Menu.Button className={`${className?.menuButton}`}> */}
+        <Menu.Button
+          className={`'h-[12px] w-[50px] rounded bg-transparent text-[10px] p-0'`}
+        >
           <div className="flex items-center space-x-1">
             <div>Browse</div>
             <div className="rotate-180 text-[9px]">∆</div>
@@ -26,22 +26,7 @@ const DropDown = ({ menus, className }) => {
           <Menu.Items
             className={`absolute origin-top-left left-0 w-[250px] flex flex-col bg-bggray-100/90 border-t-2 borfder-white`}
           >
-            <div className="">
-              {menus?.map((menu) => (
-                <Menu.Item key={menu.name}>
-                  {({ active }) => (
-                    <button
-                      className={`w-full p-2 pt-3 font-light text-[14px] ${
-                        menu.selected && 'font-bold'
-                      } ${active && 'bg-bggray-100/30 mix-blend-screen'}`}
-                      onClick={menu.onClick ?? defaultOnClcik}
-                    >
-                      {menu.name}
-                    </button>
-                  )}
-                </Menu.Item>
-              ))}
-            </div>
+            <div className="">{children}</div>
           </Menu.Items>
         </Transition>
       </Menu>
