@@ -1,11 +1,10 @@
+import { useCallback, useEffect, useState } from 'react';
 import { CONTENT_PAGE_BASE_PATH } from '../../utils/constants';
-// const menuIds = ['home', 'tvshows', 'movies', 'newpopular', 'mylist'];
 
-const menus = [
+const menusInfos = [
   {
     id: 'home',
     name: 'Home',
-    // path: `${CONTENT_PAGE_BASE_PATH}/main`,
     selected: false,
   },
   {
@@ -16,7 +15,6 @@ const menus = [
   {
     id: 'movies',
     name: 'Movies',
-    // path: `${CONTENT_PAGE_BASE_PATH}/movies`,
   },
   {
     id: 'newpopular',
@@ -28,8 +26,18 @@ const menus = [
   },
 ];
 
-const menuMap = new Map(
-  menus.map((menu) => [
+class MenuMap extends Map {
+  setSelected(id) {
+    this.forEach((value, key) => {
+      key === id ? (value.selected = true) : (value.selected = false);
+    });
+
+    return true;
+  }
+}
+
+const menus = new MenuMap(
+  menusInfos.map((menu) => [
     menu.id,
     {
       name: menu.name,
@@ -39,4 +47,90 @@ const menuMap = new Map(
   ])
 );
 
-export default menuMap;
+export default menus;
+
+// export const useMenu = () => {
+//   const menusInfos = [
+//     {
+//       id: 'home',
+//       name: 'Home',
+//       selected: false,
+//     },
+//     {
+//       id: 'tvshows',
+//       name: 'TV Shows',
+//     },
+
+//     {
+//       id: 'movies',
+//       name: 'Movies',
+//     },
+//     {
+//       id: 'newpopular',
+//       name: 'New & Popular',
+//     },
+//     {
+//       id: 'mylist',
+//       name: 'My List',
+//     },
+//   ];
+
+//   const initialState = menusInfos.map((menu) => [
+//     menu.id,
+//     {
+//       name: menu.name,
+//       path: `${CONTENT_PAGE_BASE_PATH}/${menu.id}`,
+//       selected: false,
+//     },
+//   ]);
+
+//   const [menus, setMenus] = useState(new MenuMap(initialState));
+//   const [selectedMenu, setSelectedMenu] = useState();
+
+//   const setSelected = useCallback(
+//     (id) => {
+//       setSelectedMenu(id);
+
+//       setMenus((prev) => {
+//         const newMenu = new MenuMap(prev);
+//         // console.log('newMenuMap: ', newMenu);
+//         newMenu.setSelected(id);
+//         return newMenu;
+//       });
+//     },
+//     [selectedMenu]
+//   );
+
+//   const actions = {
+//     setSelected,
+//     // setSelectedMenu,
+//   };
+
+//   return { menus, selectedMenu, actions };
+// };
+
+// export default useMenu;
+
+// export const [menus, { setSelected }] = useMenu();
+
+// const menuMap = new MenuMap(
+//   menus.map((menu) => [
+//     menu.id,
+//     {
+//       name: menu.name,
+//       path: `${CONTENT_PAGE_BASE_PATH}/${menu.id}`,
+//       selected: false,
+//     },
+//   ])
+// );
+
+// export default new MenuMap(
+//   menus.map((menu) => [
+//     menu.id,
+//     {
+//       name: menu.name,
+//       path: `${CONTENT_PAGE_BASE_PATH}/${menu.id}`,
+//       selected: false,
+//     },
+//   ])
+// );

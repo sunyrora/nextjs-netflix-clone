@@ -21,12 +21,12 @@ const DropDown = ({ children, className = '' }) => {
           enterTo="transform scale-100 opacity-100"
           leave="transition duration-75 ease-out"
           leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-95 opacity-0"
+          leaveTo="transform scale-0 opacity-0"
         >
           <Menu.Items
             className={`absolute origin-top-left left-0 w-[250px] flex flex-col bg-bggray-100/90 border-t-2 borfder-white`}
           >
-            <div className="">{children}</div>
+            {children}
           </Menu.Items>
         </Transition>
       </Menu>
