@@ -22,4 +22,12 @@
   .login-button {
     @apply rounded md:h-9 tracking-[0.028rem] bg-[#e50914] text-sm md:px-4 p-2;
   }
+  /* 
+  main {
+    @apply w-full pt-[7%] netflix-md:pt-[11%] pr-[9vw] netflix-md:pr-[30vw] !important;
+  } */
+
+  .main-content {
+    @apply w-full pl-[4%] pr-[9vw]  !important;
+  }
 }

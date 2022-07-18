@@ -42,16 +42,17 @@ export const getServerSideProps = async () => {
     fetch(FETCH_DOCUMENTARIES).then((res) => res.json()),
   ]);
 
-  let randomNum = randomNumber(1, 5);
-  let bgImg = `/images/bg-home-${randomNum}.webp`;
+  let randomNum = randomNumber(0, 5);
+  let fallbackImg = `/images/bg-home-${randomNum}.webp`;
+  let bgImg = fallbackImg;
 
   if (netflixOriginals) {
     const resNetflixOriginals = netflixOriginals?.results;
 
-    randomNum = randomNumber(1, resNetflixOriginals?.length);
+    randomNum = randomNumber(0, resNetflixOriginals?.length);
     const pickedMovie = resNetflixOriginals[randomNum];
     bgImg = `${TMDB_IMG_BASE_URL}/original${
-      pickedMovie?.backdrop_path ?? pickedMovie.poster_path
+      pickedMovie?.backdrop_path ?? pickedMovie?.poster_path
     }`;
   }
   console.log('bgImg: ', bgImg);
