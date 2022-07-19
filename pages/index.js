@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     if (session) {
-      router.push('/main');
+      router.push(`${process.env.contentsBasePath}`);
     }
   }, []);
 
@@ -81,7 +81,7 @@ export const getServerSideProps = async (context) => {
   if (session) {
     props = {
       redirect: {
-        destination: '/main',
+        destination: `${process.env.contentsBasePath}`,
         permanent: false,
       },
     };

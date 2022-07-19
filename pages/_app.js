@@ -2,19 +2,23 @@ import '../styles/globals.css';
 import Layout from '../screens/Layout';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 function MyApp({
   Component,
   pageProps: { session, title, bgImg, redirect, ...pageProps },
 }) {
-  if (redirect) {
-    const router = useRouter();
-    router.push(redirect.destination);
+  const router = useRouter();
 
-    return <></>;
-  }
+  useEffect(() => {
+    if (redirect) {
+      router.push(redirect.destination);
+    }
+  }, [router]);
 
-  return (
+  return redirect ? (
+    <></>
+  ) : (
     <SessionProvider session={session}>
       {Component.auth ? (
         <Auth>

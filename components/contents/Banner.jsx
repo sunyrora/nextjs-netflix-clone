@@ -5,9 +5,9 @@ import imgBannerTitle from '../../public/images/banner-title.webp';
 
 const Banner = ({ video }) => {
   return (
-    <div className="rleative w-full min-h-[75vh]">
+    <div className="rleative w-full min-h-[25vh] md:min-h-[65vh]">
       <div className="absolute w-full flex flex-col items-startpt-[7%] px-content-default mt-[7%] netflix-md:mt-[19%]">
-      {/* <div className="absolute flex flex-col items-start bottom-[70%] netflix-md:bottom-[60%] md:bottom-[60%] mmd:bottom-[55%]   xmd:bottom-[50%] mlg:bottom-[47%] lg:bottom-[48%]"> */}
+        {/* <div className="absolute flex flex-col items-start bottom-[70%] netflix-md:bottom-[60%] md:bottom-[60%] mmd:bottom-[55%]   xmd:bottom-[50%] mlg:bottom-[47%] lg:bottom-[48%]"> */}
         <div className="w-[22%] max-w-[25%] h-fit mb-3">
           <Image src={imgBannerTitle} className="" />
         </div>

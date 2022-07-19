@@ -10,7 +10,7 @@ const Login = () => {
 
   useEffect(() => {
     if (session) {
-      router.push(redirect ?? '/main');
+      router.push(redirect ?? `${process.env.contentsBasePath}`);
     }
   }, []);
 
@@ -19,7 +19,7 @@ const Login = () => {
 
     try {
       const { error, status } = await signIn(providerID, {
-        callbackUrl: redirect ?? '/main',
+        callbackUrl: redirect ?? `${process.env.contentsBasePath}`,
       });
 
       if (error) {

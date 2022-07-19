@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { CONTENT_PAGE_BASE_PATH } from '../../utils/constants';
 
 const menusInfos = [
   {
@@ -41,7 +40,7 @@ const menus = new MenuMap(
     menu.id,
     {
       name: menu.name,
-      path: `${CONTENT_PAGE_BASE_PATH}/${menu.id}`,
+      path: `${process.env.contentsBasePath}/${menu.id}`,
       selected: false,
     },
   ])

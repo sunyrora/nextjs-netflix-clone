@@ -35,6 +35,10 @@ const BackgroundImage = ({ bgImg = null }) => {
     console.log('imgWidth, imgHeight: ', imgWidth, imgHeight);
   }, [imgWidth]);
 
+  useEffect(() => {
+    console.log('imgSrc changed: ', imgSrc);
+  }, [imgSrc]);
+
   return (
     <div className="absolute overflow-hidden z-[-10] w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200 ">
       <Image
