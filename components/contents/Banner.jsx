@@ -1,34 +1,68 @@
-import { PlayIcon } from '@heroicons/react/solid';
-import { InformationCircleIcon } from '@heroicons/react/outline';
 import Image from 'next/future/image';
 import imgBannerTitle from '../../public/images/banner-title.webp';
 
 const Banner = ({ video }) => {
   return (
-    <div className="rleative w-full min-h-[25vh] md:min-h-[65vh]">
-      <div className="absolute w-full flex flex-col items-startpt-[7%] px-content-default mt-[7%] netflix-md:mt-[19%]">
-        {/* <div className="absolute flex flex-col items-start bottom-[70%] netflix-md:bottom-[60%] md:bottom-[60%] mmd:bottom-[55%]   xmd:bottom-[50%] mlg:bottom-[47%] lg:bottom-[48%]"> */}
-        <div className="w-[22%] max-w-[25%] h-fit mb-3">
-          <Image src={imgBannerTitle} className="" />
+    <div className="relative flex origin-top-left w-[72.5vw] h-[40vw] 2xl:h-[42vw]  min-h-[10vw] content-banner-parent">
+      <div
+        className="absolute w-[50%] xsm:w-[50%] bottom-[16%] sm:bottom-[15%] mmd:bottom-[14%]
+       content-banner-child"
+      >
+        <div className="w-full h-fit mb-1 sm:my-[10px] lg:my-[20px]">
+          <div className="relative w-full h-fit mb-3">
+            <Image src={imgBannerTitle} className="" />
+          </div>
+          <div className="transition-all sm:flex my-0 sm:my-2 lg:my-[18px] netflix-md:mb-0 text-[1.15vw]">
+            <p className=" p-0 line-clamp-5 sm:line-clamp-3 leading-tight">
+              {video.overview}
+            </p>
+          </div>
         </div>
-        <div className="hidden sm:flex my-5 text-[1.15vw] w-[21%]">
-          <p className=" sm:line-clamp-3 leading-tight text-justify">
-            {video.overview}
-          </p>
-        </div>
-        <div className="flex space-x-3 x-fit transition-all text-[1.5vw] sm:text-[1.7vw] netflix-md:text-[2.05vw] mmd:text-[1.5vw] ">
-          <div className="flex items-center justify-center w-fit bg-white rounded-md">
-            <div className="flex items-center w-full px-[0.8rem] py-[0.1rem] netflix-md:py-0">
-              <PlayIcon className="h-5 sm:h-6 netflix-md:h-[30px] fill-black" />
-              <button type="button" className="w-full text-black">
+        <div className="flex space-x-1.5 x-fit transition-all">
+          <div className=" content-banner-button-container">
+            <div className="flex space-x-0 items-center w-full h-fit py-0 netflix-md:py-0">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="content-banner-icon"
+              >
+                <path
+                  d="M4 2.69127C4 1.93067 4.81547 1.44851 5.48192 1.81506L22.4069 11.1238C23.0977 11.5037 23.0977 12.4963 22.4069 12.8762L5.48192 22.1849C4.81546 22.5515 4 22.0693 4 21.3087V2.69127Z"
+                  fill="black"
+                ></path>
+              </svg>
+              <button
+                type="button"
+                className="content-banner-button w-full text-black"
+              >
                 Play
               </button>
             </div>
           </div>
-          <div className="flex items-center justify-center bg-[#6d6d6e]/50 rounded-md">
-            <div className="flex items-center w-full px-[0.8rem] py-[0.1rem] netflix-md::py-0">
-              <InformationCircleIcon className="h-5 sm:h-6 netflix-md:h-[30px]" />
-              <button type="button" className="w-full text-white">
+          <div className="content-banner-button-container bg-[#6d6d6e]/50">
+            <div className="flex space-x-0 items-center w-full ">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="content-banner-icon"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3ZM1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM13 10V18H11V10H13ZM12 8.5C12.8284 8.5 13.5 7.82843 13.5 7C13.5 6.17157 12.8284 5.5 12 5.5C11.1716 5.5 10.5 6.17157 10.5 7C10.5 7.82843 11.1716 8.5 12 8.5Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+              <button
+                type="button"
+                className="content-banner-button w-full text-white"
+              >
                 More Info
               </button>
             </div>

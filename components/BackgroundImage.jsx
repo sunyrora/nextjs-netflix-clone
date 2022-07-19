@@ -40,7 +40,7 @@ const BackgroundImage = ({ bgImg = null }) => {
   }, [imgSrc]);
 
   return (
-    <div className="absolute overflow-hidden z-[-10] w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200 ">
+    <div className="absolute overflow-hidden z-[-10] w-auto h-fit bg-gradient-to-t from-gray-900 to-gray-200 ">
       <Image
         src={imgSrc}
         priority={true}

@@ -7,12 +7,12 @@ const ContentLayout = ({ videos, bgIndex }) => {
   // console.log('ContentLayout: bgInfo: ', bgInfo);
 
   return (
-    <div className="content-container w-screen pt-3 border border-amber-600 flex flex-col justify-center ">
+    <div className="content-container w-full pt-3 flex flex-col justify-center ">
       {bgInfo && (
         // {/*  bannerIdx'th object in videoList */}
         <Banner video={bgInfo} />
       )}
-      <div className="content-body ">
+      <div className="content-body h-[500vh]">
         {firstList?.map((video) => (
           <div key={video.id}>{video.original_title}</div>
         ))}
@@ -20,20 +20,4 @@ const ContentLayout = ({ videos, bgIndex }) => {
     </div>
   );
 };
-
-// const ContentLayout = ({bannerInfo, children}) => {
-//   return (
-//   <div className=" w-screen flex flex-col justify-center ">
-//     { bannerInfo &&
-//     // {/*  bannerIdx'th object in videoList */}
-//       <Banner video={bannerInfo} />
-//     }
-//     <div className="relative !w-full bg-bggray-100 flex flex-col justify-center items-center px-content-default md:py-[30px] ">
-
-//     {children}
-//     </div>
-//     </div>
-//     );
-// };
-
 export default ContentLayout;

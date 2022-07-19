@@ -68,7 +68,7 @@ const HeaderLogined = () => {
       }`}
     >
       {/* // height 68px */}
-      <div className="flex items-center justify-between min-h-[41px] md:h-[68px] px-[4%]">
+      <div className="flex items-center justify-between min-h-[41px] md:h-[68px] px-content-default 2xl:px-[60px]">
         <div className="flex items-center">
           <Link href="/">
             <div className="w-fit hover:cursor-pointer">

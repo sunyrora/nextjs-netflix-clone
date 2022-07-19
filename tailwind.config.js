@@ -22,8 +22,9 @@ module.exports = {
         'content-default': '4%',
       },
       screens: {
+        xsm: '600px',
         'netflix-md': '740px',
-        mmd: '870px',
+        mmd: '840px',
         xmd: '920px',
         mlg: '940',
 

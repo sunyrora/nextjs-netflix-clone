@@ -26,7 +26,12 @@ const Layout = ({ title, bgImg, children }) => {
           )}
         </header>
         {/* <main className="pt-24 md:pt-32">{children}</main> */}
-        <main className="w-full p-0">{children}</main>
+        <main
+          className="w-full p-0  bg-gradient-to-b
+         from-bggay/10  to-bggray-100"
+        >
+          {children}
+        </main>
       </div>
     </div>
   );
