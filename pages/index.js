@@ -18,19 +18,25 @@ const Home = () => {
   if (session) return <></>;
 
   return (
-    <div className="flex justify-center items-center w-full px-10">
+    <div className="flex justify-center items-center w-full">
       <div className="flex flex-col justify-center items-center w-full">
-        <div className="w-[515px] md:max-w-[640px] md:max-w-xl">
-          <div className="flex flex-col w-full items-center justify-start px-0 mt-52 mx-auto text-center font-medium h-full min-h-full">
-            <h1 className="text-[3.125rem] leading-[1.1] text-white font-medium max-w-lg tracking-[0.023rem]">
+        <div className="w-[90vw] md:max-w-xl">
+          <div className="flex flex-col w-full items-center justify-start px-0 mt-[30vw] xsm:mt-[25vw] mmd:mt-[22vw] lg:mt-[14vw] mx-auto text-center font-medium h-full min-h-full">
+            <h1 className="text-[7vw] md:text-[3.125rem] leading-[1.1] text-white font-medium max-w-lg tracking-[0.023rem]">
               <p>Unlimited movies, TV</p>
               <p>shows, and more.</p>
             </h1>
-            <h2 className="text-2xl tracking-widest font-light  text-white my-4">
+            <h2 className="text-[4.8vw] msm:text-2xl font-light  text-white my-4">
               Watch anywhere. cancel anytime.
             </h2>
             <div className="flex flex-col w-full">
-              <p className="text-lg px-[3.2rem] md:px-[2.9rem] font-light tracking-wider leading-[1.15] text-white mb-4 mt-1">
+              <p
+                className="text-[4.8vw] msm:text-[2.5vw] xmd:text-lg font-light 
+                tracking-normal msm:tracking-wide xmd:tracking-tight
+                leading-[1.15] text-white
+               px-[1%] xsm:px-[15%] xmd:px-0
+                mb-4 mt-1"
+              >
                 Ready to watch? Enter your email to create or restart your
                 membership.
               </p>

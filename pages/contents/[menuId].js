@@ -10,8 +10,8 @@ const ContentPage = ({ videos, bgIndex }) => {
   const { menuId } = router.query;
   console.log('ContentPage:: menuId: ', menuId);
 
-  // return <div>Content Page</div>;
-  return <ContentLayout videos={videos} bgIndex={bgIndex} />;
+  const videosMap = new Map(Object.entries(videos));
+  return <ContentLayout videos={videosMap} bgIndex={bgIndex} />;
 };
 
 export default ContentPage;
@@ -36,9 +36,13 @@ export const getServerSideProps = async ({ params }) => {
 
   const fetchRes = await fetchHomeVideos();
 
+  const videoMap = new Map(Object.entries(fetchRes));
+  // console.log('videoMap: ', videoMap);
+
   // console.log('fetchRes: ', fetchRes);
 
-  const { netflixOriginals } = fetchRes;
+  // const { netflixOriginals } = fetchRes;
+  const netflixOriginals = videoMap.get('Netflix Originals');
 
   if (netflixOriginals) {
     randomNum = randomNumber(0, netflixOriginals?.length);

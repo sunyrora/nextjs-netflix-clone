@@ -28,7 +28,7 @@ const Layout = ({ title, bgImg, children }) => {
         {/* <main className="pt-24 md:pt-32">{children}</main> */}
         <main
           className="w-full p-0  bg-gradient-to-b
-         from-bggay/10  to-bggray-100"
+         from-bggay/10  to-[#010511]"
         >
           {children}
         </main>

@@ -32,6 +32,19 @@ export const fetchHomeVideos = async () => {
     fetch(FETCH_DOCUMENTARIES).then(fetchCallback),
   ]);
 
+  const videos = {
+    'Netflix Originals': netflixOriginals.results ?? [],
+    'Trending Now': trendingNow.results ?? [],
+    'Top Rated': topRated.reaults ?? [],
+    'Action Movies': actionMovies.results ?? [],
+    Comedies: comedyMovies.results ?? [],
+    'Scary Movies': horrorMovies.results ?? [],
+    'Romance Movies': romanceMovies.results ?? [],
+    Documentaries: documentaries.results ?? [],
+  };
+
+  return videos;
+
   return {
     netflixOriginals: netflixOriginals.results,
     trendingNow: trendingNow.results,

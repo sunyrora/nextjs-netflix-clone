@@ -25,11 +25,11 @@
 
   .content-container {
     /* @apply w-auto px-content-default; */
-    @apply w-auto px-content-default 2xl:px-[60px];
+    @apply w-auto pl-content-default 2xl:px-[60px];
   }
 
   .content-body {
-    @apply flex flex-col justify-start items-center border-double border-red-800;
+    @apply flex flex-col justify-start items-start border-double border-red-800;
   }
 
   /* .content-banner-parent {
@@ -42,19 +42,30 @@
     @apply !important;
   }
 
+  .content-banner-overview {
+    text-shadow: 2px 2px 4px black;
+  }
+
   .content-banner-button-container {
-    @apply flex items-center justify-center w-fit bg-white rounded-md netflix-md:rounded-sm
-    px-[8%] 
-    xsm:netflix-md:px-[6%] mmd:px-[3.5%] lg:px-[5%]
-    py-0
-    xsm:py-[0.5%] netflix-md:py-[2.5%] mmd:py-[1.5%] lg:py-[1.8%];
+    @apply w-[30vw] msm:w-[33.5vw] sm:w-[32.5vw] mmd:w-[23vw] 2xl:w-[20vw]
+    py-[0.4%]
+    xsm:py-[0.8%] msm:py-[2%] mmd:py-[0.5%];
+  }
+
+  .content-banner-button-child {
+    @apply bg-white flex items-center justify-center w-fit rounded-md 
+    px-2 msm:px-[3%] 
+    py-[1px] msm:py-[3%] mmd:py-[2%] md:py-[2.5%]
+    max-w-full;
   }
 
   .content-banner-icon {
-    @apply w-[3.5vw] xsm:w-[3.9vw] netflix-md:w-[5vw] mmd:w-[3vw];
+    @apply py-0
+     w-[4vw] xsm:w-[3.9vw] netflix-md:w-[6vw] mmd:w-[3vw];
   }
 
   .content-banner-button {
-    @apply font-medium text-[1.5vw] xsm:text-[1.7vw] sm:text-[1.8vw] netflix-md:text-[2vw] mmd:text-[1.3vw] lg:text-[1vw];
+    @apply py-0
+    font-medium text-[1.5vw] xsm:text-[1.9vw] sm:text-[1.8vw] netflix-md:text-[2vw] mmd:text-[1.3vw];
   }
 }

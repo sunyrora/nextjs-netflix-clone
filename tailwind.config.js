@@ -22,11 +22,17 @@ module.exports = {
         'content-default': '4%',
       },
       screens: {
-        xsm: '600px',
+        xsm: '512px',
+        msm: '567px',
+        'netflix-sm': '640px',
         'netflix-md': '740px',
+        'original-md': '768px',
         mmd: '840px',
         xmd: '920px',
-        mlg: '940',
+        mlg: '950px',
+        'netflix-lg': '1024px',
+        xlg: '1280px',
+        'netflix-2xl': '1536px',
 
         // sm	640px	@media (min-width: 640px) { ... }
         // md	768px	@media (min-width: 768px) { ... }
