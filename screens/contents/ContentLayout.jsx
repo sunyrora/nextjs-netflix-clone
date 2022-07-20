@@ -1,6 +1,7 @@
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+import { list } from 'postcss';
 import Banner from '../../components/contents/Banner';
-import { TMDB_IMG_BASE_URL } from '../../utils/movieRequests';
-import Image from 'next/future/image';
+import Thumbnail from '../../components/contents/Thumbnail';
 
 const ContentLayout = ({ videos, bgIndex }) => {
   // console.log('videos:', videos);
@@ -10,49 +11,66 @@ const ContentLayout = ({ videos, bgIndex }) => {
   // console.log('ContentLayout: bgInfo: ', bgInfo);
 
   return (
-    <div className="content-container w-full flex flex-col justify-center ">
+    <div
+      className="content-container w-full flex flex-col justify-center
+      "
+    >
       {bgInfo && (
         // {/*  bannerIdx'th object in videoList */}
         <Banner video={bgInfo} />
       )}
-      <div className="content-body w-full overflow-x-hidden">
-        <div className="flex flex-col">
+      <div className="content-body w-full ">
+        <div className="flex flex-col max-w-[var(--pl-default)]">
           {[...videos].map((lists) => (
-            <div key={lists[0]} className="flex flex-col mb-1">
+            <div
+              key={lists[0]}
+              className="
+              flex flex-col mb-1"
+            >
               {/* {lists[0]} */}
               {lists[1].length > 0 && (
-                <div>
-                  <p className="text-[1.5vw]">{lists[0]}</p>
-                  <div
-                    className="flex justify-start items-center space-x-1 xm:space-x-3
-                  mt-1
-                   w-full max-w-full "
+                <div className="w-fit mb-[3%]">
+                  <h2
+                    className="z-[11] w-fit
+                      text-[2.5vw] netflix-md:text-[1.5vw] 
+                      font-medium text-[#e5e5e5]/70 
+                      cursor-pointer transition-all duration-50 hover:white hover:scale-y-110 hover:font-semibold"
                   >
-                    {lists[1].map(
-                      (video) =>
-                        video && (
-                          <div
-                            key={video.id}
-                            className="relative
-                             w-[29.5vw] netflix-md:w-[22.45vw] netflix-lg:w-[17.75vw]
-                             hover:scale-150 hover:z-10
-                             "
-                          >
-                            <Image
-                              src={`${TMDB_IMG_BASE_URL}/w500/${
-                                video?.backdrop_path ?? video?.poster_path
-                              }`}
-                              width={2000}
-                              height={1200}
-                            />
-                          </div>
-                        )
-                    )}
+                    {lists[0]}
+                  </h2>
+                  <div
+                    className="relative group h-fit
+                    content-thumb-arrows-container 
+                    
+                 "
+                  >
+                    <div
+                      className="absolute h-full
+                          flex justify-between items-center content-thumb-arrows-container"
+                    >
+                      <ChevronLeftIcon className="content-thumb-arrows" />
+                      <ChevronRightIcon className="content-thumb-arrows" />
+                    </div>
+
+                    <div className="z-[8] h-fit overflow-x-scroll overflow-y-visible">
+                      <div
+                        className="z-[9] w-fit flex justify-start items-center space-x-1 xm:space-x-3
+                      mt-1
+                    "
+                      >
+                        {lists[1].map((video) =>
+                          video ? (
+                            <Thumbnail key={video.id} video={video} />
+                          ) : null
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ))}
+          )
         </div>
       </div>
     </div>

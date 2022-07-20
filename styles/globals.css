@@ -29,7 +29,10 @@
   }
 
   .content-body {
-    @apply flex flex-col justify-start items-start border-double border-red-800;
+    --default-left-padding: calc(100vw * 0.04);
+    --pl-default: calc(100vw - var(--default-left-padding));
+    @apply flex flex-col
+      justify-start items-start border-double border-red-800;
   }
 
   /* .content-banner-parent {
@@ -67,5 +70,15 @@
   .content-banner-button {
     @apply py-0
     font-medium text-[1.5vw] xsm:text-[1.9vw] sm:text-[1.8vw] netflix-md:text-[2vw] mmd:text-[1.3vw];
+  }
+
+  .content-thumb-arrows-container {
+    width: var(--pl-default);
+    @apply px-[10px];
+  }
+
+  .content-thumb-arrows {
+    @apply h-[40%] z-[10]
+    cursor-pointer opacity-20 transition-all hover:scale-125 group-hover:opacity-100;
   }
 }
