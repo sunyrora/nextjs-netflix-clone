@@ -41,6 +41,14 @@ const menus = new MenuMap(
     {
       name: menu.name,
       path: `${process.env.contentsBasePath}/${menu.id}`,
+      // path: {
+      //   pathname: `${process.env.contentsBasePath}`,
+      //   // pathname: `${process.env.contentsBasePath}/${menu.id}`,
+      //   query: {
+      //     menuId: menu.id,
+      //   },
+      //   as: process.env.asPath,
+      // },
       selected: false,
     },
   ])

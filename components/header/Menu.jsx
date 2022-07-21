@@ -21,7 +21,16 @@ const MenuItems = ({ menus, type = 'dropdwon', className, cnHover }) => {
   const handleOnclick = (path, menuId) => {
     // console.log(`go to ${path}`);
     menus.setSelected(menuId);
+    console.log('click path: ', path);
     router.push(path ?? '/');
+    // router.push(
+    //   {
+    //     pathname: path?.pathname ?? '/',
+    //     query: { ...path?.query },
+    //   },
+    //   path?.as
+    // );
+    // router.push({pathname: path?.pathname ?? '/', query}, path?.as);
   };
 
   const Items = isDropDown ? (
