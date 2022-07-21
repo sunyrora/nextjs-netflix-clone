@@ -3,7 +3,7 @@ import imgBannerTitle from '../../public/images/banner-title.webp';
 
 const Banner = ({ video }) => {
   return (
-    <div className="flex relative w-full h-[44vw] min-h-[10vw]">
+    <div className="flex relative w-full h-[44vw] min-h-[10vw] z-[5]">
       <div
         className="absolute
           w-[68vw] md:w-[69.5vw] lg:w-[70vw] 
@@ -44,7 +44,8 @@ const Banner = ({ video }) => {
                 </svg>
                 <button
                   type="button"
-                  className="content-banner-button w-full text-black"
+                  onClick={() => console.log('play button click')}
+                  className="content-banner-button w-full text-black z-[100]"
                 >
                   Play
                 </button>

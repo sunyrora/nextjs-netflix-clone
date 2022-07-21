@@ -13,14 +13,15 @@ const ContentLayout = ({ videos, bgIndex }) => {
   return (
     <div
       className="content-container w-full flex flex-col justify-center
+      overflow-hidden z-0
       "
     >
       {bgInfo && (
         // {/*  bannerIdx'th object in videoList */}
         <Banner video={bgInfo} />
       )}
-      <div className="content-body w-full ">
-        <div className="flex flex-col max-w-[var(--pl-default)]">
+      <div className="content-body w-full  ">
+        <div className="relative flex flex-col max-w-[var(--pl-default)] ">
           {[...videos].map((lists) => (
             <div
               key={lists[0]}
@@ -52,8 +53,8 @@ const ContentLayout = ({ videos, bgIndex }) => {
                       <ChevronRightIcon className="content-thumb-arrows" />
                     </div>
 
-                    {/* <div className="overflow-x-scroll "> */}
-                    <div>
+                    <div className=" overflow-y-visible">
+                      {/* <div> */}
                       <div
                         className="w-fit flex justify-start items-center space-x-1 xm:space-x-3
                       mt-1
