@@ -29,7 +29,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
             >
               {/* {lists[0]} */}
               {lists[1].length > 0 && (
-                <div className="w-fit mb-[3%]">
+                <div className="w-fit h-auto mb-[3%]">
                   <h2
                     className="z-[11] w-fit
                       text-[2.5vw] netflix-md:text-[1.5vw] 
@@ -52,10 +52,12 @@ const ContentLayout = ({ videos, bgIndex }) => {
                       <ChevronRightIcon className="content-thumb-arrows" />
                     </div>
 
-                    <div className="z-[8] h-fit overflow-x-scroll overflow-y-visible">
+                    {/* <div className="overflow-x-scroll "> */}
+                    <div>
                       <div
-                        className="z-[9] w-fit flex justify-start items-center space-x-1 xm:space-x-3
+                        className="w-fit flex justify-start items-center space-x-1 xm:space-x-3
                       mt-1
+                      overflow-y-visible
                     "
                       >
                         {lists[1].map((video) =>
@@ -70,30 +72,9 @@ const ContentLayout = ({ videos, bgIndex }) => {
               )}
             </div>
           ))}
-          )
         </div>
       </div>
     </div>
   );
 };
-// const ContentLayout = ({ videos, bgIndex }) => {
-//   const firstList = Object.entries(videos)[0][1];
-//   // console.log(firstList);
-//   const bgInfo = firstList[bgIndex];
-//   // console.log('ContentLayout: bgInfo: ', bgInfo);
-
-//   return (
-//     <div className="content-container w-full pt-3 flex flex-col justify-center ">
-//       {bgInfo && (
-//         // {/*  bannerIdx'th object in videoList */}
-//         <Banner video={bgInfo} />
-//       )}
-//       <div className="content-body h-[500vh]">
-//         {firstList?.map((video) => (
-//           <div key={video.id}>{video.original_title}</div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
 export default ContentLayout;
