@@ -1,7 +1,6 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import { list } from 'postcss';
+// import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import Banner from '../../components/contents/Banner';
-import Thumbnail from '../../components/contents/Thumbnail';
+import ThumbnailList from '../../components/contents/ThumbnailList';
 
 const ContentLayout = ({ videos, bgIndex }) => {
   // console.log('videos:', videos);
@@ -30,7 +29,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
             >
               {/* {lists[0]} */}
               {lists[1].length > 0 && (
-                <div className="w-fit h-auto mb-[3%]">
+                <div className="w-fit  mb-[3%]">
                   <h2
                     className="z-[11] w-fit
                       text-[2.5vw] netflix-md:text-[1.5vw] 
@@ -39,10 +38,9 @@ const ContentLayout = ({ videos, bgIndex }) => {
                   >
                     {lists[0]}
                   </h2>
-                  <div
-                    className="relative group h-fit
-                    content-thumb-arrows-container 
-                    
+                  {/* <div
+                    className="relative group
+                    content-thumb-arrows-container
                  "
                   >
                     <div
@@ -51,24 +49,24 @@ const ContentLayout = ({ videos, bgIndex }) => {
                     >
                       <ChevronLeftIcon className="content-thumb-arrows" />
                       <ChevronRightIcon className="content-thumb-arrows" />
-                    </div>
-
-                    <div className=" overflow-y-visible">
-                      {/* <div> */}
-                      <div
-                        className="w-fit flex justify-start items-center space-x-1 xm:space-x-3
+                    </div> */}
+                  <ThumbnailList videoList={lists[1]} />
+                  {/* <div className="absolute  w-fit   content-thumb-rows"> */}
+                  {/* <div
+                      className="relative w-fit 
+                           flex justify-start items-center space-x-1 xm:space-x-3
                       mt-1
-                      overflow-y-visible
+                      
                     "
-                      >
-                        {lists[1].map((video) =>
-                          video ? (
-                            <Thumbnail key={video.id} video={video} />
-                          ) : null
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                    >
+                      {lists[1].map((video) =>
+                        video ? (
+                          <Thumbnail key={video.id} video={video} />
+                        ) : null
+                      )}
+                    </div> */}
+                  {/* </div> */}
+                  {/* </div> */}
                 </div>
               )}
             </div>

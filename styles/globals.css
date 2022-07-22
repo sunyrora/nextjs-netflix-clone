@@ -72,14 +72,30 @@
     font-medium text-[1.5vw] xsm:text-[1.9vw] sm:text-[1.8vw] netflix-md:text-[2vw] mmd:text-[1.3vw];
   }
 
-  .content-thumb-arrows-container {
+  .content-thumb-list-container {
     width: var(--pl-default);
     @apply px-[10px];
+  }
+  .content-thumb-arrows-container {
+    @apply w-full pl-[10px] pr-[40px];
   }
 
   .content-thumb-arrows {
     @apply h-[40%] z-[25]
     cursor-pointer opacity-20 transition-all hover:scale-125 group-hover:opacity-100;
+  }
+
+  .content-thumb-rows {
+    /* @apply overflow-x-scroll; */
+    /* IE and Edge */
+    /* -ms-overflos-style: none; */
+    /* Firefox */
+    /* scrollbar-width: none; */
+  }
+
+  /* Chrome, Safari, Opera */
+  .content-thumb-rows::-webkit-scrollbar {
+    /* display: none; */
   }
 
   .thumb-controller-button-outline-container {
