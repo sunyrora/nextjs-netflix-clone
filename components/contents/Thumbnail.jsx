@@ -39,25 +39,28 @@ const ThumbImage = ({ video = null }) => {
   );
 };
 
-export const Thumbnail = ({ video, ...props }) => {
-  const [hover, setHover] = useState(false);
-  const { setHover: setWrapperHover } = props;
-  return (
-    <div
-      className=" absoulte
-        w-[29.5vw] netflix-md:w-[22.45vw] netflix-lg:w-[17.75vw]
-        hover:cursor-pointer
-      "
-      onMouseEnter={() => {
-        setHover(true);
-        setWrapperHover(true);
-      }}
-      onMouseLeave={() => {
-        setHover(false);
-        setWrapperHover(false);
-      }}
-    >
-      <div className="relative">
+  export const Thumbnail = ({ video, ...props }) => {
+    const [hover, setHover] = useState(false);
+    const { setHover: setWrapperHover } = props;
+    return (
+      <div
+        className={classNames(
+          `relative ,
+          w-[29.5vw] netflix-md:w-[22.45vw] netflix-lg:w-[17.75vw]`,
+          `hover:cursor-pointer`,
+          `shadow-sm shadow-bggray-100/60`,
+          hover ? 'z-[25]' : 'z-[10]'
+        )}
+        onMouseOver={() => {
+          setHover(true);
+          setWrapperHover(true);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+          setWrapperHover(false);
+        }}
+      >
+        {/* <div className="relative"> */}
         <Transition
           appear={true}
           show={hover}
@@ -68,16 +71,16 @@ export const Thumbnail = ({ video, ...props }) => {
           leaveFrom="transform scale-150 opacity-100"
           leaveTo="transform scale-100 opacity-0"
           as="div"
-          className={classNames('absolute', hover ? 'z-[20]' : 'z-[15]')}
+          className={classNames(hover ? 'absolute z-[30]' : 'hidden')}
+          // className={classNames(
+          //   'absolute',
+          //   hover ? 'z-[23]' : 'z-[15]'
+          //   // `after:relative after:z-0 after:w-fit after:h-fit`
+          // )}
         >
-          <div className="flex flex-col  bg-bggray-100 shadow-sm shadow-black/80 ">
+          <div className="flex flex-col bg-bggray-100 shadow-sm shadow-black/80 ">
             <ThumbImage video={video} />
-            <div
-              className={classNames(
-                `flex flex-col space-y-3 mb-3`,
-                hover ? 'visible' : 'invisible'
-              )}
-            >
+            <div className={classNames(`flex flex-col space-y-3 mb-3`)}>
               <div className="flex px-3 mt-3 justify-between items-center flex-wrap ">
                 <div className="flex space-x-1 original-md:space-x-2">
                   <div className="thumb-controller-button-outline-container bg-white ">
@@ -181,8 +184,8 @@ export const Thumbnail = ({ video, ...props }) => {
                 </span>
                 <span
                   className="border text-[.2rem] scale-[.7] align-middle
-                 border-white/40 rounded-sm
-                  p-0 px-1 m-0"
+                   border-white/40 rounded-sm
+                    p-0 px-1 m-0"
                 >
                   HD
                 </span>
@@ -200,19 +203,18 @@ export const Thumbnail = ({ video, ...props }) => {
 
         <div
           className={classNames(
-            'bg-bggray-100',
             'relative',
-            // '-z-1 transition-all duration-100 ease-in-out',
+            // '-z-1 transition-all duration-100 ease-in-out'
             // `hover:scale-[1.7]`,
             // `transition-opacity`,
-            `z-[10]`
-            // hover ? 'invisible' : 'visible'
+            `-z-[10]`,
+            hover ? 'invisible' : 'visible'
           )}
         >
           <ThumbImage video={video} />
         </div>
+        {/* </div> */}
       </div>
-    </div>
-  );
-};
+    );
+  };
 export default Thumbnail;

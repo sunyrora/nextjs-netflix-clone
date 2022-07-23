@@ -20,7 +20,8 @@ const ContentLayout = ({ videos, bgIndex }) => {
         <Banner video={bgInfo} />
       )}
       <div className="content-body w-full  ">
-        <div className="relative flex flex-col max-w-[var(--pl-default)] ">
+        <div className="relative flex flex-col max-w-full ">
+          {/* <div className="relative flex flex-col max-w-[var(--max-w-default)] "> */}
           {[...videos].map((lists) => (
             <div
               key={lists[0]}
@@ -29,7 +30,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
             >
               {/* {lists[0]} */}
               {lists[1].length > 0 && (
-                <div className="w-fit  mb-[3%]">
+                <div className="w-full  mb-[3%]">
                   <h2
                     className="z-[11] w-fit
                       text-[2.5vw] netflix-md:text-[1.5vw] 
@@ -38,35 +39,8 @@ const ContentLayout = ({ videos, bgIndex }) => {
                   >
                     {lists[0]}
                   </h2>
-                  {/* <div
-                    className="relative group
-                    content-thumb-arrows-container
-                 "
-                  >
-                    <div
-                      className="absolute h-full
-                          flex justify-between items-center content-thumb-arrows-container"
-                    >
-                      <ChevronLeftIcon className="content-thumb-arrows" />
-                      <ChevronRightIcon className="content-thumb-arrows" />
-                    </div> */}
+
                   <ThumbnailList videoList={lists[1]} />
-                  {/* <div className="absolute  w-fit   content-thumb-rows"> */}
-                  {/* <div
-                      className="relative w-fit 
-                           flex justify-start items-center space-x-1 xm:space-x-3
-                      mt-1
-                      
-                    "
-                    >
-                      {lists[1].map((video) =>
-                        video ? (
-                          <Thumbnail key={video.id} video={video} />
-                        ) : null
-                      )}
-                    </div> */}
-                  {/* </div> */}
-                  {/* </div> */}
                 </div>
               )}
             </div>
