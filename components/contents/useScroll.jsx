@@ -1,16 +1,22 @@
 import { useCallback } from 'react';
 
 const useScrollX = () => {
+
+
   const scrollRight = useCallback((Component, offset) => {
     if (Component) {
-      Component.current.scrollLeft += offset;
+      const offsetX = offset ?? window.innerWidth;
+
+      Component.current.scrollLeft += offsetX;
       console.log('scrollRight: ', Component.current.scrollLeft);
     }
   }, []);
 
   const scrollLeft = useCallback((Component, offset) => {
     if (Component) {
-      Component.current.scrollLeft -= offset;
+      const offsetX = offset ?? window.innerWidth;
+
+      Component.current.scrollLeft -= offsetX;
       console.log('scrollLeft: ', Component.current.scrollLeft);
     }
   }, []);

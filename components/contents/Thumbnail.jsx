@@ -51,7 +51,8 @@ const ThumbImage = ({ video = null }) => {
           'h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netfilx-lg-thumbnail-h)]',
           `hover:cursor-pointer`,
           `shadow-sm shadow-bggray-100/60`,
-          hover ? 'z-[25]' : 'z-[10]'
+          hover ? 'z-[25]' : 'z-[10]',
+          'snap-start'
           // 'border-2 border-yellow-500'
         )}
         onMouseOver={() => {

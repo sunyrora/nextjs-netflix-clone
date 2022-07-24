@@ -10,14 +10,13 @@ const ThumbnailList = ({ videoList }) => {
   const thumbnailsRef = useRef(null);
   const [scrollRight, scrollLeft] = useScrollX();
 
-  const scrollOffset = 900;
   const thumbsTopOffset = 47.5;
 
   const handleLeftButton = (e) => {
     // console.log('Left button thumbnailsRef!: ', thumbnailsRef);
     // setPosLeft((prev) => Math.round(prev + 900));
 
-    if (scrollLeft) scrollLeft(thumbnailsRef, scrollOffset);
+    if (scrollLeft) scrollLeft(thumbnailsRef);
   };
 
   const handleRightButton = (e) => {
@@ -37,7 +36,7 @@ const ThumbnailList = ({ videoList }) => {
     // posLeft < 0 ? '-' : `right-[${posLeft < 0 ? posLeft * -1 : posLeft}px]`
 
     // setPosLeft(Math.round(posLeft - 90));
-    if (scrollRight) scrollRight(thumbnailsRef, scrollOffset);
+    if (scrollRight) scrollRight(thumbnailsRef);
   };
 
   return (
@@ -75,12 +74,13 @@ const ThumbnailList = ({ videoList }) => {
             'content-thumb-rows',
             // hover ? 'h-[100vh]' : '',
             // 'border-2 border-purple-900',
-            'h-[110vh]'
+            'h-[110vh]',
+            'snap-x'
           )}
         >
           <div
             className={classNames(
-              'relative w-full',
+              'relative w-fit flex space-x-1 xm:space-x-3',
               'transition-all duration-500 ease-in-out',
               'mt-1',
               `pl-[var(--default-left-padding)]`
@@ -90,18 +90,11 @@ const ThumbnailList = ({ videoList }) => {
               top: `${thumbsTopOffset - 0.4}vw`,
             }}
           >
-            <div
-              className={classNames(
-                `relative w-fit h-fit`,
-                `flex justify-start items-center space-x-1 xm:space-x-3`
-              )}
-            >
-              {videoList.map((video) =>
-                video ? (
-                  <Thumbnail key={video.id} video={video} setHover={setHover} />
-                ) : null
-              )}
-            </div>
+            {videoList.map((video) =>
+              video ? (
+                <Thumbnail key={video.id} video={video} setHover={setHover} />
+              ) : null
+            )}
           </div>
         </div>
       </div>
