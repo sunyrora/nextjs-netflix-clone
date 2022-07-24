@@ -2,6 +2,7 @@
 
 import Banner from '../../components/contents/Banner';
 import ThumbnailList from '../../components/contents/ThumbnailList';
+import { classNames } from '../../utils/utils';
 
 const ContentLayout = ({ videos, bgIndex }) => {
   // console.log('videos:', videos);
@@ -12,9 +13,11 @@ const ContentLayout = ({ videos, bgIndex }) => {
 
   return (
     <div
-      className="content-container w-full flex flex-col justify-center
-      overflow-hidden z-0
-      "
+      className={classNames(
+        'content-container w-full flex flex-col justify-center',
+        // 'overflow-hidden',
+        ' z-0'
+      )}
     >
       {bgInfo && (
         // {/*  bannerIdx'th object in videoList */}
@@ -32,7 +35,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
               {/* {lists[0]} */}
               {lists[1].length > 0 && (
                 <div
-                  className="w-full flex flex-col justify-center
+                  className=" relative w-full flex flex-col justify-center
                 mb-[2%] min-h-full"
                 >
                   <h2

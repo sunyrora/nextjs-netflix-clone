@@ -78,7 +78,7 @@
     @apply w-full h-fit cursor-pointer flex items-center;
   }
   .content-thumb-arrows-container {
-    @apply absolute inset-0 w-full
+    @apply absolute inset-0 w-[97vw] netflix-md:w-[98vw]
     h-full
     flex justify-between
      items-center
@@ -95,14 +95,14 @@
   .content-thumb-rows {
     /* @apply overflow-x-scroll; */
     /* IE and Edge */
-    /* -ms-overflos-style: none; */
+    -ms-overflos-style: none;
     /* Firefox */
-    /* scrollbar-width: none; */
+    scrollbar-width: none;
   }
 
   /* Chrome, Safari, Opera */
   .content-thumb-rows::-webkit-scrollbar {
-    /* display: none; */
+    display: none;
   }
 
   .thumb-controller-button-outline-container {
@@ -117,7 +117,7 @@
     --thumbnail-w: 29.5vw;
     --netflix-md-thumbnail-w: 22.45vw;
     --netfilx-lg-thumbnail-w: 17.75vw;
-    --h-ratio: 0.6;
+    --h-ratio: 0.58;
     --thumbnail-h: calc(var(--thumbnail-w) * var(--h-ratio));
     --netflix-md-thumbnail-h: calc(var(--netflix-md-thumbnail-w) * var(--h-ratio));
     --netfilx-lg-thumbnail-h: calc(var(--netfilx-lg-thumbnail-w) * var(--h-ratio));
