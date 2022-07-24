@@ -1,4 +1,5 @@
-// import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+/** @format */
+
 import Banner from '../../components/contents/Banner';
 import ThumbnailList from '../../components/contents/ThumbnailList';
 
@@ -19,8 +20,8 @@ const ContentLayout = ({ videos, bgIndex }) => {
         // {/*  bannerIdx'th object in videoList */}
         <Banner video={bgInfo} />
       )}
-      <div className="content-body w-full  ">
-        <div className="relative flex flex-col max-w-full ">
+      <div className="content-body w-full min-h-[vh] ">
+        <div className="relative flex flex-col w-full max-w-full min-h-full ">
           {/* <div className="relative flex flex-col max-w-[var(--max-w-default)] "> */}
           {[...videos].map((lists) => (
             <div
@@ -30,7 +31,10 @@ const ContentLayout = ({ videos, bgIndex }) => {
             >
               {/* {lists[0]} */}
               {lists[1].length > 0 && (
-                <div className="w-full  mb-[3%]">
+                <div
+                  className="w-full flex flex-col justify-center
+                mb-[2%] min-h-full"
+                >
                   <h2
                     className="z-[11] w-fit
                       text-[2.5vw] netflix-md:text-[1.5vw] 

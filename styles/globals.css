@@ -75,16 +75,18 @@
 
   .content-thumb-list-container {
     /* width: var(--max-w-default); */
-    @apply h-full w-full cursor-pointer flex items-center;
+    @apply w-full h-fit cursor-pointer flex items-center;
   }
   .content-thumb-arrows-container {
-    @apply absolute w-[100vw] h-[18vw] netflix-md:h-[13vw] netflix-lg:h-[10vw] px-0
-    flex justify-between items-center
+    @apply absolute inset-0 w-full
+    h-full
+    flex justify-between
+     items-center
     /* pl-[10px] pr-[40px]; */
   }
 
   .content-thumb-arrows {
-    @apply h-[40%] z-[25]
+    @apply h-[40%] z-[26]
     relative
     w-[var(--default-left-padding)] grow-0
     cursor-pointer opacity-20 transition-all hover:scale-125 group-hover:opacity-100;
@@ -109,5 +111,15 @@
 
   .thumb-controller-button {
     @apply w-[1.5vw] h-[1.5vw] original-md:w-[1vw] original-md:h-[1vw]  align-middle rounded-full;
+  }
+
+  .thumbnail-container {
+    --thumbnail-w: 29.5vw;
+    --netflix-md-thumbnail-w: 22.45vw;
+    --netfilx-lg-thumbnail-w: 17.75vw;
+    --h-ratio: 0.6;
+    --thumbnail-h: calc(var(--thumbnail-w) * var(--h-ratio));
+    --netflix-md-thumbnail-h: calc(var(--netflix-md-thumbnail-w) * var(--h-ratio));
+    --netfilx-lg-thumbnail-h: calc(var(--netfilx-lg-thumbnail-w) * var(--h-ratio));
   }
 }
