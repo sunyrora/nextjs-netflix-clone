@@ -25,7 +25,6 @@ const ContentLayout = ({ videos, bgIndex }) => {
       )}
       <div className="content-body w-full min-h-[vh] ">
         <div className="relative flex flex-col w-full max-w-full min-h-full ">
-          {/* <div className="relative flex flex-col max-w-[var(--max-w-default)] "> */}
           {[...videos].map((lists) => (
             <div
               key={lists[0]}

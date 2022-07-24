@@ -8,54 +8,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 const ThumbnailList = ({ videoList }) => {
   const [hover, setHover] = useState(false);
   const [posLeft, setPosLeft] = useState(0);
-  const [thumbListCN, setThumbListCN] = useState('');
   const thumbnailsRef = useRef(null);
+  const arrowsRef = useRef(null);
 
   const scrollOffset = 900;
-
-  const classNameSet = new Set([
-    `relative w-fit`,
-    `flex justify-start items-center space-x-1 xm:space-x-3`,
-    `mt-1`,
-    `transition-all duration-500 ease-in-out`,
-  ]);
-
-  const generateStyle = () => {
-    return classNames(
-      `relative w-fit`,
-      `flex justify-start items-center space-x-1 xm:space-x-3`,
-      `mt-1`,
-      `transition-all duration-500 ease-in-out`,
-      thumbListCN
-    );
-  };
-
-  // useEffect(() => {
-  //   if (thumbnailsRef) {
-  //     thumbnailsRef.current.scrollIntoView({ behabior: 'smooth' });
-  //     console.log(
-  //       'rect: ??? ',
-  //       thumbnailsRef?.current?.getBoundingClientRect()
-  //     );
-  //   }
-  // }, []);
-
-  useEffect(() => {
-    classNameSet.add(thumbListCN);
-  }, [thumbListCN]);
-
-  useEffect(() => {
-    // if (thumbnailsRef) {
-    //   thumbnailsRef.current.style.transform = `translateX(${posLeft}px)`;
-    //   // thumbnailsRef.current.style.zIndex = `10`;
-    // }
-    // setThumbListCN(
-    //   `${posLeft < 0 ? '-' : ''}left-[${
-    //     posLeft < 0 ? posLeft * -1 : posLeft
-    //   }px]`
-    // );
-    // classNameSet.delete(thumbListCN);
-  }, [posLeft]);
+  const thumbsTopOffset = 47.5;
 
   const handleLeftButton = (e) => {
     // console.log('Left button click!');
@@ -108,54 +65,76 @@ const ThumbnailList = ({ videoList }) => {
   };
 
   return (
-    <div
-      className="relative group content-thumb-list-container 
-     "
-    >
-      <div className="relative w-full">
-        <div className="content-thumb-arrows-container">
-          <ChevronLeftIcon
-            className="content-thumb-arrows"
-            onClick={handleLeftButton}
-          />
-          <ChevronRightIcon
-            className="content-thumb-arrows"
-            onClick={handleRightButton}
-          />
-        </div>
+    <div className="relative">
+      <div
+        ref={arrowsRef}
+        className={classNames(
+          'flex justify-between items-center',
+          'absolute inset-0 w-[97vw] netflix-md:w-[98vw]',
+          'h-full'
+        )}
+      >
+        <ChevronLeftIcon
+          className="content-thumb-arrows"
+          onClick={handleLeftButton}
+        />
+        <ChevronRightIcon
+          className="content-thumb-arrows"
+          onClick={handleRightButton}
+        />
+      </div>
 
+      <div
+        className={classNames('absolute group w-full h-full')}
+        style={{
+          top: `-${thumbsTopOffset}vw`,
+        }}
+      >
         <div
           ref={thumbnailsRef}
           className={classNames(
-            'transition-all duration-500 ease-in-out',
-            'mt-1',
+            'absolute',
             'w-full',
-            `pl-[var(--default-left-padding)]`,
             'overflow-auto overflow-overlay scroll-smooth',
-            'content-thumb-rows'
+            'content-thumb-rows',
+            // hover ? 'h-[100vh]' : '',
+            // 'border-2 border-purple-900',
+            'h-[110vh]'
           )}
-          // style={{
-          //   transform: `translateX(${posLeft}px) rotate(0.0rad)`,
-          //   position: 'relative',
-          // }}
         >
           <div
             className={classNames(
-              `relative w-fit h-fit`,
-              `flex justify-start items-center space-x-1 xm:space-x-3`
+              'relative w-full',
+              'transition-all duration-500 ease-in-out',
+              'mt-1',
+              `pl-[var(--default-left-padding)]`
+              // 'h-[100vh] border-2'
             )}
+            style={{
+              top: `${thumbsTopOffset - 0.4}vw`,
+            }}
           >
-            {videoList.map((video) =>
-              video ? (
-                <Thumbnail key={video.id} video={video} setHover={setHover} />
-              ) : null
-            )}
+            <div
+              className={classNames(
+                `relative w-fit h-fit`,
+                `flex justify-start items-center space-x-1 xm:space-x-3`
+              )}
+            >
+              {videoList.map((video) =>
+                video ? (
+                  <Thumbnail key={video.id} video={video} setHover={setHover} />
+                ) : null
+              )}
+            </div>
           </div>
         </div>
       </div>
+      <div className="relative h-fit">
+        <Thumbnail />
+      </div>
     </div>
   );
-};
+};;
 
 export default ThumbnailList;
 
