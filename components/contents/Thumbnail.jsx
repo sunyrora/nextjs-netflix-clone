@@ -47,8 +47,8 @@ const ThumbImage = ({ video = null }) => {
         className={classNames(
           `relative`,
           'thumbnail-container',
-          `w-[var(--thumbnail-w)] netflix-md:w-[var(--netflix-md-thumbnail-w)] netflix-lg:w-[var(--netfilx-lg-thumbnail-w)]`,
-          'h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netfilx-lg-thumbnail-h)]',
+          `w-[var(--thumbnail-w)] netflix-md:w-[var(--netflix-md-thumbnail-w)] netflix-lg:w-[var(--netfilx-lg-thumbnail-w)] netflix-xlg:w-[var(--xlg-thumbnail-w)] netflix-xl:w-[var(--netfilx-xl-thumbnail-w)]`,
+          'h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netfilx-lg-thumbnail-h)] netflix-xlg:h-[var(--xlg-thumbnail-h)] netflix-xl:h-[var(--netfilx-xl-thumbnail-h)]',
           `hover:cursor-pointer`,
           `shadow-sm shadow-bggray-100/60`,
           hover ? 'z-[25]' : 'z-[10]',

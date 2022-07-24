@@ -40,12 +40,14 @@ const ThumbnailList = ({ videoList }) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative mt-3 ">
       <div
         className={classNames(
           'group',
           'flex justify-between items-center',
-          'absolute inset-0 w-[97vw] netflix-md:w-[98vw]',
+          'absolute inset-0',
+          'w-full',
+          // 'w-[97vw] netflix-md:w-[99vw]',
           'h-full'
         )}
       >
@@ -70,7 +72,7 @@ const ThumbnailList = ({ videoList }) => {
           className={classNames(
             'absolute',
             'w-full',
-            'overflow-auto scroll-smooth',
+            'overflow-auto scroll-smooth scroll-pl-[var(--default-left-padding)]',
             'content-thumb-rows',
             // hover ? 'h-[100vh]' : '',
             // 'border-2 border-purple-900',
