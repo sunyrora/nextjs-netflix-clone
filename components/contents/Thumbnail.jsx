@@ -191,6 +191,12 @@ const ThumbImage = ({ video = null }) => {
                 </div>
               </div>
 
+              <div>
+                <span className="px-3 align-middle">
+                  {video.title ?? video.original_title ?? video.name}
+                </span>
+              </div>
+
               <div className="px-3 flex justify-start items-center text-[.65rem] align-middle space-x-1">
                 <span className="align-middle text-[#46d369] font-bold">
                   New

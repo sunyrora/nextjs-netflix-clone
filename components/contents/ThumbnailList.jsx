@@ -1,35 +1,23 @@
-/** @format */
-
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../utils/utils';
 import Thumbnail from './Thumbnail';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+import useScrollX from './useScroll';
 
 const ThumbnailList = ({ videoList }) => {
   const [hover, setHover] = useState(false);
-  const [posLeft, setPosLeft] = useState(0);
+  // const [posLeft, setPosLeft] = useState(0);
   const thumbnailsRef = useRef(null);
-  const arrowsRef = useRef(null);
+  const [scrollRight, scrollLeft] = useScrollX();
 
   const scrollOffset = 900;
   const thumbsTopOffset = 47.5;
 
   const handleLeftButton = (e) => {
-    // console.log('Left button click!');
-    setPosLeft((prev) => Math.round(prev + 900));
+    // console.log('Left button thumbnailsRef!: ', thumbnailsRef);
+    // setPosLeft((prev) => Math.round(prev + 900));
 
-    if (thumbnailsRef) {
-      console.log(
-        'thumbnailsRef.current.scrollLeft: ',
-        thumbnailsRef.current.scrollLeft
-      );
-      thumbnailsRef.current.scrollLeft =
-        thumbnailsRef.current.scrollLeft - scrollOffset;
-      console.log(
-        'after thumbnailsRef.current.scrollLeft: ',
-        thumbnailsRef.current.scrollLeft
-      );
-    }
+    if (scrollLeft) scrollLeft(thumbnailsRef, scrollOffset);
   };
 
   const handleRightButton = (e) => {
@@ -39,7 +27,7 @@ const ThumbnailList = ({ videoList }) => {
     // console.log('right: ??? ', thumbnailsRef?.current?.offsetRight)
     // console.log('bottom: ??? ', thumbnailsRef?.current?.offsetBottom)
     // console.log('rect: ??? ', thumbnailsRef?.current?.getBoundingClientRect());
-    console.log('thumbnailsRef?.current ', thumbnailsRef?.current);
+    // console.log('thumbnailsRef?.current ', thumbnailsRef?.current);
     // console.log('current styles ', thumbnailsRef?.current?.style);
     // console.log('getComputedStyle ', getComputedStyle(thumbnailsRef?.current));
     // const rect = thumbnailsRef?.current?.getBoundingClientRect();
@@ -48,27 +36,15 @@ const ThumbnailList = ({ videoList }) => {
 
     // posLeft < 0 ? '-' : `right-[${posLeft < 0 ? posLeft * -1 : posLeft}px]`
 
-    setPosLeft(Math.round(posLeft - 90));
-
-    if (thumbnailsRef) {
-      console.log(
-        'thumbnailsRef.current.scrollLeft: ',
-        thumbnailsRef.current.scrollLeft
-      );
-      thumbnailsRef.current.scrollLeft =
-        thumbnailsRef.current.scrollLeft + scrollOffset;
-      console.log(
-        'after thumbnailsRef.current.scrollLeft: ',
-        thumbnailsRef.current.scrollLeft
-      );
-    }
+    // setPosLeft(Math.round(posLeft - 90));
+    if (scrollRight) scrollRight(thumbnailsRef, scrollOffset);
   };
 
   return (
     <div className="relative">
       <div
-        ref={arrowsRef}
         className={classNames(
+          'group',
           'flex justify-between items-center',
           'absolute inset-0 w-[97vw] netflix-md:w-[98vw]',
           'h-full'
@@ -85,7 +61,7 @@ const ThumbnailList = ({ videoList }) => {
       </div>
 
       <div
-        className={classNames('absolute group w-full h-full')}
+        className={classNames('absolute w-full h-full')}
         style={{
           top: `-${thumbsTopOffset}vw`,
         }}
@@ -95,7 +71,7 @@ const ThumbnailList = ({ videoList }) => {
           className={classNames(
             'absolute',
             'w-full',
-            'overflow-auto overflow-overlay scroll-smooth',
+            'overflow-auto scroll-smooth',
             'content-thumb-rows',
             // hover ? 'h-[100vh]' : '',
             // 'border-2 border-purple-900',
@@ -137,4 +113,3 @@ const ThumbnailList = ({ videoList }) => {
 };;
 
 export default ThumbnailList;
-
