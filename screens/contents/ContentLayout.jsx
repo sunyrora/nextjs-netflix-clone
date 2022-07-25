@@ -1,5 +1,3 @@
-/** @format */
-
 import Banner from '../../components/contents/Banner';
 import ThumbnailList from '../../components/contents/ThumbnailList';
 import { classNames } from '../../utils/utils';
@@ -24,7 +22,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
         <Banner video={bgInfo} />
       )}
       <div className="content-body w-full min-h-[vh] ">
-        <div className="relative flex flex-col w-full max-w-full min-h-full ">
+        <div className="relative flex flex-col w-full max-w-full min-h-full">
           {[...videos].map((lists) => (
             <div
               key={lists[0]}
@@ -38,7 +36,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
                 mb-[2%] min-h-full"
                 >
                   <h2
-                    className="z-[11] w-fit
+                    className="z-[11] w-fit ml-[var(--default-left-padding)]
                       text-[2.5vw] netflix-md:text-[1.5vw] 
                       font-medium text-[#e5e5e5]/70 
                       cursor-pointer transition-all duration-50 hover:white hover:scale-y-110 hover:font-semibold"

@@ -24,7 +24,7 @@ const ThumbnailList = ({ videoList }) => {
   };
 
   return (
-    <div className="relative mt-3 ">
+    <div className="relative">
       <div
         className={classNames(
           'group',
