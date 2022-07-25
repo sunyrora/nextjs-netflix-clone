@@ -36,3 +36,6 @@ yarn-error.log*
 .vercel
 
 test/*
+launch.json
+*lock.json
+settings.json
