@@ -1,27 +1,34 @@
-import { useCallback } from 'react';
+import { createRef, useCallback, useRef, useState } from 'react';
 
 const useScrollX = () => {
+  const refComponent = useRef();
 
-
-  const scrollRight = useCallback((Component, offset) => {
-    if (Component) {
-      const offsetX = offset ?? window.innerWidth;
-
-      Component.current.scrollLeft += offsetX;
-      console.log('scrollRight: ', Component.current.scrollLeft);
+  const ref = useCallback((node) => {
+    if (node) {
+      refComponent.current = node;
     }
   }, []);
 
-  const scrollLeft = useCallback((Component, offset) => {
-    if (Component) {
-      const offsetX = offset ?? window.innerWidth;
+  const scrollX = useCallback(
+    (params = { to: 'right', offset: null, ref: null }) => {
+      console.log('scrollRight: ref ', ref);
 
-      Component.current.scrollLeft -= offsetX;
-      console.log('scrollLeft: ', Component.current.scrollLeft);
-    }
-  }, []);
+      const { to, offset, ref } = params;
 
-  return [scrollRight, scrollLeft];
+      const tartgetRef = ref ?? refComponent;
+
+      if (tartgetRef) {
+        const offsetX = offset ?? window.innerWidth;
+        if (to === 'left') offsetX = -offsetX;
+
+        tartgetRef.current.scrollLeft += offsetX;
+        console.log('scrollRight: ', tartgetRef.current.scrollLeft);
+      }
+    },
+    []
+  );
+
+  return [ref, scrollX];
 };
 
 export default useScrollX;
