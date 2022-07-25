@@ -31,7 +31,7 @@
 
   .content-body {
     --default-left-padding: calc(100vw * 0.04);
-    --max-w-default: calc(100vw - var(--default-left-padding));
+    --max-w-default: calc(100vw - var(--default-left-padding) - var(--scrollbar-width));
     @apply flex flex-col
       justify-start items-start;
   }
@@ -92,6 +92,24 @@
   }
 
   .thumbnail-container {
+
+    --viewport-w: calc(100vw - (var(--default-left-padding) * 2) - var(--scrollbar-width));
+    --thumb-count: 3;
+    --netflix-md-thumb-count : 4;
+    --netflix-lg-thumb-count: 5;
+    --netfli-xl-thumb-count: 6;
+
+    --thumbnail-w: calc(var(--viewport-w) / 3);
+    --netflix-md-thumbnail-w: calc(var(--viewport-w) / 4);
+    --netflix-lg-thumbnail-w: calc(var(--viewport-w) / 5);
+    --netflix-xl-thumbnail-w: calc(var(--viewport-w) / 6);
+    --h-ratio: 0.57;
+    --thumbnail-h: calc(var(--thumbnail-w) * var(--h-ratio));
+    --netflix-md-thumbnail-h: calc(var(--netflix-md-thumbnail-w) * var(--h-ratio));
+    --netflix-lg-thumbnail-h: calc(var(--netflix-lg-thumbnail-w) * var(--h-ratio));
+    --netflix-xl-thumbnail-h: calc(var(--netflix-xl-thumbnail-w) * var(--h-ratio));
+  }
+  /* .thumbnail-container {
     --thumbnail-w: 30vw;
     --netflix-md-thumbnail-w: 22.5vw;
     --netfilx-lg-thumbnail-w: 18vw;
@@ -103,5 +121,5 @@
     --netfilx-lg-thumbnail-h: calc(var(--netfilx-lg-thumbnail-w) * var(--h-ratio));
     --xlg-thumbnail-h: calc(var(--xlg-thumbnail-w) * var(--h-ratio));
     --netfilx-xl-thumbnail-h: calc(var(--netfilx-xl-thumbnail-w) * var(--h-ratio));
-  }
+  } */
 }

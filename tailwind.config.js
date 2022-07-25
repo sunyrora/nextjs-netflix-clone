@@ -32,6 +32,7 @@ module.exports = {
         mlg: '950px',
         'netflix-lg': '1024px',
         xlg: '1280px',
+        'netflix-xl': '1400px',
         'netflix-2xl': '1536px',
 
         // sm	640px	@media (min-width: 640px) { ... }

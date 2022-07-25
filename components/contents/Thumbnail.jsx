@@ -45,16 +45,27 @@ const ThumbImage = ({ video = null }) => {
     return (
       <div
         className={classNames(
-          `relative`,
+          `relative pr-1.5`,
           'thumbnail-container',
-          `w-[var(--thumbnail-w)] netflix-md:w-[var(--netflix-md-thumbnail-w)] netflix-lg:w-[var(--netfilx-lg-thumbnail-w)] netflix-xlg:w-[var(--xlg-thumbnail-w)] netflix-xl:w-[var(--netfilx-xl-thumbnail-w)]`,
-          'h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netfilx-lg-thumbnail-h)] netflix-xlg:h-[var(--xlg-thumbnail-h)] netflix-xl:h-[var(--netfilx-xl-thumbnail-h)]',
+          `w-[var(--thumbnail-w)] netflix-md:w-[var(--netflix-md-thumbnail-w)] netflix-lg:w-[var(--netflix-lg-thumbnail-w)] netflix-xl:w-[var(--netflix-xl-thumbnail-w)]`,
+          'h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netflix-lg-thumbnail-h)] netflix-xl:h-[var(--netflix-xl-thumbnail-h)]',
           `hover:cursor-pointer`,
           // `shadow-sm shadow-bggray-100/60`,
           // 'border-2 border-orange-300',
           hover ? 'z-[27]' : 'z-[10]',
           'snap-start'
         )}
+        // className={classNames(
+        //   `relative`,
+        //   'thumbnail-container',
+        //   `w-[var(--thumbnail-w)] netflix-md:w-[var(--netflix-md-thumbnail-w)] netflix-lg:w-[var(--netflix-lg-thumbnail-w)] netflix-xlg:w-[var(--xlg-thumbnail-w)] netflix-xl:w-[var(--netflix-xl-thumbnail-w)]`,
+        //   'h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netflix-lg-thumbnail-h)] netflix-xlg:h-[var(--xlg-thumbnail-h)] netflix-xl:h-[var(--netflix-xl-thumbnail-h)]',
+        //   `hover:cursor-pointer`,
+        //   // `shadow-sm shadow-bggray-100/60`,
+        //   // 'border-2 border-orange-300',
+        //   hover ? 'z-[27]' : 'z-[10]',
+        //   'snap-start'
+        // )}
         onMouseOver={() => {
           setHover(true);
           setWrapperHover && setWrapperHover(true);
@@ -83,7 +94,7 @@ const ThumbImage = ({ video = null }) => {
           // )}
         > */}
         {video ? (
-          <>
+          <div className="relative w-full">
             <div
               className={classNames(
                 'absolute flex flex-col',
@@ -236,11 +247,11 @@ const ThumbImage = ({ video = null }) => {
               )}
               // style={{ backgroundPosition: '10px 10px' }}
             ></div>
-          </>
+          </div>
         ) : (
           <div
             className={classNames(
-              'relative w-full h-full -z-[1]'
+              'relative w-full h-full pr-2 -z-[1]'
               // 'border-2 h-full'
             )}
             // style={{ backgroundPosition: '10px 10px' }}

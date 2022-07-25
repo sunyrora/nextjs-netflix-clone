@@ -8,8 +8,7 @@ const ThumbnailList = ({ videoList }) => {
   const [hover, setHover] = useState(false);
   const [thumbnailsRef, scrollX] = useScrollX();
 
-  const thumbsTopOffset = 40;
-
+  const thumbsTopOffset = 14;
 
   const handleLeftButton = (e) => {
     // console.log('Left button thumbnailsRef!: ', thumbnailsRef);
@@ -28,22 +27,26 @@ const ThumbnailList = ({ videoList }) => {
       <div
         className={classNames(
           'group',
-          'flex justify-between items-center',
+          'flex items-center',
           'absolute top-[0.2rem]',
           'w-full',
-          // 'w-[97vw] netflix-md:w-[99vw]',
           'h-full'
           // 'border-2 border-pink-600'
         )}
       >
-        <ChevronLeftIcon
-          className="content-thumb-arrows"
-          onClick={handleLeftButton}
-        />
-        <ChevronRightIcon
-          className="content-thumb-arrows"
-          onClick={handleRightButton}
-        />
+        <div className="grow-0 w-fit h-full mr-1.5 flex items-center bg-bggray-100/60 transition-all duration-300 group-hover:bg-bggray-100/95 z-[26]">
+          <ChevronLeftIcon
+            className="content-thumb-arrows"
+            onClick={handleLeftButton}
+          />
+        </div>
+        <div className="grow"></div>
+        <div className="grow-0 w-fit h-full ml-1.5 flex items-center bg-bggray-100/60 group-hover:bg-bggray-100/95 z-[26]">
+          <ChevronRightIcon
+            className="content-thumb-arrows"
+            onClick={handleRightButton}
+          />
+        </div>
       </div>
 
       <div
@@ -60,7 +63,8 @@ const ThumbnailList = ({ videoList }) => {
           className={classNames(
             'absolute',
             'w-full',
-            'overflow-auto scroll-smooth scroll-px-[var(--default-left-padding)]',
+            'overflow-auto scroll-smooth',
+            'scroll-px-[var(--default-left-padding)]',
             'content-thumb-rows',
             // hover ? 'h-[100vh]' : '',
             // 'border-2 border-purple-900',
@@ -74,7 +78,7 @@ const ThumbnailList = ({ videoList }) => {
         >
           <div
             className={classNames(
-              'relative w-fit flex space-x-1 xm:space-x-3',
+              'relative w-fit flex xm:space-x-3',
               'transition-all duration-500 ease-in-out',
               'mt-1',
               `pl-[var(--default-left-padding)]`
@@ -91,11 +95,13 @@ const ThumbnailList = ({ videoList }) => {
               <div className="fixed grow-0 z-[26] w-[var(--default-left-padding)] bg-bggray-100/90"></div>
             </div> */}
 
+            <div className="relative -z-20 w-[var(--default-left-padding)]"></div>
             {videoList.map((video) =>
               video ? (
                 <Thumbnail key={video.id} video={video} setHover={setHover} />
               ) : null
             )}
+            <div className="relative -z-20 w-[var(--default-left-padding)]"></div>
           </div>
         </div>
       </div>
