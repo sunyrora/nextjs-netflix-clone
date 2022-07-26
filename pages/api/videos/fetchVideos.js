@@ -12,15 +12,29 @@ export const fetchVideo = async (url) => {
 
 export const fetchVideos = async (urls) => {
   try {
+    const { media_type } = urls;
     const fetchRes = await Promise.all(
-      Object.values(urls).map((url) => fetch(url).then(fetchCallback))
+      Object.values(urls.urls).map((url) => fetch(url).then(fetchCallback))
     );
+
+    const withMediaType = fetchRes.map((res) => {
+      const newResults = res.results.map((video) => {
+        if (!video.media_type) video.media_type = media_type;
+
+        return video;
+      });
+
+      return { ...res, results: [...newResults] };
+    });
 
     // console.log('fetchRes: ', fetchRes);
 
-    const keys = Object.keys(urls);
+    const keys = Object.keys(urls.urls);
     const videos = keys.reduce(
-      (acc, key, index) => ({ ...acc, [key]: fetchRes[index].results ?? [] }),
+      (acc, key, index) => ({
+        ...acc,
+        [key]: withMediaType[index].results ?? [],
+      }),
       {}
     );
 
