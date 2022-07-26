@@ -59,7 +59,7 @@
   }
 
   .content-banner-button {
-    @apply py-0
+    @apply py-0 z-[30]
     font-medium text-[1.5vw] xsm:text-[1.9vw] sm:text-[1.8vw] netflix-md:text-[2vw] mmd:text-[1.3vw];
   }
 

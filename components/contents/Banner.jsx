@@ -45,7 +45,7 @@ const Banner = ({ video }) => {
                 <button
                   type="button"
                   onClick={() => console.log('play button click')}
-                  className="content-banner-button w-full text-black z-[100]"
+                  className="content-banner-button w-full text-black"
                 >
                   Play
                 </button>
