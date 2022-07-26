@@ -1,4 +1,10 @@
-import { fetchUrlsHome, fetchUrlTVShows } from '../../utils/movieRequests';
+import {
+  fetchUrlMovies,
+  fetchUrlMyList,
+  fetchUrlNewPopoular,
+  fetchUrlsHome,
+  fetchUrlTVShows,
+} from '../../utils/movieRequests';
 
 const menusInfos = [
   {
@@ -16,14 +22,17 @@ const menusInfos = [
   {
     id: 'movies',
     name: 'Movies',
+    fetchUrls: fetchUrlMovies,
   },
   {
     id: 'newpopular',
     name: 'New & Popular',
+    fetchUrls: fetchUrlNewPopoular,
   },
   {
     id: 'mylist',
     name: 'My List',
+    fetchUrls: fetchUrlMyList,
   },
 ];
 

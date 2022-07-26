@@ -4,7 +4,7 @@ import { YOUTUBE_VIDEO_WATCH_URL } from '../../utils/movieRequests';
 
 const Player = ({ videos }) => {
   console.log('Player: videos: ', videos);
-  const [teaser, setTeaser] = useState();
+  const [trailer, setTrailer] = useState();
   const [playUrl, setPlayUrl] = useState('');
 
   const [setElementId, setHotKey] = useFullScreen();
@@ -15,12 +15,12 @@ const Player = ({ videos }) => {
   }, []);
 
   useEffect(() => {
-    setTeaser(videos.find((video) => video.type === 'Teaser'));
+    setTrailer(videos.find((video) => video.type === 'Trailer'));
   }, [videos]);
 
   useEffect(() => {
-    setPlayUrl(`${YOUTUBE_VIDEO_WATCH_URL}${teaser?.key}?&autoplay=1`);
-  }, [teaser]);
+    setPlayUrl(`${YOUTUBE_VIDEO_WATCH_URL}${trailer?.key}?&autoplay=1`);
+  }, [trailer]);
 
   return (
     <div className="w-full h-[100vh] flex flex-col justify-center items-center">

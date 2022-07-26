@@ -7,6 +7,8 @@ import menus from '../../components/header/menus';
 import { fetchVideos } from '../api/videos/fetchVideos';
 
 const ContentIndexPage = ({ videos, bgIndex }) => {
+  if (!videos || Object.keys(videos).length <= 0) return <div>No data</div>;
+
   const router = useRouter();
   const { path } = router.query;
   // console.log('ContentPage:: path: ', path);
@@ -57,6 +59,15 @@ export const getServerSideProps = async ({ query }) => {
    * ...
    * }
    } */
+  if (!fetchRes || Object.values(fetchRes).length <= 0) {
+    return {
+      props: {
+        bgImg,
+        videos: {},
+      },
+    };
+  }
+
   // console.log('contents server side: fetchRes: ', fetchRes);
 
   const [firstSection] = Object.values(fetchRes);
@@ -81,5 +92,5 @@ export const getServerSideProps = async ({ query }) => {
       videos: fetchRes,
     },
   };
-};;;
+};
 

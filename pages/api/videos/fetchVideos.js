@@ -13,10 +13,12 @@ export const fetchVideo = async (url) => {
 export const fetchVideos = async (urls) => {
   try {
     const { media_type } = urls;
+
+    if (!urls.urls || Object.keys(urls.urls).length <= 0) return {};
+
     const fetchRes = await Promise.all(
       Object.values(urls.urls).map((url) => fetch(url).then(fetchCallback))
     );
-
     const withMediaType = fetchRes.map((res) => {
       const newResults = res.results.map((video) => {
         if (!video.media_type) video.media_type = media_type;
