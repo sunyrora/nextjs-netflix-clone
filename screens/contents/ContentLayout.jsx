@@ -1,8 +1,17 @@
+import { useRouter } from 'next/router';
 import Banner from '../../components/contents/Banner';
 import ThumbnailList from '../../components/contents/ThumbnailList';
 import { classNames } from '../../utils/utils';
 
 const ContentLayout = ({ videos, bgIndex }) => {
+  const router = useRouter();
+  const { path: menuId } = router.query;
+  console.log('ContentLayout:: menuId: ', menuId);
+
+  if (!videos || videos.size <= 0) {
+    return <div>No data</div>;
+  }
+
   // console.log('videos:', videos);
   const [firstList] = videos.values();
   // console.log(firstList);
@@ -13,7 +22,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
     <div
       className={classNames(
         'content-container w-full flex flex-col justify-center',
-        // 'overflow-hidden',
+        'overflow-hidden',
         ' z-0'
       )}
     >

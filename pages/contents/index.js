@@ -1,17 +1,16 @@
 import { TMDB_IMG_BASE_URL } from '../../utils/movieRequests';
 import { randomNumber } from '../../utils/utils';
-import { fetchHomeVideos } from '../api/vodeos/fetchVideos';
 
 import { useRouter } from 'next/router';
 import ContentLayout from '../../screens/contents/ContentLayout';
 import menus from '../../components/header/menus';
+import { fetchVideos } from '../api/videos/fetchVideos';
 
 const ContentIndexPage = ({ videos, bgIndex }) => {
   const router = useRouter();
   const { path } = router.query;
+  // console.log('ContentPage:: path: ', path);
 
-  // const { menuId } = props;
-  // console.log('ContentPage:: menuId: ', menuId);
   console.log('ContentPage:: router.query: ', router.query);
   // console.log('ContentPage:: props: ', props);
 
@@ -19,6 +18,7 @@ const ContentIndexPage = ({ videos, bgIndex }) => {
   return <ContentLayout videos={videosMap} bgIndex={bgIndex} />;
 };
 
+if (process.env.NODE_ENV !== 'development') ContentIndexPage.auth = true;
 export default ContentIndexPage;
 
 export const getServerSideProps = async ({ query }) => {
@@ -27,13 +27,7 @@ export const getServerSideProps = async ({ query }) => {
 
   const { path } = query;
 
-  // console.log('contents query menuId : ', path);
-
-  // const { menuId } = params;
-  // const title = menuId;
-
   let menuId = Array.isArray(path) ? path[0] : path;
-  // const menuId = path;
 
   if (!menuId) {
     const [firstMenu] = menus.keys();
@@ -55,19 +49,21 @@ export const getServerSideProps = async ({ query }) => {
   let fallbackImg = `/images/bg-home-${randomNum}.webp`;
   let bgImg = fallbackImg;
 
-  const fetchRes = await fetchHomeVideos();
+  // console.log('pageInfo: ', pageInfo);
+  const fetchRes = await fetchVideos(pageInfo.fetchUrls);
+  /** fetchRes = {
+   * 'Netflix Originals': [{}, {}...], 
+   * 'Romance Movies': [{}, {}..],
+   * ...
+   * }
+   } */
+  // console.log('contents server side: fetchRes: ', fetchRes);
 
-  const videoMap = new Map(Object.entries(fetchRes));
-  // console.log('videoMap: ', videoMap);
-
-  // console.log('fetchRes: ', fetchRes);
-
-  // const { netflixOriginals } = fetchRes;
-  const netflixOriginals = videoMap.get('Netflix Originals');
-
-  if (netflixOriginals) {
-    randomNum = randomNumber(0, netflixOriginals?.length);
-    const pickedMovie = netflixOriginals[randomNum];
+  const [firstSection] = Object.values(fetchRes);
+  // console.log('################ firstSection: ', firstSection);
+  if (firstSection) {
+    randomNum = randomNumber(0, firstSection?.length);
+    const pickedMovie = firstSection[randomNum];
     bgImg = `${TMDB_IMG_BASE_URL}/original${
       pickedMovie?.backdrop_path ?? pickedMovie?.poster_path
     }`;
@@ -80,10 +76,10 @@ export const getServerSideProps = async ({ query }) => {
   return {
     props: {
       title,
-      // menuId,
       bgImg,
       bgIndex: randomNum,
       videos: fetchRes,
     },
   };
-};
+};;;
+
