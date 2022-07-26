@@ -13,7 +13,7 @@ const Layout = ({ title, bgImg, children }) => {
     const scrollbarWidth =
       window.innerWidth - document.documentElement.clientWidth;
 
-    console.log('----Layout: scrollbarWidth: ', scrollbarWidth);
+    // console.log('----Layout: scrollbarWidth: ', scrollbarWidth);
     document.documentElement.style.setProperty(
       '--scrollbar-width',
       `${scrollbarWidth}px`

@@ -38,7 +38,7 @@ const HeaderLogined = () => {
         }
       };
 
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('scroll', handleScroll, true);
     };
 
     if (session) addScrollEvent();
@@ -92,7 +92,11 @@ const HeaderLogined = () => {
           <p className="hidden md:flex">Kids</p>
           <BellIcon className="h-6" />
           <button className="flex items-center" onClick={handleSignOut}>
-            <Image src={profileIcon} className="h-4 rounded-md" />
+            <Image
+              src={profileIcon}
+              priority={true}
+              className="h-4 rounded-md"
+            />
           </button>
         </div>
       </div>

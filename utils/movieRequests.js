@@ -2,7 +2,8 @@ import menus from '../components/header/menus';
 
 export const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 export const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-export const TMDB_IMG_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+export const TMDB_IMG_BASE_URL = 'https://image.tmdb.org/t/p/';
+export const TMDB_THUMB_IMG_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 export const YOUTUBE_VIDEO_WATCH_URL = 'https://www.youtube.com/embed/';
 
 export const fetchUrlsHome = {

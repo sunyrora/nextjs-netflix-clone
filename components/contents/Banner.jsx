@@ -18,7 +18,7 @@ const Banner = ({ video }) => {
         >
           <div className="w-full mb-[6px] sm:my-[10px] lg:my-[20px]">
             <div className="relative w-full h-fit mb-3">
-              <Image src={imgBannerTitle} className="" />
+              <Image src={imgBannerTitle} priority={true} className="" />
             </div>
             <div className="transition-all sm:flex my-0 sm:my-2 lg:my-[18px] netflix-md:mb-0 text-[1.15vw]">
               <p className=" p-0 line-clamp-5 sm:line-clamp-3 leading-tight content-banner-overview">
