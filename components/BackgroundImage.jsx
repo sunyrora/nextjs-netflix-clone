@@ -31,9 +31,9 @@ const BackgroundImage = ({ bgImg = null }) => {
     setImgSrc(bgImg ?? imgFallback);
   }, [bgImg]);
 
-  useEffect(() => {
-    console.log('imgWidth, imgHeight: ', imgWidth, imgHeight);
-  }, [imgWidth]);
+  // useEffect(() => {
+  //   console.log('imgWidth, imgHeight: ', imgWidth, imgHeight);
+  // }, [imgWidth]);
 
   useEffect(() => {
     console.log('imgSrc changed: ', imgSrc);

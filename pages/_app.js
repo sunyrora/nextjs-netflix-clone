@@ -6,9 +6,18 @@ import { useEffect } from 'react';
 
 function MyApp({
   Component,
-  pageProps: { session, title, bgImg, redirect, ...pageProps },
+  pageProps: {
+    session,
+    title,
+    bgImg,
+    redirect,
+    showHeader = true,
+    ...pageProps
+  },
 }) {
   const router = useRouter();
+
+  console.log('showHeader: ', showHeader);
 
   useEffect(() => {
     if (redirect) {
@@ -16,20 +25,24 @@ function MyApp({
     }
   }, [router]);
 
+  const PrintComponent = showHeader
+    ? () => (
+        <Layout title={title} bgImg={bgImg}>
+          <Component {...pageProps} />
+        </Layout>
+      )
+    : () => <Component {...pageProps} />;
+
   return redirect ? (
     <></>
   ) : (
     <SessionProvider session={session}>
       {Component.auth ? (
         <Auth>
-          <Layout title={title} bgImg={bgImg}>
-            <Component {...pageProps} />
-          </Layout>
+          <PrintComponent />
         </Auth>
       ) : (
-        <Layout title={title} bgImg={bgImg}>
-          <Component {...pageProps} />
-        </Layout>
+        <PrintComponent />
       )}
     </SessionProvider>
   );
