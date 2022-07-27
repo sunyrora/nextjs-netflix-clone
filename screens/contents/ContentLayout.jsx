@@ -59,6 +59,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
             </div>
           ))}
         </div>
+        <div className="h-[20rem]"></div>
       </div>
     </div>
   );
