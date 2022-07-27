@@ -2,7 +2,12 @@ import { Transition } from '@headlessui/react';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { TMDB_THUMB_IMG_BASE_URL } from '../../utils/movieRequests';
+import Player from '../../screens/contents/Player';
+import {
+  TMDB_API_KEY,
+  TMDB_BASE_URL,
+  TMDB_THUMB_IMG_BASE_URL,
+} from '../../utils/movieRequests';
 import { classNames } from '../../utils/utils';
 
 const shimmer = (w, h) => `
@@ -36,7 +41,7 @@ const ThumbImage = ({ video = null }) => {
   return (
     <div className="relative h-full">
       <Image
-        className="thumbnail-container"
+        // className="thumbnail-container"
         src={srcUrl}
         blurDataURL={blurUrl}
         width={2000}
@@ -53,7 +58,8 @@ export const Thumbnail = ({ video, ...props }) => {
   return (
     <div
       className={classNames(
-        `relative pr-1.5`,
+        `relative`,
+        // 'pr-1.5',
         'thumbnail-container',
         `hover:cursor-pointer`,
         // `shadow-sm shadow-bggray-100/60`,
@@ -89,17 +95,38 @@ export const Thumbnail = ({ video, ...props }) => {
           // )}
         > */}
       {video ? (
-        <div className={classNames('relative')}>
+        <div className={classNames('relative', 'thumbnail-container')}>
           <div
             className={classNames(
               'absolute flex flex-col',
+              'mr-1.5',
               hover ? 'bg-bggray-100 shadow-sm shadow-black/80' : '',
               'transition-transform duration-500 ease-out hover:scale-[1.5]',
               hover ? 'z-[23]' : 'z-[15]'
             )}
           >
             {/* <div className="w-fit h-fit transition-all duration-500 ease-out hover:scale-[1.5]"> */}
-            <ThumbImage video={video} />
+            <Link
+              href={{
+                pathname: `${process.env.playerPath}`,
+                query: {
+                  id: video.id,
+                  media_type: video.media_type,
+                },
+              }}
+              as="/player"
+            >
+              <div className="relative w-fit h-fit">
+                {/* <div className="absolute w-full h-full bg-pink-400 border-2 border-pink-600">
+                  <Player
+                    url={`${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`}
+                  />
+                </div> */}
+                <div>
+                  <ThumbImage video={video} />
+                </div>
+              </div>
+            </Link>
 
             <div
               className={classNames(
@@ -222,8 +249,8 @@ export const Thumbnail = ({ video, ...props }) => {
                 </div>
               </div>
 
-              <div>
-                <span className="px-3 align-middle">
+              <div className="px-3 whitespace-normal">
+                <span className="align-middle">
                   {video.title ?? video.original_title ?? video.name}
                 </span>
               </div>
