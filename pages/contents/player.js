@@ -1,11 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Player from '../../screens/contents/Player';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../../utils/movieRequests';
-import { fetchVideo } from '../api/videos/fetchVideos';
+import { fetchVideo } from '../api/videos/fetchVideo';
 
 const playerPage = ({ videos }) => {
-  return <Player videos={videos} />;
+  if (!videos || videos.length <= 0) {
+    return <h1>No Videos</h1>;
+  }
+
+  return (
+    <div className="w-full h-[100vh]">
+      <Player videos={videos} />
+    </div>
+  );
 };
 
 if (process.env.NODE_ENV !== 'development') playerPage.auth = true;

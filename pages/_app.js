@@ -17,7 +17,7 @@ function MyApp({
 }) {
   const router = useRouter();
 
-  console.log('showHeader: ', showHeader);
+  // console.log('showHeader: ', showHeader);
 
   useEffect(() => {
     if (redirect) {

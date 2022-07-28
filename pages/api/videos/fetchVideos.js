@@ -1,14 +1,5 @@
 const fetchCallback = (res) => res.json();
 
-export const fetchVideo = async (url) => {
-  try {
-    const video = await fetch(url).then(fetchCallback);
-
-    return video.results;
-  } catch (error) {
-    console.error(`fetch video error. url:${url}::`, error);
-  }
-};
 
 export const fetchVideos = async (urls) => {
   try {

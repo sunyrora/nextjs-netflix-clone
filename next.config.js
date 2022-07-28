@@ -7,6 +7,7 @@ const nextConfig = {
     realPath: '/contents',
     contentsBasePath: '/browse',
     asPath: '/browse',
+    playerPath: `/contents/player`,
   },
   async rewrites() {
     return [
@@ -25,6 +26,10 @@ const nextConfig = {
       {
         source: `${this.env.realPath}/:path*`,
         destination: this.env.realPath,
+      },
+      {
+        source: `${this.env.playerPath}/:url*`,
+        destination: this.env.playerPath,
       },
     ];
   },
