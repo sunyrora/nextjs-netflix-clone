@@ -1,8 +1,8 @@
-import { Transition } from '@headlessui/react';
 import Image from 'next/future/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import Player from '../../screens/contents/Player';
+import { lazy, Suspense, useRef, useState } from 'react';
+const Player = lazy(() => import('../Player'));
+
 import {
   TMDB_API_KEY,
   TMDB_BASE_URL,
@@ -41,7 +41,7 @@ const ThumbImage = ({ video = null }) => {
   return (
     <div className="relative h-full">
       <Image
-        // className="thumbnail-container"
+        className="thumbnail-image"
         src={srcUrl}
         blurDataURL={blurUrl}
         width={2000}
@@ -54,6 +54,7 @@ const ThumbImage = ({ video = null }) => {
 
 export const Thumbnail = ({ video, ...props }) => {
   const [hover, setHover] = useState(false);
+  const refPlayer = useRef(null);
   const { setHover: setWrapperHover } = props;
   return (
     <div
@@ -68,32 +69,16 @@ export const Thumbnail = ({ video, ...props }) => {
         'snap-start'
       )}
       onMouseOver={() => {
+        refPlayer?.current?.play();
         setHover(true);
         setWrapperHover && setWrapperHover(true);
       }}
       onMouseLeave={() => {
+        refPlayer.current?.stop();
         setHover(false);
         setWrapperHover && setWrapperHover(false);
       }}
     >
-      {/* <div className="relative"> */}
-      {/* <Transition
-          appear={true}
-          show={hover}
-          enter="transition duration-500 ease-out"
-          enterFrom="transform scale-100 opacity-80"
-          enterTo="transform scale-150 opacity-100"
-          leave="transition duration-500 ease-out"
-          leaveFrom="transform scale-150 opacity-100"
-          leaveTo="transform scale-100 opacity-100"
-          as="div"
-          className={classNames('absolute', hover ? ' z-[25]' : 'visible')}
-          // className={classNames(
-          //   'absolute',
-          //   hover ? 'z-[23]' : 'z-[15]'
-          //   // `after:relative after:z-0 after:w-fit after:h-fit`
-          // )}
-        > */}
       {video ? (
         <div className={classNames('relative', 'thumbnail-container')}>
           <div
@@ -116,13 +101,39 @@ export const Thumbnail = ({ video, ...props }) => {
               }}
               as="/player"
             >
-              <div className="relative w-fit h-fit">
-                {/* <div className="absolute w-full h-full bg-pink-400 border-2 border-pink-600">
-                  <Player
-                    url={`${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`}
-                  />
-                </div> */}
-                <div>
+              <div className={classNames('relative w-fit h-fit')}>
+                <div
+                  className={classNames(
+                    'absolute w-full h-full',
+                    hover ? 'visible z-[20]' : 'hidden'
+                  )}
+                ></div>
+                <div
+                  className={classNames(
+                    'absolute w-full h-full',
+                    hover ? 'visible' : 'hidden'
+                  )}
+                >
+                  <Suspense>
+                    <Player
+                      ref={refPlayer}
+                      // url="https://api.themoviedb.org/3/tv/66732/videos?api_key=..."
+                      url={`${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`}
+                      option={{
+                        autoplay: 1,
+                        accelerometer: 0,
+                        loop: 1,
+                        controls: 0,
+                        autohide: 1,
+                        displaykb: 1,
+                        fs: 0,
+                        mute: 1,
+                      }}
+                      lazyFetch={true}
+                    />
+                  </Suspense>
+                </div>
+                <div className={classNames(hover ? 'invisible' : 'visible')}>
                   <ThumbImage video={video} />
                 </div>
               </div>
@@ -140,7 +151,7 @@ export const Thumbnail = ({ video, ...props }) => {
                 <div className="flex space-x-1 original-md:space-x-2">
                   <Link
                     href={{
-                      pathname: '/contents/player',
+                      pathname: `${process.env.playerPath}`,
                       query: {
                         id: video.id,
                         media_type: video.media_type,

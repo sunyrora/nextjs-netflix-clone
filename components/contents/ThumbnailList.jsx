@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { classNames } from '../../utils/utils';
 import Thumbnail from './Thumbnail';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
@@ -110,6 +110,6 @@ const ThumbnailList = ({ videoList }) => {
       </div>
     </div>
   );
-};;
+};
 
 export default ThumbnailList;

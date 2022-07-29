@@ -1,5 +1,5 @@
 import React from 'react';
-import Player from '../../screens/contents/Player';
+import Player from '../../components/Player';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../../utils/movieRequests';
 import { fetchVideo } from '../api/videos/fetchVideo';
 

@@ -48,9 +48,9 @@ const useYTPlayer = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log('^^^^^^^^^^^ player is set', player);
-  }, [player]);
+  // useEffect(() => {
+  //   console.log('^^^^^^^^^^^ player is set', player);
+  // }, [player]);
 
   const setStatus = useCallback(
     (status = 'init') => {
@@ -73,7 +73,7 @@ const useYTPlayer = () => {
     if (videoId && videoId.length > 0 && playerId && playerId.length > 0) {
       loadYoutubeScript()
         .then((YT) => {
-          console.log('loadYoutubeScript.then YT: ', YT);
+          // console.log('loadYoutubeScript.then YT: ', YT);
           // console.log('loadYoutubeScript.then option: ', option);
           if (playerId && YT) {
             const newPlayer = new YT.Player(playerId, {
@@ -83,7 +83,7 @@ const useYTPlayer = () => {
               playerVars: option,
               events: eventHandlers,
             });
-            console.log('createYTPlayer newPlayer: ', newPlayer);
+            // console.log('createYTPlayer newPlayer: ', newPlayer);
           } else {
             throw new Error('No player id or YTPlayer undefined');
           }
@@ -138,7 +138,7 @@ const useYTPlayer = () => {
         window.YT.Player &&
         window.YT.Player instanceof Function
       ) {
-        console.log('window.YT is already exist: ', window.YT);
+        // console.log('window.YT is already exist: ', window.YT);
         resolve(window.YT);
 
         return;

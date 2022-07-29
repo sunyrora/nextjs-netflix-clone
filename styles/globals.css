@@ -113,6 +113,10 @@
       h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netflix-lg-thumbnail-h)] netflix-xl:h-[var(--netflix-xl-thumbnail-h)]
   }
 
+  .thumbnail-image {
+    @apply h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netflix-lg-thumbnail-h)] netflix-xl:h-[var(--netflix-xl-thumbnail-h)]
+  }
+
   
   /* .thumbnail-container {
     --thumbnail-w: 30vw;
