@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import useFullScreen from '../../components/hooks/useFullScreen';
 import useYTPlayer from '../../components/hooks/useYTPlayer';
 
@@ -22,28 +22,27 @@ const Player = ({
   const [trailer, setTrailer] = useState();
   const [data, setData] = useState();
   const [videoId, setVideoId] = useState();
+  const [playerId, setPlayerId] = useState();
+  const uniqueId = useId();
 
-  const playerId = 'player';
-
-  const [startYTPlayer, ytpStatus, ytpError] = useYTPlayer();
+  const [startYTPlayer, ytPlayer, ytpStatus, ytpError] = useYTPlayer();
 
   // const [setElementId, setHotKey] = useFullScreen();
 
-  const fetchVideo = useCallback(async (fetchUrl) => {
-    await fetch('/api/videos/fetchVideo', {
-      method: 'POST', // 또는 'PUT'
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ fetchUrl }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
+  const fetchVideo = useCallback((fetchUrl) => {
+    return new Promise((resolve) => {
+      fetch('/api/videos/fetchVideo', {
+        method: 'POST', // 또는 'PUT'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: fetchUrl }),
       })
-      .catch((error) => {
-        console.error('Player fetche video error: ', error);
-      });
+        .then((res) => resolve(res.json()))
+        .catch((error) => {
+          console.error('Player fetch video error: ', error);
+        });
+    });
   }, []);
   useEffect(() => {
     // setElementId('nc_s_player');
@@ -51,41 +50,10 @@ const Player = ({
     // console.log('Player props option: ', option);
 
     if (!videos && url) {
-      // const fetchVideo = async () => {
-      //   await fetch('/api/videos/fetchVideo', {
-      //     method: 'POST', // 또는 'PUT'
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({ url }),
-      //   })
-      //     .then((res) => res.json())
-      //     .then((data) => {
-      //       setData(data);
-      //     })
-      //     .catch((error) => {
-      //       console.error('Player fetche video error: ', error);
-      //     });
-      //   // try {
-      //   //   const data = await fetch(
-      //   //     `/api/videos/fetchVideo`,
-
-      //   //     {
-      //   //       method: 'POST', // 또는 'PUT'
-      //   //       headers: {
-      //   //         'Content-Type': 'application/json',
-      //   //       },
-      //   //       body: JSON.stringify({ url }),
-      //   //     }
-      //   //   );
-      //   //   console.log('Player fetch data: ', data.json());
-
-      //   //   setData(data.json());
-      //   // } catch (error) {
-      //   //   console.error('Player fetche video error: ', error);
-      //   // }
-      // };
-      fetchVideo(url);
+      fetchVideo(url).then((res) => {
+        console.log(`$$$$$$$$$ fetchvideo res: ${uniqueId}`, res);
+        setData(res);
+      });
     }
 
     if (videos) {
@@ -99,31 +67,31 @@ const Player = ({
 
   useEffect(() => {
     console.log('trailer.key: ', trailer?.key);
+
     if (trailer?.key) {
+      setPlayerId(`player-${trailer.key}-${uniqueId}`);
       setVideoId(trailer.key);
     }
   }, [trailer]);
 
   useEffect(() => {
     const startPlayer = async () => {
-      if (videoId) {
-        //ready to put YTPlayer
-        startYTPlayer(videoId, playerId, { ...option, playlist: videoId });
-      }
+      //ready to put YTPlayer
+      return await startYTPlayer(videoId, playerId, {
+        ...option,
+        playlist: videoId,
+      });
     };
 
-    startPlayer();
-  }, [videoId]);
+    if (videoId && playerId) {
+      startPlayer();
+    }
+  }, [videoId, playerId]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div id={playerId}>
-        {ytpStatus == 'error' ? (
-          <h2>{ytpError}</h2>
-        ) : (
-          ytpStatus !== 'ready' && <h2>Loaidng...</h2>
-        )}
-      </div>
+      {ytpStatus == 'error' && <h2>{ytpError}</h2>}
+      <div id={playerId}></div>
     </div>
   );
 };

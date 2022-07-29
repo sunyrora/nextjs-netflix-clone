@@ -12,25 +12,22 @@ import { useCallback, useEffect, useState } from 'react';
 // ];
 
 const useYTPlayer = () => {
-  const [status, setStatus] = useState('init');
+  const [status, setYtStatus] = useState('init');
   const [error, setError] = useState('');
-  const [isJSLoaded, setJSLoaded] = useState(false);
-
-  let player;
+  const [player, setPlayer] = useState();
 
   const eventHandlers = {
     // 4. The API will call this function when the video player is ready.
     onReady: (event) => {
       //   if (autoPlay) event.target.playVideo();
-
+      setPlayer(event.target);
       setStatus('ready');
       setError('');
-      console.log('======YTPlayer is ready=====');
+      console.log('======YTPlayer is ready===== event.target', event.target);
     },
     // 5. The API calls this function when the player's state changes.
     //    The function indicates that when playing a video (state=1),
     //    the player should play for six seconds and then stop.
-
     onStateChange: (event) => {
       //   console.log('onPlayerStateChange: ', event.data);
       // if (event.data == YT.PlayerState.PLAYING && !done) {
@@ -38,28 +35,38 @@ const useYTPlayer = () => {
       //   done = true;
       // }
     },
-    onVolumeChange: (event) => console.log('onVolumeChange: ', event.data),
+    onVolumeChange: (event) => {
+      // console.log('onVolumeChange: ', event.data);
+    },
   };
 
   useEffect(() => {
-    initStatus();
+    setYtStatus();
 
     return () => {
       window.onYouTubeIframeAPIReady = null;
     };
   }, []);
 
-  const initStatus = useCallback(() => {
-    setStatus('init');
-    setError('');
-  }, []);
+  useEffect(() => {
+    console.log('^^^^^^^^^^^ player is set', player);
+  }, [player]);
+
+  const setStatus = useCallback(
+    (status = 'init') => {
+      console.log(`setStatus:`, status);
+      setYtStatus(status);
+      setError('');
+    },
+    [status, error]
+  );
 
   const setErrorState = useCallback((message) => {
-    setStatus('error');
+    setYtStatus('error');
     setError(message);
   }, []);
 
-  const startYTPlayer = (videoId, playerId, option) => {
+  const startYTPlayer = async (videoId, playerId, option) => {
     console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
     setStatus('loading');
 
@@ -67,20 +74,16 @@ const useYTPlayer = () => {
       loadYoutubeScript()
         .then((YT) => {
           console.log('loadYoutubeScript.then YT: ', YT);
-          console.log('loadYoutubeScript.then option: ', option);
+          // console.log('loadYoutubeScript.then option: ', option);
           if (playerId && YT) {
-            createYTPlayer(
-              YT,
-              videoId,
-              playerId,
-              option, // ?? playerInitialOption
-              eventHandlers
-            ).then((res) => {
-              player = res;
-              //   setStatus('ready');
-              //   setError('');
-              return res;
+            const newPlayer = new YT.Player(playerId, {
+              height: '100%',
+              width: '100%',
+              videoId: videoId,
+              playerVars: option,
+              events: eventHandlers,
             });
+            console.log('createYTPlayer newPlayer: ', newPlayer);
           } else {
             throw new Error('No player id or YTPlayer undefined');
           }
@@ -94,26 +97,37 @@ const useYTPlayer = () => {
     }
   };
 
-  const createYTPlayer = (YT, videoId, elementId, option, events) => {
-    console.log('createYTPlayer option:', option);
-    console.log('createYTPlayer YT: ', YT);
-    return new Promise((resolve) => {
-      const newPlayer = new YT.Player(elementId, {
-        height: '100%',
-        width: '100%',
-        videoId: videoId,
-        playerVars: option,
-        events,
-      });
-      //   console.log('createYTPlayer player: ', newPlayer);
+  // const createYTPlayer = (YT, videoId, elementId, option, events) => {
+  //   console.log('createYTPlayer elementId:', elementId);
+  //   console.log('createYTPlayer YT: ', YT);
+  //   return new Promise((resolve) => {
+  //     const newPlayer = new YT.Player(elementId, {
+  //       height: '100%',
+  //       width: '100%',
+  //       videoId: videoId,
+  //       playerVars: option,
+  //       events,
+  //     });
+  //     console.log('createYTPlayer newPlayer: ', newPlayer);
 
-      resolve(newPlayer);
-    });
-  };
+  //     resolve(newPlayer);
+  //   });
+  // };
 
   const onYouTubeIframeAPIReady = (resolve) => {
     // console.log('onYouTubeIframeAPIReady window.YT:', window.YT);
-    if (isJSLoaded) resolve(window.YT);
+
+    if (!window.YT || !window.YT.loaded) {
+      const intervalYT = setInterval(() => {
+        console.log('scripti is loaded but YT is not ready', window.YT);
+        if (window.YT && window.YT.loaded) {
+          console.log('YT is ready', window.YT);
+          clearInterval(intervalYT);
+
+          resolve(window.YT);
+        }
+      }, 300);
+    }
   };
 
   const loadYoutubeScript = () => {
@@ -140,22 +154,6 @@ const useYTPlayer = () => {
       if (apiNotLoaded) {
         const tag = document.createElement('script');
         tag.src = youtubeAPI;
-        // tag.setAttribute('async', '');
-
-        tag.addEventListener('load', async () => {
-          setJSLoaded(true);
-          console.log('Youtube api script is loaded. YT:', window.YT);
-          const intervalYT = setInterval(() => {
-            console.log('scripti is loaded but YT is not ready');
-
-            if (window.YT?.loaded) {
-              console.log('YT is ready');
-              clearInterval(intervalYT);
-
-              resolve(window.YT);
-            }
-          }, 300);
-        });
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       }
@@ -178,7 +176,7 @@ const useYTPlayer = () => {
     }
   }, []);
 
-  return [startYTPlayer, status, error];
+  return [startYTPlayer, player, status, error];
 };
 
 export default useYTPlayer;
