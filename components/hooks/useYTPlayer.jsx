@@ -11,12 +11,14 @@ import { useCallback, useEffect, useState } from 'react';
 //   onVolumeChange',
 // ];
 
+
 const useYTPlayer = () => {
   const [status, setYtStatus] = useState('init');
   const [error, setError] = useState('');
   const [player, setPlayer] = useState();
+  let eventHandlers = null;
 
-  const eventHandlers = {
+  const initialEventHandlers = {
     // 4. The API will call this function when the video player is ready.
     onReady: (event) => {
       //   if (autoPlay) event.target.playVideo();
@@ -66,11 +68,14 @@ const useYTPlayer = () => {
     setError(message);
   }, []);
 
-  const startYTPlayer = async (videoId, playerId, option) => {
+  const startYTPlayer = async (videoId, playerId, option, eventHandlers) => {
+    // const handlers = { ...initialEventHandlers, ...eventHandlers };
+    const handlers = eventHandlers ?? initialEventHandlers;
     console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
+    console.log('startYTPlayer: eventHandlers: ', handlers);
     setStatus('loading');
 
-    if (videoId && videoId.length > 0 && playerId && playerId.length > 0) {
+    if (videoId && playerId) {
       loadYoutubeScript()
         .then((YT) => {
           // console.log('loadYoutubeScript.then YT: ', YT);
@@ -81,7 +86,7 @@ const useYTPlayer = () => {
               width: '100%',
               videoId: videoId,
               playerVars: option,
-              events: eventHandlers,
+              events: handlers,
             });
             // console.log('createYTPlayer newPlayer: ', newPlayer);
           } else {
@@ -93,7 +98,10 @@ const useYTPlayer = () => {
           console.error('loadYoutube Script error', error);
         });
     } else {
-      setErrorState(`Need VideoId and PlayerId, got ${videoId}, ${playerId}`);
+      console.log(
+        `one(or both) of these Id is missing: videoId: ${videoId}  playerID: ${playerId}`
+      );
+      setErrorState(`No video or Element`);
     }
   };
 
@@ -176,7 +184,7 @@ const useYTPlayer = () => {
     }
   }, []);
 
-  return [startYTPlayer, player, status, error];
+  return [startYTPlayer, status, error];
 };
 
 export default useYTPlayer;

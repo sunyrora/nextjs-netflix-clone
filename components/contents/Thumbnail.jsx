@@ -69,7 +69,7 @@ export const Thumbnail = ({ video, ...props }) => {
         'snap-start'
       )}
       onMouseOver={() => {
-        refPlayer?.current?.play();
+        !hover && refPlayer?.current?.play();
         setHover(true);
         setWrapperHover && setWrapperHover(true);
       }}
