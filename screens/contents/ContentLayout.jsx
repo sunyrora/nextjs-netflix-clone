@@ -6,7 +6,7 @@ import { classNames } from '../../utils/utils';
 const ContentLayout = ({ videos, bgIndex }) => {
   const router = useRouter();
   const { path: menuId } = router.query;
-  console.log('ContentLayout:: menuId: ', menuId);
+  // console.log('ContentLayout:: menuId: ', menuId);
 
   if (!videos || videos.size <= 0) {
     return <div>No data</div>;
@@ -22,7 +22,7 @@ const ContentLayout = ({ videos, bgIndex }) => {
     <div
       className={classNames(
         'content-container w-full flex flex-col justify-center',
-        'overflow-hidden',
+        // 'overflow-hidden',
         ' z-0'
       )}
     >
@@ -30,8 +30,8 @@ const ContentLayout = ({ videos, bgIndex }) => {
         // {/*  bannerIdx'th object in videoList */}
         <Banner video={bgInfo} />
       )}
-      <div className="content-body w-full min-h-[vh] ">
-        <div className="relative flex flex-col w-full max-w-full min-h-full">
+      <div className="content-body w-full h-fit min-h-[vh]">
+        <div className="relative flex flex-col w-full h-fit max-w-full min-h-full">
           {[...videos].map((lists) => (
             <div
               key={lists[0]}

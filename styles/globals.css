@@ -84,7 +84,7 @@
   }
 
   .thumb-controller-button-outline-container {
-    @apply w-fit h-fit p-[4px] align-middle border-2 border-white/50 bg-[#2a2a2a99] rounded-full;
+    @apply w-fit h-fit p-[4px] align-middle border border-white/50 bg-[#2a2a2a99] rounded-full;
   }
 
   .thumb-controller-button {
@@ -117,18 +117,36 @@
     @apply h-[var(--thumbnail-h)] netflix-md:h-[var(--netflix-md-thumbnail-h)] netflix-lg:h-[var(--netflix-lg-thumbnail-h)] netflix-xl:h-[var(--netflix-xl-thumbnail-h)]
   }
 
+
+  .moreinfo-play-button-container {
+    @apply flex items-center
+    w-[20vw] sm:w-[15vw]
+    /* msm:w-[33.5vw] sm:w-[32.5vw] mmd:w-[23vw] 2xl:w-[20vw] */
+    px-2
+    py-[0.5%]
+    /* xsm:py-[0.8%] msm:py-[2%] mmd:py-[0.5%]; */
+  }
+
+  .moreinfo-play-button-child {
+    @apply bg-white border border-white/0 flex items-center justify-center text-sm 
+    transition duration-300 hover:bg-[#e6e6e6] hover:border hover:border-white
+    w-fit rounded-md px-3 netflix-md:px-2 
+    py-1 netflix-md:py-2
+    /* msm:px-[3%]  */
+    /* py-[1px] msm:py-[3%] mmd:py-[2%] md:py-[2.5%] */
+    max-w-full;
+  }
   
-  /* .thumbnail-container {
-    --thumbnail-w: 30vw;
-    --netflix-md-thumbnail-w: 22.5vw;
-    --netfilx-lg-thumbnail-w: 18vw;
-    --xlg-thumbnail-w: 18vw;
-    --netfilx-xl-thumbnail-w: 15vw;
-    --h-ratio: 0.57;
-    --thumbnail-h: calc(var(--thumbnail-w) * var(--h-ratio));
-    --netflix-md-thumbnail-h: calc(var(--netflix-md-thumbnail-w) * var(--h-ratio));
-    --netfilx-lg-thumbnail-h: calc(var(--netfilx-lg-thumbnail-w) * var(--h-ratio));
-    --xlg-thumbnail-h: calc(var(--xlg-thumbnail-w) * var(--h-ratio));
-    --netfilx-xl-thumbnail-h: calc(var(--netfilx-xl-thumbnail-w) * var(--h-ratio));
-  } */
+    .moreinfo-button-outline-container {
+    @apply flex items-center
+    w-fit h-fit p-[4px] max-w-[42px] max-h-[42px]
+     align-middle border border-white/50 bg-[#2a2a2a99] rounded-full
+     transition duration-300 hover:border-white hover:bg-[#2a2a2a];
+  }
+
+    .moreinfo-button {
+    @apply w-[3.5vw] h-[3.5vw] max-w-[25px] max-h-[25px]
+    p-1
+    /* original-md:w-[1vw] original-md:h-[1vw]  align-middle rounded-full; */
+  }
 }

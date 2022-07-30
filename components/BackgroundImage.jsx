@@ -1,5 +1,6 @@
 import Image from 'next/future/image';
 import { useEffect, useState } from 'react';
+import { classNames } from '../utils/utils';
 // import imgFallback from '../public/images/bg.jpeg';
 
 // const shimmer = (w, h) => `
@@ -21,11 +22,13 @@ import { useEffect, useState } from 'react';
 //     ? Buffer.from(str).toString('base64')
 //     : window.btoa(str);
 
-const BackgroundImage = ({ bgImg = null }) => {
+const BackgroundImage = ({ bgImg = null, zIndex = undefined, className }) => {
   const imgFallback = '/images/bg.jpeg';
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
   const [imgWidth, setImgWidth] = useState(3000);
   const [imgHeight, setImgHeight] = useState(600);
+  const bgZIndex =
+    zIndex && typeof zIndex === 'number' ? `z-[${zIndex}]` : 'z-[-10]';
 
   useEffect(() => {
     setImgSrc(bgImg ?? imgFallback);
@@ -35,12 +38,17 @@ const BackgroundImage = ({ bgImg = null }) => {
   //   console.log('imgWidth, imgHeight: ', imgWidth, imgHeight);
   // }, [imgWidth]);
 
-  useEffect(() => {
-    console.log('imgSrc changed: ', imgSrc);
-  }, [imgSrc]);
+  // useEffect(() => {
+  //   // console.log('imgSrc changed: ', imgSrc);
+  // }, [imgSrc]);
 
   return (
-    <div className="absolute overflow-hidden z-[-10] w-auto h-fit bg-gradient-to-t from-gray-900 to-gray-200 ">
+    <div
+      className={classNames(
+        `absolute overflow-hidden ${bgZIndex} w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200`,
+        className
+      )}
+    >
       <Image
         src={imgSrc}
         priority={true}
@@ -60,6 +68,6 @@ const BackgroundImage = ({ bgImg = null }) => {
       />
     </div>
   );
-};
+};;;
 
 export default BackgroundImage;
