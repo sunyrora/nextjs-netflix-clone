@@ -1,3 +1,4 @@
+import PreviousMap from 'postcss/lib/previous-map';
 import {
   forwardRef,
   useCallback,
@@ -7,7 +8,7 @@ import {
   useState,
 } from 'react';
 
-import { randomNumber } from '../utils/utils';
+import { classNames, randomNumber } from '../utils/utils';
 import useFetch from './hooks/useFetch';
 import useFullScreen from './hooks/useFullScreen';
 import useYTPlayer from './hooks/useYTPlayer';
@@ -18,7 +19,7 @@ import useYTPlayer from './hooks/useYTPlayer';
 //     "ENDED": 0,
 //     "PLAYING": 1,
 //     "PAUSED": 2,
-//     "BUFFERING": 3,
+//     "BUFFERING": 3, // undefined??
 //     "CUED": 5 // video cued
 // }
 
@@ -41,6 +42,7 @@ const Player = forwardRef(
       option = playerInitialOption,
       lazyFetch = false,
       callbacks = {},
+      className = '',
     },
     ref
   ) => {
@@ -51,6 +53,7 @@ const Player = forwardRef(
     const [playerId, setPlayerId] = useState();
     const [playerStatus, setPlayerStatus] = useState('init');
     const [error, setError] = useState('');
+    const [ytpOption, setYTPOption] = useState(option);
     const [ytPlayer, setYTPlayer] = useState(null);
     const uniqueId = useId();
 
@@ -58,6 +61,7 @@ const Player = forwardRef(
 
     const fetchVideoHost = '/api/videos/fetchVideo';
     const {
+      data: fetchedData,
       status: fetchStatus,
       error: fetchError,
       startFetch,
@@ -131,16 +135,6 @@ const Player = forwardRef(
             console.log('player state chaged : ', event.data);
           }
         }
-
-        // if (
-        //   event.data === YT.PlayerState.ENDED ||
-        //   event.data === YT.PlayerState.UNSTARTED
-        // ) {
-        //   console.log('Video ended');
-        //   if (cbSetPlayerStatus) cbSetPlayerStatus('ended');
-        //   // setStatus(YT.PlayerState.ENDED);
-        //   // setVideoEnd ?? setVideoEnd(true);
-        // }
       },
       onVolumeChange: (event) => {
         // console.log('onVolumeChange: ', event.data);
@@ -152,7 +146,6 @@ const Player = forwardRef(
       // setElementId('nc_s_player');
       // setHotKey('Enter');
       // console.log('Player props option: ', option);
-
       if (data) {
         console.log('data is already set');
         return;
@@ -176,18 +169,18 @@ const Player = forwardRef(
       }
     }, [ytpStatus]);
 
-    const fetchVideo = useCallback(() => {
-      startFetch({ query: { url } })
-        .then((res) => {
-          console.log(`********* Player fetchvideo res: ${uniqueId}`, res);
+    const fetchVideo = useCallback(async () => {
+      try {
+        setStatus('fetch request');
+        const res = await startFetch({ query: { url } });
+        console.log(`********* Player fetchvideo res: ${uniqueId}`, res);
 
-          setStatus('data fetched');
-          setData(res);
-        })
-        .catch((error) => {
-          console.error('Player fetch video error: ', error);
-          setStatus('error', error.data);
-        });
+        setStatus('data fetched');
+        setData(res);
+      } catch (error) {
+        console.error('Player fetch video error: ', error);
+        setStatus('error', error.data);
+      }
     }, [url]);
 
     useEffect(() => {
@@ -208,10 +201,19 @@ const Player = forwardRef(
 
     useEffect(() => {
       if (videoId && playerId) {
-        // ready to mount YTPlayer
-        startPlayer();
+        setYTPOption((prev) => ({ ...PreviousMap, playlist: videoId }));
+        // // ready to mount YTPlayer
+        // startPlayer();
       }
     }, [videoId, playerId]);
+
+    useEffect(() => {
+      if (ytpOption.playlist) {
+        // ready to mount YTPlayer
+        setStatus('ready for mouunt player');
+        startPlayer();
+      }
+    }, [ytpOption]);
 
     const startPlayer = async () => {
       if (ytPlayer) {
@@ -221,6 +223,12 @@ const Player = forwardRef(
       }
 
       if (!data) {
+        if (!videos && !url) {
+          const message = 'No videos data or invalid fetch url';
+          setStatus('error', message);
+          throw new Error(message);
+        }
+
         if (videos) {
           setData(videos);
           return;
@@ -232,29 +240,47 @@ const Player = forwardRef(
         }
       }
 
-      //create YTPlayer
-      await startYTPlayer(
-        videoId,
-        playerId,
-        {
-          ...option,
-          playlist: videoId,
-        },
-        plyerEventHanlders
-      );
+      try {
+        setStatus('startYTPlayer loading');
+        //create YTPlayer
+        await startYTPlayer(
+          videoId,
+          playerId,
+          ytpOption,
+          // {
+          //   ...ytpOption,
+          //   playlist: videoId,
+          // },
+          plyerEventHanlders
+        );
+      } catch (error) {
+        console.log('Player startYTPlayer error: ', error);
+        setStatus('error', error.message);
+      }
     };
 
     const play = async () => {
-      console.log('play');
-      if (!data) {
-        if (!url) throw new Error('no video data');
-        await fetchVideo(url);
-      } else {
-        if (!ytPlayer) {
-          await startPlayer();
-        }
+      try {
+        console.log('play');
+        if (!data) {
+          if (!videos && !url) throw new Error('no video data');
 
-        ytPlayer?.playVideo();
+          if (videos) {
+            setData(videos);
+            return;
+          }
+
+          await fetchVideo(url);
+        } else {
+          if (!ytPlayer) {
+            await startPlayer();
+          }
+
+          ytPlayer?.playVideo();
+        }
+      } catch (error) {
+        setStatus('error', error.message);
+        console.log('Player play() error: ', error);
       }
     };
 
@@ -292,7 +318,12 @@ const Player = forwardRef(
       getDuration,
     }));
     return (
-      <div className="w-full h-full flex flex-col justify-center items-center">
+      <div
+        className={classNames(
+          `w-full h-full flex flex-col justify-center items-center`,
+          className
+        )}
+      >
         {/* {ytpStatus == 'error' ? (
           <h2>{ytpError}</h2>
         ) : (
@@ -301,7 +332,7 @@ const Player = forwardRef(
         <div id={playerId}></div>
       </div>
     );
-  };
+  }
 );
 
 export default Player;

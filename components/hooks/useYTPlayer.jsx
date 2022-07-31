@@ -50,96 +50,65 @@ const useYTPlayer = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log('^^^^^^^^^^^ player is set', player);
-  // }, [player]);
 
   const setStatus = useCallback(
-    (status = 'init') => {
+    (status = 'init', error = '') => {
       console.log(`setStatus:`, status);
       setYtStatus(status);
-      setError('');
+      setError(error);
     },
     [status, error]
   );
 
-  const setErrorState = useCallback((message) => {
-    setYtStatus('error');
-    setError(message);
-  }, []);
+  const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
+    return new Promise(async (resolve, reject) => {
+      // const handlers = { ...initialEventHandlers, ...eventHandlers };
+      const handlers = eventHandlers ?? initialEventHandlers;
+      console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
+      console.log('startYTPlayer: eventHandlers: ', handlers);
+      setStatus('loading');
+      let errorMessage = '';
 
-  const startYTPlayer = async (videoId, playerId, option, eventHandlers) => {
-    // const handlers = { ...initialEventHandlers, ...eventHandlers };
-    const handlers = eventHandlers ?? initialEventHandlers;
-    console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
-    console.log('startYTPlayer: eventHandlers: ', handlers);
-    setStatus('loading');
+      if (!videoId) {
+        errorMessage = 'YTPlayer: videoId is missing';
+        setStatus('error', errorMessage);
+        return reject(new Error(errorMessage));
+      }
 
-    if (videoId && playerId) {
-      loadYoutubeScript()
-        .then((YT) => {
-          // console.log('loadYoutubeScript.then YT: ', YT);
-          // console.log('loadYoutubeScript.then option: ', option);
-          if (playerId && YT) {
-            const newPlayer = new YT.Player(playerId, {
-              height: '100%',
-              width: '100%',
-              videoId: videoId,
-              playerVars: option,
-              events: handlers,
-            });
-            // console.log('createYTPlayer newPlayer: ', newPlayer);
-          } else {
-            throw new Error('No player id or YTPlayer undefined');
-          }
-        })
-        .catch((error) => {
-          setErrorState(error.message);
-          console.error('loadYoutube Script error', error);
+      if (!playerId) {
+        errorMessage = 'YTPlayer: playerId is missing';
+        setStatus('error', errorMessage);
+        return reject(new Error(errorMessage));
+      }
+
+      try {
+        const YT = await loadYoutubeScript();
+        if (!YT) {
+          throw new Error('YTPlayer load error');
+        }
+
+        const newPlayer = new YT.Player(playerId, {
+          height: '100%',
+          width: '100%',
+          videoId: videoId,
+          playerVars: option,
+          events: handlers,
         });
-    } else {
-      console.log(
-        `one(or both) of these Id is missing: videoId: ${videoId}  playerID: ${playerId}`
-      );
-      setErrorState(`No video or Element`);
-    }
+
+        // console.log('createYTPlayer newPlayer: ', newPlayer);
+      } catch (error) {
+        setStatus('error', error.message);
+        reject(error);
+      }
+    });
   };
 
-  // const createYTPlayer = (YT, videoId, elementId, option, events) => {
-  //   console.log('createYTPlayer elementId:', elementId);
-  //   console.log('createYTPlayer YT: ', YT);
-  //   return new Promise((resolve) => {
-  //     const newPlayer = new YT.Player(elementId, {
-  //       height: '100%',
-  //       width: '100%',
-  //       videoId: videoId,
-  //       playerVars: option,
-  //       events,
-  //     });
-  //     console.log('createYTPlayer newPlayer: ', newPlayer);
-
-  //     resolve(newPlayer);
-  //   });
-  // };
-
-  const onYouTubeIframeAPIReady = (resolve) => {
-    // console.log('onYouTubeIframeAPIReady window.YT:', window.YT);
-
-    if (!window.YT || !window.YT.loaded) {
-      const intervalYT = setInterval(() => {
-        console.log('scripti is loaded but YT is not ready', window.YT);
-        if (window.YT && window.YT.loaded) {
-          console.log('YT is ready', window.YT);
-          clearInterval(intervalYT);
-
-          resolve(window.YT);
-        }
-      }, 300);
-    }
+  const onYouTubeIframeAPIReady = (resolve) => () => {
+    resolve(window.YT);
   };
 
   const loadYoutubeScript = () => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       // 2. This code loads the IFrame Player API code asynchronously.
       if (
         window.YT &&
@@ -147,9 +116,7 @@ const useYTPlayer = () => {
         window.YT.Player instanceof Function
       ) {
         // console.log('window.YT is already exist: ', window.YT);
-        resolve(window.YT);
-
-        return;
+        return resolve(window.YT);
       }
 
       const youtubeAPI = 'https://www.youtube.com/iframe_api';
@@ -185,6 +152,6 @@ const useYTPlayer = () => {
   }, []);
 
   return [startYTPlayer, status, error];
-};
+};;;
 
 export default useYTPlayer;
