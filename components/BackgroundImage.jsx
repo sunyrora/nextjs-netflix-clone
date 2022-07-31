@@ -22,7 +22,11 @@ import { classNames } from '../utils/utils';
 //     ? Buffer.from(str).toString('base64')
 //     : window.btoa(str);
 
-const BackgroundImage = ({ bgImg = null, zIndex = undefined, className }) => {
+const BackgroundImage = ({
+  bgImg = null,
+  zIndex = undefined,
+  className = '',
+}) => {
   const imgFallback = '/images/bg.jpeg';
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
   const [imgWidth, setImgWidth] = useState(3000);

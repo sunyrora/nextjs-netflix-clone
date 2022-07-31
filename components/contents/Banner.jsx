@@ -50,7 +50,7 @@ import MoreInfo from './MoreInfo';
  */
 
 const Banner = ({ video }) => {
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
+  const [showMoreInfo, setShowMoreInfo] = useState(true);
   console.log('banner: video: ', video);
 
   useEffect(() => {

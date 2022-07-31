@@ -19,7 +19,7 @@ import useYTPlayer from './hooks/useYTPlayer';
 //     "ENDED": 0,
 //     "PLAYING": 1,
 //     "PAUSED": 2,
-//     "BUFFERING": 3, // undefined??
+//     "BUFFERING": 3,
 //     "CUED": 5 // video cued
 // }
 
@@ -77,14 +77,15 @@ const Player = forwardRef(
     };
 
     const plyerEventHanlders = {
-      onReady: (event) => {
+      onReady: async (event) => {
         //   if (autoPlay) event.target.playVideo();
-        setYTPlayer(event.target);
+        await setYTPlayer(event.target);
         setStatus('ready');
         console.log(
           `======Plyaer's YTPlayer is ready===== event.target`,
           event.target
         );
+        if (option.autoplay) event.target.playVideo();
       },
       onStateChange: (event) => {
         console.log(
@@ -117,20 +118,20 @@ const Player = forwardRef(
             {
               console.log(
                 'player state chaged paused: ',
-                YT.Playerstate.PAUSED
+                YT.PlayerState.PAUSED
               );
               if (cbSetPlayerStatus) cbSetPlayerStatus('paused');
             }
             break;
-          // case YT.PlayerState.BUFFERING:
-          //   {
-          //     console.log(
-          //       'player state chaged buffering: ',
-          //       YT.Playerstate.BUFFERING
-          //     );
-          //     if (cbSetPlayerStatus) cbSetPlayerStatus('buffering');
-          //   }
-          //   break;
+          case YT.PlayerState.BUFFERING:
+            {
+              console.log(
+                'player state chaged buffering: ',
+                YT.PlayerState.BUFFERING
+              );
+              if (cbSetPlayerStatus) cbSetPlayerStatus('buffering');
+            }
+            break;
           default: {
             console.log('player state chaged : ', event.data);
           }
