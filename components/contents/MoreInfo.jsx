@@ -3,21 +3,38 @@ import {
   TMDB_BASE_URL,
   TMDB_IMG_BASE_URL,
 } from '../../utils/movieRequests';
-import Player from '../Player';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { XIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import BackgroundImage from '../BackgroundImage';
 import { classNames } from '../../utils/utils';
 import { useRouter } from 'next/router';
+import usePlayer, { PlaystateType } from '../hooks/usePlayer';
 
-const MoreInfo = ({ video, show = true }) => {
-  const refPlayer = useRef(null);
-  const [showModal, setShowModal] = useState(show);
-  const [playerStatus, setPlayerStatus] = useState('init');
+const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
+    const [showModal, setShowModal] = useState(false);
   const [showPlayer, setShowPlayer] = useState(true);
   const [isMuted, setMuted] = useState(false);
   const [duration, setDuration] = useState(0);
+
+  const [refPlayer, startPlayer, player, playerStatus, playState, error] =
+    usePlayer({
+      url: {
+        url: `${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`,
+        lazyFetch: true,
+      },
+      option: {
+        autoplay: 1,
+        accelerometer: 0,
+        loop: 0,
+        controls: 0,
+        autohide: 1,
+        displaykb: 1,
+        fs: 0,
+        mute: 1,
+      },
+      playOnMount: true,
+    });
 
   const router = useRouter();
 
@@ -32,66 +49,77 @@ const MoreInfo = ({ video, show = true }) => {
   }`;
 
   useEffect(() => {
-    console.log('MoreInfo video: ', video);
-    setShowModal(show);
+    setShow(show);
+
+    return () => {
+      // refPlayer?.current?.stop();
+      // player.destroy();
+    };
+  }, []);
+
+  useEffect(() => {
+    // console.log('MoreInfo show: ', show);
+    setShow(show);
   }, [show]);
 
   useEffect(() => {
     console.log('showModal ', showModal);
-    if (refPlayer) {
-      if (showModal) {
-        if (playerStatus === 'init' || playerStatus === 'error') {
-          refPlayer?.current?.startPlayer();
-        } else {
-          refPlayer?.current?.play();
-        }
-      } else {
-        refPlayer?.current?.stop();
-      }
+
+    if (showModal) {
+      if (!player) startPlayer();
+      else player?.playVideo();
+    } else {
+      player?.stopVideo();
     }
   }, [showModal]);
 
   useEffect(() => {
-    if (!refPlayer) return;
-
-    setShowModal(show);
-  }, [refPlayer]);
-
-  useEffect(() => {
-    console.log('MoreInfo player status: ', playerStatus);
+    console.log('MoreInfo playState: ', playState);
 
     if (
-      playerStatus === 'error' ||
-      playerStatus === 'ended' ||
-      playerStatus === 'unstarted' ||
-      playerStatus === 'paused'
+      !playState ||
+      playState === PlaystateType.UNSTARTED ||
+      playState === PlaystateType.ENDED ||
+      playState === PlaystateType.CUED ||
+      playState === PlaystateType.PAUSED ||
+      playState === PlaystateType.BUFFERING ||
+      playerStatus === 'error'
     ) {
       setShowPlayer(false);
     } else {
       setShowPlayer(true);
 
-      const dur = refPlayer?.current?.getDuration();
+      const dur = player?.getDuration();
       setDuration(isNaN(dur) ? 0 : dur);
     }
-
-    if (playerStatus !== 'error') {
-      const muted = refPlayer?.current?.isMuted();
-      setMuted(muted);
-    }
-  }, [playerStatus]);
+  }, [playState, playerStatus]);
 
   const toggleMute = (e) => {
     e.stopPropagation();
     e.preventDefault();
     e.stopPro;
-    isMuted ? refPlayer?.current?.unMute() : refPlayer?.current?.mute();
+    isMuted ? player?.unMute() : player?.mute();
     setMuted((prev) => !prev);
   };
+
+  const setShow = (value) => {
+    if (setShowMoreInfo) {
+      // console.log('call back setShowMoreInfo: ', value);
+      setShowMoreInfo(value);
+    }
+    setShowModal(value);
+  };
+
+  // if (!showModal) {
+  //   return null;
+  // }
 
   return (
     <div
       className={classNames(
-        showModal ? 'visible' : 'hidden',
+        showModal ? 'opacity-100' : 'opacity-0 -z-[10]',
+        `transition-all ease-in-out duration-700`,
+        // showModal ? 'visible' : 'hidden',
         `absolute inset-0 z-[60] mx-auto mt-5 flex flex-col items-center justify-start `,
         `bg-bggray-100`,
         `w-[98vh] max-w-[98%] min-w-[70vw] xmd:min-w-[850px]`,
@@ -161,17 +189,15 @@ const MoreInfo = ({ video, show = true }) => {
             <div className="flex justify-end">
               <button
                 onClick={(e) => {
-                                e.stopPropagation();
-
+                  e.stopPropagation();
                   e.preventDefault();
-                  setShowModal(false);
+                  setShow(false);
                 }}
                 className="rounded-full w-fit border-2 border-bggray-100 overflow-hidden "
               >
                 <XIcon className="fill-white bg-bggray-100 h-6 w-6" />
               </button>
             </div>
-
             {/* play... mute buttons */}
             {playerStatus !== 'error' ? (
               <div className="flex justify-between items-center ">
@@ -212,7 +238,6 @@ const MoreInfo = ({ video, show = true }) => {
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-
                               e.preventDefault();
                               console.log('play button click');
                             }}
@@ -223,15 +248,13 @@ const MoreInfo = ({ video, show = true }) => {
                         </div>
                       </div>
                     </Link>
-
                     {/* Plus button */}
                     <div className="moreinfo-button-outline-container ">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-
                           e.preventDefault();
-                          refPlayer?.current.play();
+                          player?.playVideo();
                         }}
                       >
                         <svg
@@ -250,16 +273,15 @@ const MoreInfo = ({ video, show = true }) => {
                         </svg>
                       </button>
                     </div>
-
-                    {/* Thumb up button */}
+                    {
+                      /* Thumb up button */
+                    }
                     <div className="moreinfo-button-outline-container ">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-
                           e.preventDefault();
-
-                          refPlayer?.current.stop();
+                          player?.stopVideo();
                         }}
                       >
                         <svg
@@ -278,6 +300,7 @@ const MoreInfo = ({ video, show = true }) => {
                         </svg>
                       </button>
                     </div>
+                    
                   </div>
                 </div>
 
@@ -341,22 +364,7 @@ const MoreInfo = ({ video, show = true }) => {
               showPlayer ? 'opacity-100' : 'opacity-0'
             )}
           >
-            <Player
-              ref={refPlayer}
-              url={`${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`}
-              option={{
-                autoplay: 1,
-                accelerometer: 0,
-                loop: 0,
-                controls: 0,
-                autohide: 1,
-                displaykb: 1,
-                fs: 0,
-                mute: 1,
-              }}
-              lazyFetch={true}
-              callbacks={{ setPlayerStatus }}
-            />
+            <div ref={refPlayer}></div>
           </div>
         </div>
         {/* video info */}
@@ -444,7 +452,7 @@ const MoreInfo = ({ video, show = true }) => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default MoreInfo;

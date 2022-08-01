@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const useFetch = (url, requestData = null, shouldStart = false) => {
+const useFetch = ({ url, requestData = null, shouldStart = false }) => {
   const [data, setData] = useState(null);
   const [status, setStatus] = useState('init');
   const [error, setError] = useState('');
@@ -69,6 +69,6 @@ const useFetch = (url, requestData = null, shouldStart = false) => {
   }, []);
 
   return { data, status, error, startFetch };
-}
+};
 
 export default useFetch;

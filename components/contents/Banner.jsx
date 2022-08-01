@@ -50,16 +50,20 @@ import MoreInfo from './MoreInfo';
  */
 
 const Banner = ({ video }) => {
-  const [showMoreInfo, setShowMoreInfo] = useState(true);
+  const [showMoreInfo, setShowMoreInfo] = useState(false);
   console.log('banner: video: ', video);
 
   useEffect(() => {
-    console.log('showMoreInfo: ', showMoreInfo);
+    console.log('Banner showMoreInfo: ', showMoreInfo);
   }, [showMoreInfo]);
 
   return (
     <div className="flex relative w-full min-h-[10vw] px-content-default 2xl:px-[60px]">
-      <MoreInfo video={video} show={showMoreInfo} />
+      <MoreInfo
+        video={video}
+        show={showMoreInfo}
+        setShowMoreInfo={setShowMoreInfo}
+      />
       <div
         className="relative
           w-[68vw] md:w-[69.5vw] lg:w-[70vw] 

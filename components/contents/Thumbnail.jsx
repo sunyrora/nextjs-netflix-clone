@@ -1,7 +1,7 @@
 import Image from 'next/future/image';
 import Link from 'next/link';
-import { lazy, Suspense, useRef, useState } from 'react';
-const Player = lazy(() => import('../Player'));
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+// const Player = lazy(() => import('../Player'));
 
 import {
   TMDB_API_KEY,
@@ -9,6 +9,7 @@ import {
   TMDB_THUMB_IMG_BASE_URL,
 } from '../../utils/movieRequests';
 import { classNames } from '../../utils/utils';
+import usePlayer, { PlaystateType } from '../hooks/usePlayer';
 
 const shimmer = (w, h) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -54,8 +55,60 @@ const ThumbImage = ({ video = null }) => {
 
 export const Thumbnail = ({ video, ...props }) => {
   const [hover, setHover] = useState(false);
-  const refPlayer = useRef(null);
+  const [showPlayer, setShowPlayer] = useState(false);
+  // const refPlayer = useRef(null);
   const { setHover: setWrapperHover } = props;
+  let hoverTimer = null;
+
+  const [refPlayer, startPlayer, player, playerStatus, playState, error] =
+  usePlayer({
+    url: {
+      url: `${TMDB_BASE_URL}/${video?.media_type}/${video?.id}/videos?api_key=${TMDB_API_KEY}`,
+      lazyFetch: true,
+    },
+    option: {
+      autoplay: 1,
+      accelerometer: 0,
+      loop: 1,
+      controls: 0,
+      autohide: 1,
+      displaykb: 1,
+      fs: 0,
+      mute: 1,
+    },
+    playOnMount: false,
+  });
+
+
+  useEffect(() => {
+    const show = shouldShowPlayer();
+    setShowPlayer(show);
+  }, [playState, playerStatus, hover]);
+  
+  // useEffect(() => {
+  //   shouldShowPlayer();
+  // }, [refPlayer?.current?.playerStatus, hover]);
+
+  useEffect(() => {
+    console.log('showPlayer? ', showPlayer);
+  }, [showPlayer]);
+
+  const shouldShowPlayer = () => {
+    if (
+      !playState ||
+      playState === PlaystateType.UNSTARTED ||
+      playState === PlaystateType.ENDED ||
+      playState === PlaystateType.CUED ||
+      playState === PlaystateType.PAUSED ||
+      playState === PlaystateType.BUFFERING ||
+      playerStatus === 'error'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <div
       className={classNames(
@@ -68,14 +121,42 @@ export const Thumbnail = ({ video, ...props }) => {
         hover ? 'z-[27]' : 'z-[10]',
         'snap-start'
       )}
-      onMouseOver={() => {
-        !hover && refPlayer?.current?.play();
-        setHover(true);
-        setWrapperHover && setWrapperHover(true);
+      onMouseOver={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (!hover) {
+          hoverTimer = setTimeout(() => {
+            if (!hover) { 
+              startPlayer();
+              setHover(true);
+              setWrapperHover && setWrapperHover(true);
+            }
+          }, 700);
+        }
       }}
-      onMouseLeave={() => {
-        refPlayer.current?.stop();
+      onMouseOut={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (hoverTimer) {
+          clearTimeout(hoverTimer);
+          hoverTimer = null;
+        }
+
+        // setHover(false);
+        // player?.stop();
+        // setWrapperHover && setWrapperHover(false);
+      }}
+      onMouseLeave={(e) => {
+         e.stopPropagation();
+        e.preventDefault();
+        if (hoverTimer) {
+          clearTimeout(hoverTimer);
+          hoverTimer = null;
+        }
+
         setHover(false);
+        player?.stopVideo();
         setWrapperHover && setWrapperHover(false);
       }}
     >
@@ -86,7 +167,9 @@ export const Thumbnail = ({ video, ...props }) => {
               'absolute flex flex-col',
               'mr-1.5',
               hover ? 'bg-bggray-100 shadow-sm shadow-black/80' : '',
-              'transition-transform duration-500 ease-out hover:scale-[1.5]',
+              hover
+                ? 'transition-transform duration-500 ease-out hover:scale-[1.5]'
+                : '',
               hover ? 'z-[23]' : 'z-[15]'
             )}
           >
@@ -102,19 +185,23 @@ export const Thumbnail = ({ video, ...props }) => {
               as="/player"
             >
               <div className={classNames('relative w-fit h-fit')}>
-                <div
+                {/* <div
                   className={classNames(
                     'absolute w-full h-full',
                     hover ? 'visible z-[20]' : 'hidden'
                   )}
-                ></div>
+                ></div> */}
                 <div
                   className={classNames(
                     'absolute w-full h-full',
-                    hover ? 'visible' : 'hidden'
+                    `transition-all ease-in-out duration-700`,
+                    showPlayer ? 'opacity-100' : 'oopacity-0'
+                    // hover ? 'visible' : 'hidden'
                   )}
                 >
-                  <Suspense>
+                  {/* Player */}
+                  <div ref={refPlayer}></div>
+                  {/* <Suspense>
                     <Player
                       ref={refPlayer}
                       // url="https://api.themoviedb.org/3/tv/66732/videos?api_key=..."
@@ -127,13 +214,18 @@ export const Thumbnail = ({ video, ...props }) => {
                         autohide: 1,
                         displaykb: 1,
                         fs: 0,
-                        mute: 1,
+                        mute: 0,
                       }}
                       lazyFetch={true}
                     />
-                  </Suspense>
+                  </Suspense> */}
                 </div>
-                <div className={classNames(hover ? 'invisible' : 'visible')}>
+                <div
+                  className={classNames(
+                    `trainsition-all ease-in-out duration-700`,
+                    showPlayer ? 'opacity-0' : 'opacity-100'
+                  )}
+                >
                   <ThumbImage video={video} />
                 </div>
               </div>

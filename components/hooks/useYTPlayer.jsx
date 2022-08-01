@@ -53,7 +53,7 @@ const useYTPlayer = () => {
 
   const setStatus = useCallback(
     (status = 'init', error = '') => {
-      console.log(`setStatus:`, status);
+      console.log(`ytPlayer setStatus:`, status, ', error: ', error);
       setYtStatus(status);
       setError(error);
     },
