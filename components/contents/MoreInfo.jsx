@@ -12,18 +12,7 @@ import { useRouter } from 'next/router';
 import usePlayer, { PlaystateType } from '../hooks/usePlayer';
 
 const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
-    const [showModal, setShowModal] = useState(false);
-  const [showPlayer, setShowPlayer] = useState(true);
-  const [isMuted, setMuted] = useState(false);
-  const [duration, setDuration] = useState(0);
-
-  const [refPlayer, startPlayer, player, playerStatus, playState, error] =
-    usePlayer({
-      url: {
-        url: `${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`,
-        lazyFetch: true,
-      },
-      option: {
+  let playerOption = {
         autoplay: 1,
         accelerometer: 0,
         loop: 0,
@@ -32,7 +21,19 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
         displaykb: 1,
         fs: 0,
         mute: 1,
+      };
+  const [showModal, setShowModal] = useState(false);
+  const [showPlayer, setShowPlayer] = useState(true);
+  const [isMuted, setMuted] = useState(playerOption.mute);
+  const [duration, setDuration] = useState(0);
+
+  const [refPlayer, startPlayer, player, playerStatus, playState, error] =
+    usePlayer({
+      url: {
+        url: `${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`,
+        lazyFetch: true,
       },
+      option: playerOption,
       playOnMount: true,
     });
 
@@ -115,10 +116,28 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
   // }
 
   return (
-    <div
+    <div className={classNames(
+      `absolute inset-0 w-[100vw]`,
+      showModal ? 'opacity-100 z-[70]' : 'opacity-0 -z-[10]',
+      // `border-2 border-pink-600`,
+      `transition-all ease-in-out duration-700`,
+    )}>
+      {/* Backdrop layer to prevent event of thumbnails */}
+      <div 
+      onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setShow(false);
+                }}
       className={classNames(
-        showModal ? 'opacity-100' : 'opacity-0 -z-[10]',
-        `transition-all ease-in-out duration-700`,
+        `fixed w-[100vw] h-[100vh]`,
+         `bg-bggray-100/50`,
+        // `border-2 border-sky-500`,
+      )}></div>
+      <div
+      className={classNames(
+        // showModal ? 'opacity-100' : 'opacity-0 -z-[10]',
+        // `transition-all ease-in-out duration-700`,
         // showModal ? 'visible' : 'hidden',
         `absolute inset-0 z-[60] mx-auto mt-5 flex flex-col items-center justify-start `,
         `bg-bggray-100`,
@@ -394,8 +413,8 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
                   HD
                 </span>
               </div>
-              <h1 className="font-extrabold text-4xl">{title}</h1>
-              <div>{video?.overview}</div>
+              <h1 className="font-extrabold text-4xl ">{title}</h1>
+              <div className='line-clamp-3'>{video?.overview}</div>
             </div>
             <div className="flex gap-x-2 grow[2]">
               <span className="text-[#777] ">Genere</span>
@@ -451,6 +470,8 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
           </div>
         </div>
       </div>
+    </div>
+    
     </div>
   )
 };
