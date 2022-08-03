@@ -6,7 +6,7 @@ import useScrollX from './useScroll';
 
 const ThumbnailList = ({ videoList }) => {
   const [hover, setHover] = useState(false);
-  const [thumbnailsRef, scrollX] = useScrollX();
+  const [thumbnailsRef, scrollX, isScrollPosStart, isScrollPosEnd] = useScrollX();
 
   const thumbsTopOffset = 14;
 
@@ -28,22 +28,34 @@ const ThumbnailList = ({ videoList }) => {
         className={classNames(
           'group',
           'flex items-center',
-          'absolute top-[0.2rem]',
+          'absolute top-[0.25rem]',
           'w-full',
           'h-full'
           // 'border-2 border-pink-600'
         )}
       >
-        <div className="grow-0 w-fit h-full mr-1.5 flex items-center bg-bggray-100/60 transition-all duration-300 group-hover:bg-bggray-100/95 z-[26]">
+        <div className={classNames(
+          `grow-0 w-fit h-full mr-1.5 flex items-center bg-bggray-100/60 transition-all duration-300 group-hover:bg-bggray-100/95 z-[26]`,
+          isScrollPosStart ? 'invisible' : 'visible',
+        )}>
           <ChevronLeftIcon
-            className="content-thumb-arrows"
+            className={classNames(
+              `content-thumb-arrows`,
+              // isScrollPosStart ? 'invisible' : 'visible',
+            )}
             onClick={handleLeftButton}
           />
         </div>
         <div className="grow"></div>
-        <div className="grow-0 w-fit h-full ml-1.5 flex items-center bg-bggray-100/60 group-hover:bg-bggray-100/95 z-[26]">
+        <div className={classNames(
+          `grow-0 w-fit h-full ml-1.5 flex items-center bg-bggray-100/60 group-hover:bg-bggray-100/95 z-[26]`,
+          isScrollPosEnd ? 'invisible' : 'visible'
+        )}>
           <ChevronRightIcon
-            className="content-thumb-arrows"
+            className={classNames(
+              `content-thumb-arrows`,
+              // isScrollPosEnd ? 'invisible' : 'visible'
+            )}
             onClick={handleRightButton}
           />
         </div>

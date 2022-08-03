@@ -1,7 +1,14 @@
-import { createRef, useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { round2 } from '../../utils/utils';
 
 const useScrollX = () => {
-  const refComponent = useRef();
+  const [posLeft, setPosLeft] = useState(0);
+  const [isScrollPosStart, setIsScrollPosStart] = useState(true);
+  const [isScrollPosEnd, setIsScrollPosEnd] = useState(false);
+  const [scrollMax, setScrollMax] = useState(0);
+  const [paddingLeft, setPaddingLeft] = useState(0);
+  const refComponent = useRef(); 
+
 
   const ref = useCallback((node) => {
     if (node) {
@@ -9,26 +16,111 @@ const useScrollX = () => {
     }
   }, []);
 
+
+
+  useEffect(() => {
+    const init = () => {
+      setPosLeft(0);
+      if(refComponent) {
+        refComponent.current.scrollLeft = 0;
+        setScrollMax(calculScrollMax());
+        setPaddingLeft(parseFloat(window.getComputedStyle(refComponent.current).scrollPaddingLeft));
+        console.log('useEffect:: refComponent.current.scrollLeft: ', refComponent?.current?.scrollLeft);
+        console.log('padding left: ', paddingLeft);
+
+      }
+    }
+    init();
+    
+    return () => {
+      setPosLeft(0);
+      if(refComponent) refComponent.current.scrollLeft = 0;
+      setScrollMax(0);
+      setIsScrollPosEnd(false);
+      setIsScrollPosStart(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log('useEffect:: scrollMax: ', scrollMax);
+    setIsScrollPosEnd(checkScrollPosEnd());
+    setIsScrollPosStart(checkScrollPosStart());
+    
+  }, [scrollMax]);
+
+  useEffect(() => {
+    setIsScrollPosEnd(checkScrollPosEnd());
+    setIsScrollPosStart(checkScrollPosStart());
+  }, [posLeft]);
+
+
+  const calculScrollMax = () => {
+    if(!refComponent) return 0;
+
+     const { clientWidth, scrollWidth } = refComponent.current;
+    const max = round2((scrollWidth - clientWidth));
+    //  - paddingLeft);
+    console.log('scrollMax: ', max);
+
+    return max;
+  }
+
+
+  const checkScrollPosEnd = () => {
+    console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
+
+    if(Math.round(posLeft) >= scrollMax) {
+      console.log('isScrollEnd true');
+      return true;
+    }      
+    console.log('isScrollEnd false');
+    return false;
+  }
+    
+  const checkScrollPosStart = () => {
+    console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
+    if(Math.round(posLeft) <= paddingLeft) {
+      console.log('isScrollPosStart true');
+      return true;
+    }      
+    console.log('isScrollPosStart false');
+    return false;
+  }
+
+
   const scrollX = useCallback(
     (params = { to: 'right', offset: null, ref: null }) => {
-      console.log('scrollRight: ref ', ref);
-
       const { to, offset, ref } = params;
 
-      const tartgetRef = ref ?? refComponent;
+      const targetElement = ref?.current ?? refComponent?.current;
 
-      if (tartgetRef) {
-        const offsetX = offset ?? window.innerWidth;
-        if (to === 'left') offsetX = -offsetX;
+      if (targetElement) {
+        console.log('scroll before : ', targetElement.scrollLeft);
+        console.log('scroll Max : ', scrollMax);
+        // console.log('targetElement.clientWidth? : ', targetElement.clientWidth);
+        // console.log('targetElement.scrollWidth? : ', targetElement.scrollWidth);
 
-        tartgetRef.current.scrollLeft += offsetX;
-        console.log('scrollRight: ', tartgetRef.current.scrollLeft);
+        const { scrollLeft, clientWidth } = targetElement;
+
+        let offsetX = offset ?? clientWidth;
+        // let offsetX = offset ?? targetElement.clientWidth;
+        if (to === 'left') {
+          offsetX = -offsetX;
+        }
+        
+        console.log('offestX : ', offsetX);
+        
+        const scrollTo = scrollLeft + offsetX;
+
+        targetElement.scrollTo({left: scrollTo, behavior: 'smooth'});
+
+        setPosLeft(scrollTo);
+        console.log('scroll after : ', targetElement.scrollLeft);
+      
       }
-    },
-    []
-  );
+    }, []);
 
-  return [ref, scrollX];
+  return [ref, scrollX, isScrollPosStart, isScrollPosEnd];
 };
 
 export default useScrollX;
