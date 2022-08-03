@@ -15,7 +15,7 @@ export const playerInitialOption = {
 };
 const Player = ({videos}) => {
 
-  const [refPlayer, startPlayer, player, playerStatus, playState, error] = usePlayer({videos, option:playerInitialOption});
+  const { ref: refPlayer, startPlayer, player, playerStatus, playState, error } = usePlayer({videos, option:playerInitialOption});
 
   useEffect(() => {
     if(!videos?.length) return;

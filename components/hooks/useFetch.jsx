@@ -23,6 +23,7 @@ const useFetch = ({ url, requestData = null, shouldStart = false }) => {
 
       setFetchState('pending');
       try {
+        //fetchData
         const res = await fetchData(url, request);
         setData(res.data);
         setFetchState(res.status);
@@ -35,7 +36,7 @@ const useFetch = ({ url, requestData = null, shouldStart = false }) => {
     });
   };
 
-  const fetchData = useCallback((fetchUrl, request = { qury: { url: '' } }) => {
+  const fetchData = useCallback((fetchUrl, request = { query: { url: '' } }) => {
     return new Promise(async (resolve, reject) => {
       try {
         if (!fetchUrl) {

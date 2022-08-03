@@ -60,7 +60,7 @@ export const Thumbnail = ({ video, ...props }) => {
   const { setHover: setWrapperHover } = props;
   let hoverTimer = null;
 
-  const [refPlayer, startPlayer, player, playerStatus, playState, error] =
+  const { ref: refPlayer, startPlayer, stopPlayer, player, playerStatus, playState, error } =
   usePlayer({
     url: {
       url: `${TMDB_BASE_URL}/${video?.media_type}/${video?.id}/videos?api_key=${TMDB_API_KEY}`,
@@ -90,11 +90,12 @@ export const Thumbnail = ({ video, ...props }) => {
   // }, [refPlayer?.current?.playerStatus, hover]);
 
   useEffect(() => {
-    console.log('showPlayer? ', showPlayer);
+    // console.log('showPlayer? ', showPlayer);
   }, [showPlayer]);
 
   const shouldShowPlayer = () => {
     if (
+      !hover ||
       !playState ||
       playState === PlaystateType.UNSTARTED ||
       playState === PlaystateType.ENDED ||
@@ -128,8 +129,8 @@ export const Thumbnail = ({ video, ...props }) => {
         if (!hover) {
           hoverTimer = setTimeout(() => {
             if (!hover) { 
-              startPlayer();
               setHover(true);
+              startPlayer && startPlayer();
               setWrapperHover && setWrapperHover(true);
             }
           }, 700);
@@ -156,7 +157,8 @@ export const Thumbnail = ({ video, ...props }) => {
         }
 
         setHover(false);
-        player?.stopVideo();
+        stopPlayer && stopPlayer();
+        // player?.stopVideo();
         setWrapperHover && setWrapperHover(false);
       }}
     >
@@ -354,7 +356,7 @@ export const Thumbnail = ({ video, ...props }) => {
 
               <div className="px-3 whitespace-normal">
                 <span className="align-middle">
-                  {video.title ?? video.original_title ?? video.name}
+                  {video.title ?? video.original_title ?? video.name ?? video.original_name}
                 </span>
               </div>
 

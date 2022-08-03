@@ -20,21 +20,21 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
         autohide: 1,
         displaykb: 1,
         fs: 0,
-        mute: 1,
+        mute: 0,
       };
   const [showModal, setShowModal] = useState(false);
   const [showPlayer, setShowPlayer] = useState(true);
   const [isMuted, setMuted] = useState(playerOption.mute);
   const [duration, setDuration] = useState(0);
 
-  const [refPlayer, startPlayer, player, playerStatus, playState, error] =
+  const {ref: refPlayer, startPlayer, player, playerStatus, playState, error} =
     usePlayer({
       url: {
         url: `${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`,
         lazyFetch: true,
       },
       option: playerOption,
-      playOnMount: true,
+      playOnMount: false,
     });
 
   const router = useRouter();
@@ -67,8 +67,8 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
     console.log('showModal ', showModal);
 
     if (showModal) {
-      if (!player) startPlayer();
-      else player?.playVideo();
+      if (!player && startPlayer) startPlayer();
+      if(player) player?.playVideo();
     } else {
       player?.stopVideo();
     }
@@ -258,7 +258,7 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
                             onClick={(e) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              console.log('play button click');
+                              // console.log('play button click');
                             }}
                             className="content-banner-button w-full text-black"
                           >
@@ -273,6 +273,7 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
+                          // console.log('Plus button click');
                           player?.playVideo();
                         }}
                       >

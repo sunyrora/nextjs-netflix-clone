@@ -27,6 +27,20 @@ const useYTPlayer = () => {
       setError('');
       console.log('======YTPlayer is ready===== event.target', event.target);
     },
+    // onReady: (resolve, custom = null) => (event) => {
+    //   //   if (autoPlay) event.target.playVideo();
+
+    //   if(custom) {
+    //     custom(event);
+    //     return resolve(event.tartet);
+    //   }
+
+    //   setPlayer(event.target);
+    //   setStatus('ready');
+    //   setError('');
+    //   console.log('======YTPlayer is ready===== event.target', event.target);
+    //   resolve(event.target);
+    // },
     // 5. The API calls this function when the player's state changes.
     //    The function indicates that when playing a video (state=1),
     //    the player should play for six seconds and then stop.
@@ -43,7 +57,7 @@ const useYTPlayer = () => {
   };
 
   useEffect(() => {
-    setYtStatus();
+    // setYtStatus();
 
     return () => {
       window.onYouTubeIframeAPIReady = null;
@@ -61,31 +75,34 @@ const useYTPlayer = () => {
   );
 
   const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
-    return new Promise(async (resolve, reject) => {
-      // const handlers = { ...initialEventHandlers, ...eventHandlers };
-      const handlers = eventHandlers ?? initialEventHandlers;
-      console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
-      console.log('startYTPlayer: eventHandlers: ', handlers);
-      setStatus('loading');
-      let errorMessage = '';
+     return new Promise(async (resolve, reject) => {
+        // const handlers = { ...initialEventHandlers, ...eventHandlers };
+        const handlers = eventHandlers ?? initialEventHandlers;
+        console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
+        console.log('startYTPlayer: eventHandlers: ', handlers);
+        setStatus('loading');
+        let errorMessage = '';
 
-      if (!videoId) {
-        errorMessage = 'YTPlayer: videoId is missing';
-        setStatus('error', errorMessage);
-        return reject(new Error(errorMessage));
-      }
+        if (!videoId) {
+          errorMessage = 'YTPlayer: videoId is missing';
+          setStatus('error', errorMessage);
+           return reject(new Error(errorMessage));
+        }
 
-      if (!playerId) {
-        errorMessage = 'YTPlayer: playerId is missing';
-        setStatus('error', errorMessage);
-        return reject(new Error(errorMessage));
-      }
+        if (!playerId) {
+          errorMessage = 'YTPlayer: playerId is missing';
+          setStatus('error', errorMessage);
+          return reject(new Error(errorMessage));
+        }
 
       try {
         const YT = await loadYoutubeScript();
         if (!YT) {
           throw new Error('YTPlayer load error');
         }
+
+        setStatus('create YTPlayer');
+
 
         const newPlayer = new YT.Player(playerId, {
           height: '100%',
@@ -94,6 +111,9 @@ const useYTPlayer = () => {
           playerVars: option,
           events: handlers,
         });
+
+        console.log('newPlayer: >>>>>>>>>>>>>>> ', newPlayer);
+        resolve(newPlayer);
 
         // console.log('createYTPlayer newPlayer: ', newPlayer);
       } catch (error) {
@@ -104,18 +124,20 @@ const useYTPlayer = () => {
   };
 
   const onYouTubeIframeAPIReady = (resolve) => () => {
+    setStatus('YT api ready');
     resolve(window.YT);
   };
 
   const loadYoutubeScript = () => {
-    return new Promise((resolve, reject) => {
-      // 2. This code loads the IFrame Player API code asynchronously.
+     return new Promise((resolve, reject) => {
+        // 2. This code loads the IFrame Player API code asynchronously.
       if (
         window.YT &&
         window.YT.Player &&
         window.YT.Player instanceof Function
       ) {
         // console.log('window.YT is already exist: ', window.YT);
+        setStatus('YT api ready');
         return resolve(window.YT);
       }
 
@@ -134,8 +156,8 @@ const useYTPlayer = () => {
       }
 
       window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady(resolve);
-    });
-  };
+      });
+};
 
   const stopVideo = () => {
     player?.stopVideo();
@@ -152,6 +174,6 @@ const useYTPlayer = () => {
   }, []);
 
   return [startYTPlayer, status, error];
-};;;
+};
 
 export default useYTPlayer;
