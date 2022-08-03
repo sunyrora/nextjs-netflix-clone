@@ -9,7 +9,7 @@ import Link from 'next/link';
 import menus from './menus';
 import Menu from './Menu';
 
-const HeaderLogined = () => {
+const HeaderLogedIn = () => {
   const [isScrolled, setScrolled] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -104,4 +104,4 @@ const HeaderLogined = () => {
   );
 };
 
-export default HeaderLogined;
+export default HeaderLogedIn;

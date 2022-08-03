@@ -2,7 +2,7 @@ import Head from 'next/head';
 import BackgroundImage from '../components/BackgroundImage';
 import { useSession } from 'next-auth/react';
 import Header from '../components/header/Header';
-import HeaderLogined from '../components/header/HeaderLogined';
+import HeaderLogedIn from '../components/header/HeaderLogedIn';
 import { useEffect } from 'react';
 
 const Layout = ({ title, bgImg, children }) => {
@@ -30,9 +30,9 @@ const Layout = ({ title, bgImg, children }) => {
         <BackgroundImage bgImg={bgImg} />
         <header>
           {process.env.NODE_ENV === 'development' ? (
-            <HeaderLogined />
+            <HeaderLogedIn />
           ) : session ? (
-            <HeaderLogined />
+            <HeaderLogedIn />
           ) : (
             <Header />
           )}
