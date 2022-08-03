@@ -27,29 +27,10 @@ const useYTPlayer = () => {
       setError('');
       console.log('======YTPlayer is ready===== event.target', event.target);
     },
-    // onReady: (resolve, custom = null) => (event) => {
-    //   //   if (autoPlay) event.target.playVideo();
-
-    //   if(custom) {
-    //     custom(event);
-    //     return resolve(event.tartet);
-    //   }
-
-    //   setPlayer(event.target);
-    //   setStatus('ready');
-    //   setError('');
-    //   console.log('======YTPlayer is ready===== event.target', event.target);
-    //   resolve(event.target);
-    // },
     // 5. The API calls this function when the player's state changes.
     //    The function indicates that when playing a video (state=1),
     //    the player should play for six seconds and then stop.
     onStateChange: (event) => {
-      //   console.log('onPlayerStateChange: ', event.data);
-      // if (event.data == YT.PlayerState.PLAYING && !done) {
-      //   setTimeout(stopVideo, 6000);
-      //   done = true;
-      // }
     },
     onVolumeChange: (event) => {
       // console.log('onVolumeChange: ', event.data);
@@ -57,7 +38,6 @@ const useYTPlayer = () => {
   };
 
   useEffect(() => {
-    // setYtStatus();
 
     return () => {
       window.onYouTubeIframeAPIReady = null;
@@ -76,10 +56,8 @@ const useYTPlayer = () => {
 
   const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
      return new Promise(async (resolve, reject) => {
-        // const handlers = { ...initialEventHandlers, ...eventHandlers };
         const handlers = eventHandlers ?? initialEventHandlers;
         console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
-        console.log('startYTPlayer: eventHandlers: ', handlers);
         setStatus('loading');
         let errorMessage = '';
 
@@ -112,10 +90,8 @@ const useYTPlayer = () => {
           events: handlers,
         });
 
-        console.log('newPlayer: >>>>>>>>>>>>>>> ', newPlayer);
         resolve(newPlayer);
 
-        // console.log('createYTPlayer newPlayer: ', newPlayer);
       } catch (error) {
         setStatus('error', error.message);
         reject(error);
@@ -136,8 +112,7 @@ const useYTPlayer = () => {
         window.YT.Player &&
         window.YT.Player instanceof Function
       ) {
-        // console.log('window.YT is already exist: ', window.YT);
-        setStatus('YT api ready');
+        setStatus('YT api ready loaded');
         return resolve(window.YT);
       }
 

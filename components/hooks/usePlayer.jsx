@@ -59,9 +59,6 @@ const usePlayer = ({
   const ref = useCallback((node) => {
     if (node) {
       refComponent.current = node;
-      // if (playOnMount) {
-      //   startPlayer();
-      // }
     }
   }, []);
 
@@ -85,14 +82,7 @@ const usePlayer = ({
 
     setPlayerStatus('init');
     setError('');
-    // resetYTPlayer();
   }, []);
-
-  // const resetYTPlayer = () => {
-  //   if (ytPlayer) {
-  //     ytPlayer.destroy();
-  //   }
-  // };
 
   const setStatus = (player, error = '') => {
     console.info('Player status chaged: ', player, ',error message: ', error);
@@ -102,7 +92,6 @@ const usePlayer = ({
 
   const playerEventHandlers = {
     onReady: (resolve, customOnReady = null) => (event) => {
-      //   if (autoPlay) event.target.playVideo();
       setYTPlayer(event.target);
       setStatus('player ready');
       console.log(
@@ -178,7 +167,7 @@ const usePlayer = ({
 
   useEffect(() => {}, []);
 
-  const prepareDataForYTP = (next = null) => {
+  const prepareDataForYTP = () => {
     if (data?.length) {
       setStatus('prepareDataForYTP');
 
@@ -199,14 +188,12 @@ const usePlayer = ({
 
       // ready to mount YTPlayer
       setStatus('ready for mount player');
-      // startPlayer();
-      next ? next() : startPlayer();
+      startPlayer();
     }
   };
 
   // setData useEffect
   useEffect(() => {
-    // console.log('data set: ', data);
     if (data?.length) prepareDataForYTP();
   }, [data]);
 
@@ -218,17 +205,14 @@ const usePlayer = ({
           const res = await startFetch({ query: { url: requestData.url } });
           console.log(`********* Player fetchvideo res: ${uniqueId}`, res);
           if (!res || res.length <= 0) {
-            // throw new Error('No video data');
-            reject(new Error('No video data'));
+            throw new Error('No video data');
           }
 
           setStatus('data fetched');
           resolve(res);
-          // setData(res);
         } catch (error) {
           console.error('Player fetch video error: ', error);
           setStatus('error', error.message);
-          // throw error;
           reject(error);
         }
       });
@@ -265,15 +249,9 @@ const usePlayer = ({
           }
     
           if (url.url) {
-            // try {
               const res = await fetchVideo(url);
               setData(res);
               return resolve(res);
-            // } catch (error) {
-            //   console.error('startPlayer fetch error : ', error);
-            //   setStatus('error', `startPlayer:: ${error.message}`);
-            //   return;
-            // }
           }
         } else {
           if ((!videoId || !playerId)) {
@@ -281,9 +259,6 @@ const usePlayer = ({
             return resolve('prepare data');
           }
         }
-    
-        
-        // try {
           setStatus('startYTPlayer loading');
           if(Object.keys(ytpHandlers).length > 0) {
             ytpHandlers.onReady = playerEventHandlers.onReady(resolve, ytpHandlers.onReady);
@@ -297,16 +272,8 @@ const usePlayer = ({
             videoId,
             playerId,
             ytpOption,
-            // {
-            //   ...ytpOption,
-            //   playlist: videoId,
-            // },
             ytpHandlers
           );
-        // } catch (error) {
-        //   console.log('Player startYTPlayer error: ', error);
-        //   setStatus('error', error.message);
-        // }
 
       } catch (error) {
             console.error('Player StartPlayer Promise error : ', error);
@@ -316,76 +283,15 @@ const usePlayer = ({
     });
   };
 
-  const startPlayer = () => {
+  const startPlayer = async () => {
     // startPlayerPromise().promise;
     try {
-      startPlayerPromise();      
+      await startPlayerPromise();      
     } catch (error) {
       console.error('starPlayer error: ', error);
       setStatus('error', error);
     }
   }
-
-  // const startPlayer = async () => {
-  //   if (ytPlayer) {
-  //     if (ytpStatus === 'error' && ytpError) {
-  //       console.log('there was a ytp error');
-  //       setStatus('error', ytpError);
-  //       return;
-  //     }
-
-  //     console.log('YTPlayer already exist');
-  //     play();
-  //     return;
-  //   }
-
-  //   if (!data) {
-  //     if (!videos && !url.url) {
-  //       const message = 'No videos data or invalid fetch url';
-  //       setStatus('error', message);
-  //       throw new Error(message);
-  //     }
-
-  //     if (videos) {
-  //       setData(videos);
-  //       return;
-  //     }
-
-  //     if (url.url) {
-  //       try {
-  //         const res = await fetchVideo(url);
-  //         setData(res);
-  //         return;
-  //       } catch (error) {
-  //         console.error('startPlayer fetch error : ', error);
-  //         setStatus('error', `startPlayer:: ${error.message}`);
-  //         return;
-  //       }
-  //     }
-  //   }
-  //   if (data && (!videoId || !playerId)) {
-  //     prepareDataForYTP();
-  //     return;
-  //   }
-
-  //   try {
-  //     setStatus('startYTPlayer loading');
-  //     //create YTPlayer
-  //     await startYTPlayer(
-  //       videoId,
-  //       playerId,
-  //       ytpOption,
-  //       // {
-  //       //   ...ytpOption,
-  //       //   playlist: videoId,
-  //       // },
-  //       plyerEventHanlders
-  //     );
-  //   } catch (error) {
-  //     console.log('Player startYTPlayer error: ', error);
-  //     setStatus('error', error.message);
-  //   }
-  // };
 
   const stopPlayer = () => {
     // if(promiseToCancel) promiseToCancel();
@@ -424,7 +330,7 @@ const usePlayer = ({
         ytPlayer?.playVideo();
       }
     } catch (error) {
-      setStatus('error', `Player::play- ${error.message}`);
+      setStatus('error', `usePlayer::play- ${error.message}`);
       console.log('Player play() error: ', error);
     }
   };
@@ -445,7 +351,6 @@ const usePlayer = ({
   };
 
   const isMuted = () => {
-    // console.log('ytPlayer?.isMuted()? ', ytPlayer?.isMuted());
     return ytPlayer?.isMuted();
   };
 

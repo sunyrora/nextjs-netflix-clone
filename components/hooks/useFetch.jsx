@@ -40,7 +40,7 @@ const useFetch = ({ url, requestData = null, shouldStart = false }) => {
     return new Promise(async (resolve, reject) => {
       try {
         if (!fetchUrl) {
-          reject(new Error('Bad Fetch URL'));
+          reject(new Error('Bad URL'));
           return;
         }
 
@@ -58,7 +58,7 @@ const useFetch = ({ url, requestData = null, shouldStart = false }) => {
           data,
         });
       } catch (error) {
-        console.error('Fetch data error: : ', error);
+        // console.error('Fetch data error: : ', error);
         setFetchState('error', error.message);
         reject(error);
       }
