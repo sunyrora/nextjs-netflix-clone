@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import Header from '../components/header/Header';
 import HeaderLogedIn from '../components/header/HeaderLogedIn';
 import { useEffect } from 'react';
+import { classNames } from '../utils/utils';
 
 const Layout = ({ title, bgImg, children }) => {
   const baseTitle = 'Netflix Clone';
@@ -27,7 +28,16 @@ const Layout = ({ title, bgImg, children }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="w-full p-0">
-        <BackgroundImage bgImg={bgImg} />
+        <div className="absolute w-full h-fit">
+          <BackgroundImage className='relative' bgImg={bgImg} />
+          {/* gradient */}
+          <div className={classNames(
+            `w-full h-[10%]`,
+            `absolute bottom-0`, 
+            // `border-2 border-orange-600`,
+            'bg-gradient-to-t from-bggray-100/100 to-white/0'
+          )}></div>
+        </div>
         <header>
           {process.env.NODE_ENV === 'development' ? (
             <HeaderLogedIn />
@@ -38,10 +48,7 @@ const Layout = ({ title, bgImg, children }) => {
           )}
         </header>
         {/* <main className="pt-24 md:pt-32">{children}</main> */}
-        <main
-          className="w-full p-0  bg-gradient-to-b
-         from-bggay/10  to-[#010511]"
-        >
+        <main className="w-full p-0">
           {children}
         </main>
       </div>

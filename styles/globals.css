@@ -23,12 +23,6 @@
     @apply rounded md:h-9 tracking-[0.028rem] bg-[#e50914] text-sm md:px-4 p-2;
   }
 
-  .content-container {
-    /* @apply w-auto px-content-default; */
-    @apply w-auto 
-    /* pl-content-default 2xl:px-[60px]; */
-  }
-
   .content-body {
     --default-left-padding: calc(100vw * 0.04);
     --max-w-default: calc(100vw - var(--default-left-padding) - var(--scrollbar-width));
