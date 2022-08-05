@@ -81,16 +81,17 @@ const useYTPlayer = () => {
 
         setStatus('create YTPlayer');
 
-
         const newPlayer = new YT.Player(playerId, {
+          // host: `${window.location.protocol}//www.youtube.com`,
+          // origin: 'http://192.168.1.76:3000',
           height: '100%',
           width: '100%',
           videoId: videoId,
-          playerVars: option,
+          playerVars: { ...option},
           events: handlers,
         });
 
-        resolve(newPlayer);
+          // resolve(newPlayer);
 
       } catch (error) {
         setStatus('error', error.message);
@@ -116,7 +117,7 @@ const useYTPlayer = () => {
         return resolve(window.YT);
       }
 
-      const youtubeAPI = 'https://www.youtube.com/iframe_api';
+      const youtubeAPI = 'http://www.youtube.com/iframe_api';
       const apiNotLoaded = [...document.getElementsByTagName('script')].every(
         (elem) => elem.src !== youtubeAPI
       );
