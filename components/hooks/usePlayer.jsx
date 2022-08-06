@@ -42,18 +42,26 @@ const usePlayer = ({
   const [playerStatus, setPlayerStatus] = useState('init');
   const [error, setError] = useState('');
   const [playState, setPlayState] = useState(-1);
-  const [ytPlayer, setYTPlayer] = useState(null);
-  // const [promiseToCancel, setPromiseToCancel] = useState(null);
-  // const [cancelPromiseMap, setCancelPromiseMap] = useState(new Map());
+  const [stopRequest, setStopRequest] = useState(false);
   const uniqueId = useId();
   // let promiseToCancel = null;
 
-  const [startYTPlayer, ytpStatus, ytpError] = useYTPlayer();
+  const { startYTPlayer, destroyPlayer, player: ytPlayer, status: ytpStatus, ytpStatusCode, error: ytpError } = useYTPlayer();
 
   let videoId = '';
   let playerId = '';
   let ytpOption = option;
   let ytpHandlers = handlers;
+  // let currVideo = null;
+  let currVideoTitle = '';
+
+  const printLog = (...args) => {
+    console.log(...args, ': ', currVideoTitle);
+  }
+
+  const printError = (...args) => {
+    console.error(...args, ': ', currVideoTitle);
+  }
 
   const promiseKeys = {
     startPlayerPromise: 'startPlayerPromise',
@@ -73,108 +81,8 @@ const usePlayer = ({
     }
   }, []);
 
-//  const startPlayerPromise =  () => makeCancelablePromise(() => {
-
-//     return new Promise(async (resolve, reject) => {
-//       try {
-//           if (ytPlayer) {
-//             if (ytpStatus === 'error' && ytpError) {
-//               console.log('there was a ytp error');
-//               setStatus('error', ytpError);
-//               return reject(ytpError);
-//             }
-      
-//             console.log('YTPlayer already exist');
-//             play();
-//             return resolve(ytPlayer);
-//           }
-      
-//           let videoData = [];
-//           if (!data) {
-//             if (!videos && !url.url) {
-//               const message = 'No videos data or invalid fetch url';
-//               setStatus('error', message);
-//               return reject(new Error(message));
-//             }
-      
-//             if (videos) {
-//               setData(videos);
-//               videoData = videos;
-//               // return resolve('Data setting');
-//             }
-      
-//             if (!videos && url.url) {
-//                 const res = await fetchVideo(url);
-//                 setData(res);
-//                 videoData = res;
-//                 // return resolve(res);
-              
-//             }
-
-//               prepareDataForYTP(videoData);
-//           } else {
-//             if ((!videoId || !playerId)) {
-//               console.log('lets prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
-//               videoData = data;
-//               prepareDataForYTP(data);
-//               console.log('after prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
-              
-//               // return resolve('prepare data');
-//             }
-//           }
-//             setStatus('startYTPlayer loading');
-//             if(Object.keys(handlers).length > 0) {
-//               ytpHandlers = handlers;
-//               ytpHandlers.onReady = playerEventHandlers.onReady(resolve, handlers.onReady);
-//             } else {
-//               ytpHandlers = playerEventHandlers;
-//               ytpHandlers.onReady = playerEventHandlers.onReady(resolve);
-//             }
-//             console.log('ytpHandlers:::: ', ytpHandlers);
-//             //create YTPlayer
-//             const ytPlayerPromise = makeCancelablePromise(async() => {
-              
-//               try {
-//                 return await startYTPlayer(
-//                       videoId,
-//                       playerId,
-//                       ytpOption,
-//                       ytpHandlers
-//                   );
-//               } catch (error) {
-//                 reject(error);
-//               }
-//             }
-//             , 'ytPlayerPromise');
-
-//               if(!ytPlayerPromise) return reject('YTPlayer start error');
-            
-//               setPromiseToCancel(ytPlayerPromise);
-//               const res = await ytPlayerPromise.promise();
-//               console.log('ytPlayerPromise res: ', res);
-
-//             // await startYTPlayer(
-//             //   videoId,
-//             //   playerId,
-//             //   ytpOption,
-//             //   ytpHandlers
-//             // );
-
-//       } catch (error) {
-//         console.error('Player StartPlayer Promise error : ', error);
-//         setStatus('error', `startPlayer:: ${error.message}`);
-//         return reject(error);;
-//       }
-          
-//       })
-//     }, promiseKeys.startPlayerPromise)
 
   useEffect(() => {
-
-    // cancelPromiseMap.set(promiseKeys.startPlayerPromise, startPlayerPromise());
-    // console.log('useEffect cancelPromiseMap? ', cancelPromiseMap);
-
-
     if(playOnMount) {
         startPlayer();
     }
@@ -183,10 +91,24 @@ const usePlayer = ({
     }
   }, []);
 
-  
-  // useEffect(() => {
-  //   console.log('useEffect:: promiseToCancel: ', promiseToCancel);
-  // }, [promiseToCancel]);
+  useEffect(() => {
+    if(ytpStatus === ytpStatusCode.READY) {
+
+      if(ytPlayer?.videoTitle)
+        currVideoTitle = ytPlayer.videoTitle;
+
+      // console.log('stopRequest? ', stopRequest);
+      if(stopRequest) {
+        printLog('stopRequest? ', stopRequest);
+        destroyPlayer && destroyPlayer();
+        // pause();
+        setStopRequest(false);
+        promiseToCancel= null;
+      }
+    }
+
+  }, [ytpStatus]);
+
 
   const resetPlayer = useCallback(() => {
     setData(null);
@@ -200,55 +122,48 @@ const usePlayer = ({
   }, []);
 
   const setStatus = (player, error = '') => {
-    console.info('Player status chaged: ', player, ',error message: ', error);
+    // console.info('Player status chaged: ', player, ', ', player?.videoTitle, );
+    printLog('Player status chaged: ', player);
+    error && printError('error_message: ', error);
     setPlayerStatus(player);
     setError(error);
   };
 
-  const wrapperHandler = (resolve, handler = null) => (e) => {
-    resolve(handler && handler(e))
-  }
+  // const wrapperHandler = (resolve, handler = null) => (e) => {
+  //   resolve(handler && handler(e))
+  // }
 
   const playerEventHandlers = {
     onReady: (event) => {
-      setYTPlayer(event.target);
-      setStatus('player ready');
+      // setStatus('player ready');
       console.log(
         `======usePlyaer's YTPlayer is ready===== event.target`,
         event.target
       );
 
       return event.target;
-
-      // if(customOnReady) {            
-      //   return resolve(customOnReady(event));
-      // }
-
-      // // option?.mute ? event?.target?.mute() : event?.target?.unMute();
-      // // if (option?.autoplay) event?.target?.playVideo();
-      // resolve(event.target);
     },
     onStateChange: (event) => {
-      console.log(
-        `This is usePlayer's onStateChange ----event.data: `, event.target.videoTitle,
-        event.data 
+      printLog(
+        `This is usePlayer's onStateChange ----: `, event.data, ', ', event.target.videoTitle,
+         
       );
       switch (event.data) {
         case YT.PlayerState.ENDED:
           {
-            console.log('Video ended');
+            printLog('Video ended');
             setPlayState(YT.PlayerState.ENDED);
           }
           break;
         case YT.PlayerState.UNSTARTED:
           {
-            console.log('Video ended');
+            printLog('Video unstarted');
             setPlayState(YT.PlayerState.UNSTARTED);
           }
           break;
         case YT.PlayerState.PLAYING:
           {
-            console.log(
+            printLog(
               'player state change: playing ',
               YT.PlayerState.PLAYING
             );
@@ -257,13 +172,13 @@ const usePlayer = ({
           break;
         case YT.PlayerState.PAUSED:
           {
-            console.log('player state chaged paused: ', YT.PlayerState.PAUSED);
+            printLog('player state chaged paused: ', YT.PlayerState.PAUSED);
             setPlayState(YT.PlayerState.PAUSED);
           }
           break;
         case YT.PlayerState.BUFFERING:
           {
-            console.log(
+            printLog(
               'player state chaged buffering: ',
               YT.PlayerState.BUFFERING
             );
@@ -272,12 +187,12 @@ const usePlayer = ({
           break;
         case YT.PlayerState.CUED:
           {
-            console.log('player state chaged cued: ', YT.PlayerState.CUED);
+            printLog('player state chaged cued: ', YT.PlayerState.CUED);
             setPlayState(YT.PlayerState.BUFFERING);
           }
           break;
         default: {
-          console.log('player state chaged : ', event.data);
+          printLog('player state chaged : ', event.data);
         }
       }
     },
@@ -286,30 +201,29 @@ const usePlayer = ({
     },
   };
 
-  useEffect(() => {}, []);
 
   const prepareDataForYTP = (videoData) => {
     if (videoData?.length) {
       setStatus('prepareDataForYTP');
 
       const length = videoData?.length;
-      console.info('Player:: videoData.length: ', length);
+      printLog('Player:: videoData.length: ', length);
       const randomIdx = length > 1 ? randomNumber(0, length - 1) : 0;
       // console.log('random video===== randomIdx : ', randomIdx);
       const randomVideo = videoData[randomIdx];
-      console.log('random video===== randomVideo : ', randomVideo);
+      currVideoTitle = randomVideo?.title ?? randomVideo?.original_title ?? randomVideo?.name ?? randomVideo?.original_name;
+      // printLog('random video===== randomVideo : ', randomVideo);
 
       playerId = `player-${randomVideo?.key}-${uniqueId}`;
       videoId = randomVideo?.key;
+      refComponent?.current?.setAttribute('id', playerId);
       ytpOption = {
         ...option,
         playlist: randomVideo?.key,
       };
-      refComponent?.current?.setAttribute('id', playerId);
 
       // ready to mount YTPlayer
       setStatus('ready for mount player');
-      // startPlayer();
     }
   };
 
@@ -324,7 +238,7 @@ const usePlayer = ({
         try {
           setStatus('fetch request');
           const res = await startFetch({ query: { url: requestData.url } });
-          console.log(`********* Player fetchvideo res: ${uniqueId}`, res);
+          printLog(`********* Player fetchvideo res: ${uniqueId}`, res);
           if (!res || res.length <= 0) {
             throw new Error('No video data');
           }
@@ -332,326 +246,155 @@ const usePlayer = ({
           setStatus('data fetched');
           resolve(res);
         } catch (error) {
-          console.error('Player fetch video error: ', error);
+          printError('Player fetch video error: ', error);
           setStatus('error', error.message);
           reject(error);
         }
       });
     },
     [url]
-  );
-
-  // const startPlayerPromise = makeCancelablePromise(() => {
-  // setStartPlayerPromise( makeCancelablePromise(() => {
-
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //         if (ytPlayer) {
-  //           if (ytpStatus === 'error' && ytpError) {
-  //             console.log('there was a ytp error');
-  //             setStatus('error', ytpError);
-  //             return reject(ytpError);
-  //           }
-      
-  //           console.log('YTPlayer already exist');
-  //           play();
-  //           return resolve(ytPlayer);
-  //         }
-      
-  //         if (!data) {
-  //           if (!videos && !url.url) {
-  //             const message = 'No videos data or invalid fetch url';
-  //             setStatus('error', message);
-  //             return reject(new Error(message));
-  //           }
-      
-  //           if (videos) {
-  //             setData(videos);
-  //             return resolve('Data setting');
-  //           }
-      
-  //           if (url.url) {
-  //               const res = await fetchVideo(url);
-  //               setData(res);
-  //               return resolve(res);
-  //           }
-  //         } else {
-  //           if ((!videoId || !playerId)) {
-  //             prepareDataForYTP();
-  //             return resolve('prepare data');
-  //           }
-  //         }
-  //           setStatus('startYTPlayer loading');
-  //           if(Object.keys(ytpHandlers).length > 0) {
-  //             ytpHandlers.onReady = playerEventHandlers.onReady(resolve, ytpHandlers.onReady);
-  //           } else {
-  //             ytpHandlers = playerEventHandlers;
-  //             ytpHandlers.onReady = playerEventHandlers.onReady(resolve);
-  //           }
-  //           console.log('ytpHandlers:::: ', ytpHandlers);
-  //           //create YTPlayer
-  //           await startYTPlayer(
-  //             videoId,
-  //             playerId,
-  //             ytpOption,
-  //             ytpHandlers
-  //           );
-
-  //     } catch (error) {
-  //           console.error('Player StartPlayer Promise error : ', error);
-  //           setStatus('error', `startPlayer:: ${error.message}`);
-  //           return reject(error);;
-  //     }
-        
-
-  //       // console.log('cancelable? ', cancelable);
-  //       // cancelPromiseMap.set(promiseKeys.startPlayerPromise, cancelable);
-  //       // console.log('cancelPromiseMap? ', cancelPromiseMap);
-  //       // return cancelable;  
-          
-  //     })
-  //   }, promiseKeys.startPlayerPromise)
-  // );
-
-  // return runPromise
-
-// cancelPromiseMap.set(promiseKeys.startPlayerPromise, startPlayerPromise);
-// console.log('cancelPromiseMap? ', cancelPromiseMap);
-    
+  ); 
 
 const startPlayerPromise =  () => {
 
     return new Promise(async (resolve, reject) => {
       try {
-          if (ytPlayer) {
-            if (ytpStatus === 'error' && ytpError) {
-              console.log('there was a ytp error');
-              setStatus('error', ytpError);
-              return reject(ytpError);
-            }
-      
-            console.log('YTPlayer already exist', ytPlayer);
-            play();
-            return resolve(ytPlayer);
+        let videoData = [];
+        if (!data) {
+          if (!videos && !url.url) {
+            const message = 'No videos data or invalid fetch url';
+            setStatus('error', message);
+            return reject(new Error(message));
           }
-      
-          let videoData = [];
-          if (!data) {
-            if (!videos && !url.url) {
-              const message = 'No videos data or invalid fetch url';
-              setStatus('error', message);
-              return reject(new Error(message));
-            }
-      
-            if (videos) {
-              setData(videos);
-              videoData = videos;
-              // return resolve('Data setting');
-            }
-      
-            if (!videos && url.url) {
-                const res = await fetchVideo(url);
-                setData(res);
-                videoData = res;
-                // return resolve(res);
-              
-            }
-
-              prepareDataForYTP(videoData);
-          } else {
-            if ((!videoId || !playerId)) {
-              console.log('lets prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
-              videoData = data;
-              prepareDataForYTP(data);
-              console.log('after prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
-              
-              // return resolve('prepare data');
-            }
+    
+          if (videos) {
+            setData(videos);
+            videoData = videos;
           }
-            setStatus('startYTPlayer loading');
-            if(Object.keys(handlers).length > 0) {
-              ytpHandlers = {...handlers};
-              ytpHandlers.onReady = wrapperHandler(resolve, ytpHandlers.onReady);
-            } else {
-              ytpHandlers = {...playerEventHandlers}
-              ytpHandlers.onReady = wrapperHandler(resolve, ytpHandlers.onReady);
-            }
-            // if(Object.keys(handlers).length > 0) {
-            //   ytpHandlers = handlers;
-            //   ytpHandlers.onReady = playerEventHandlers.onReady(resolve, handlers.onReady);
-            // } else {
-            //   ytpHandlers = playerEventHandlers;
-            //   ytpHandlers.onReady = playerEventHandlers.onReady(resolve);
-            // }
-            console.log('ytpHandlers:::: ', ytpHandlers);
-            //create YTPlayer
-            const ytPlayerPromise = makeCancelablePromise(async() => {
-              return await startYTPlayer(
-                      videoId,
-                      playerId,
-                      ytpOption,
-                      ytpHandlers
-                  );
-              }
-            , promiseToCancel?.cancel, 'ytPlayerPromise');
+    
+          if (!videos && url.url) {
+              const res = await fetchVideo(url);
+              setData(res);
+              videoData = res;
+          }
+            prepareDataForYTP(videoData);
 
-              if(!ytPlayerPromise) return reject('YTPlayer start error');
-            
-              promiseToCancel = ytPlayerPromise;
-              // setPromiseToCancel(ytPlayerPromise);
-              const res = await ytPlayerPromise.promise();
-              console.log('ytPlayerPromise res: ', res);
+        } else {
 
-            // await startYTPlayer(
-            //   videoId,
-            //   playerId,
-            //   ytpOption,
-            //   ytpHandlers
-            // );
+          if ((!videoId || !playerId)) {
+            // console.log('lets prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
+            videoData = data;
+            prepareDataForYTP(data);
+            // console.log('after prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
+          }
+        }
+        setStatus('startYTPlayer loading');
+
+        ytpHandlers = (Object.keys(handlers).length > 0) ? handlers : playerEventHandlers;
+        
+        // console.log('ytpHandlers:::: ', ytpHandlers);
+        
+        const ytPlayerPromise = startYTPlayer(
+          videoId,
+          playerId,
+          ytpOption,
+          ytpHandlers
+        );
+
+        if(!ytPlayerPromise) return reject('start YTPlayer error');
+        ytPlayerPromise.setCancelChain(promiseToCancel?.cancel);
+      
+        const prevCancel = promiseToCancel;
+        promiseToCancel = ytPlayerPromise;
+        
+        const res = await ytPlayerPromise.promise();
+        printLog('ytPlayerPromise res: ', res);
+        promiseToCancel = prevCancel;
+        resolve(res);
 
       } catch (error) {
-        console.error('Player StartPlayer Promise error : ', error);
+        printError('Player StartPlayer Promise error : ', error);
         setStatus('error', `startPlayer:: ${error.message}`);
+        promiseToCancel = null;
+
         return reject(error);
       }
           
     });
   }
-   
-
-
 
   const startPlayer = async () => {
     try {
-      // const startPromise = cancelPromiseMap.get(promiseKeys.startPlayerPromise);
-      // if(ytPlayer) return play();
+      setStopRequest(false);
       setStatus('init');
-      if (ytPlayer && ytPlayer instanceof YT.Player) return play();
 
-      const startPromise = makeCancelablePromise(startPlayerPromise, null, 'startPlayerPromise');;
-      console.log('startPlayer:: startPromise :', startPromise);
-      // setPromiseToCancel(startPromise);
+      if (ytPlayer && ytPlayer instanceof YT.Player && playState !== YT.PlayerState.UNSTARTED) {
+        printLog('YTPlayer already exist', ytPlayer);('Player ready');
+        setStatus('ready');
+        return play();
+      }
+
+      const startPromise = makeCancelablePromise({
+        promise: startPlayerPromise,
+        name: 'startPlayerPromise'
+      });
       promiseToCancel = startPromise;
       const res = await startPromise.promise();
-      
-      console.log('startPlayer res: ', res);
-      // if(promiseToCancel.hasCanceled_) throw new Error('canceld');
+      promiseToCancel = null;
 
-      // option?.mute ? res?.mute() : res?.unMute();
-      // option?.autoplay && res?.playVideo();
+      setStatus('ready');      
+      printLog('startPlayer res: ', res);
       
-      
-      // setPromiseToCancel(null);
-
-      console.log('startPlayer:: promiseToCancel :', promiseToCancel);
     } catch (error) {
       console.error('starPlayer error: ', error);
-      console.log('ytPlayer was created? ', ytPlayer);
-      if(ytPlayer)
-        stop();
+      // printLog('ytPlayer has created? ', ytPlayer);
+      promiseToCancel = null;
       setStatus('error', error);
     }
   }
 
-  // const startPlayer = async () => {
-  //   try {
-  //     const startPromise = cancelPromiseMap.get(promiseKeys.startPlayerPromise);
-  //     console.log('startPlayer:: cancelPromiseMap:', cancelPromiseMap);
-  //     console.log('startPlayer:: startPromise :', startPromise);
-  //     setPromiseToCancel(startPromise);
-  //     const res = await startPromise.promise();
-      
-
-  //     console.log('startPlayer res: ', res);
-  //     option?.mute ? res?.mute() : res?.unMute();
-  //     option?.autoplay && res?.playVideo();
-              
-  //     console.log('startPlayer:: promiseToCancel :', promiseToCancel);
-  //   } catch (error) {
-  //     console.error('starPlayer error: ', error);
-  //     setStatus('error', error);
-  //   }
-  // }
-
-  const stopPlayer = () => {
-    console.log('stopPlayer cancel promiseToCancel: ', promiseToCancel?.cancel);
-    if(promiseToCancel?.cancel) {
-      // console.log('cancel promise');
-      promiseToCancel.cancel();
-      // setPromiseToCancel(null);
-      promiseToCancel = null;
-    }
-
-    // if(ytPlayer) ytPlayer.stopVideo();
-    stop();
-  }
-
   const play = () => {
-    if (!ytPlayer || !(ytPlayer instanceof YT.Player)) {
-      startPlayer();
-      return;
-    }
-
-    // if (ytPlayer?.error) {
-    //   console.log('There was a ytPlayer error, retry..', ytPlayer?.error);
-    //   startPlayer();
+    // if(playerStatus === 'error') {
+    //   pause();
     // }
-
-    if(playerStatus === 'error') {
-      stop();
-    }
 
     ytPlayer?.playVideo();
+  };
 
+  const pause = () => {
+    printLog('pause');
+    ytPlayer?.pauseVideo();
+  };
 
-    // try {
-    //   console.log('play');
-    //   if (!data) {
-    //     if (!videos && !url.url) throw new Error('no video data');
+  const stopPlayer = () => {
+    // console.log('stopPlayer cancel promiseToCancel: ', promiseToCancel?.cancel);
+    // if(promiseToCancel) {
 
-    //     if (videos) {
-    //       setData(videos);
-    //       // return;
-    //     }
-
-    //     if (!videos && url.url) {
-    //       const res = await fetchVideo(url);
-    //       setData(res);
-    //       prepareDataForYTP(res);
-    //       startPlayer();
-    //       return;
-    //     }
-    //   } else {
-    //     if (!ytPlayer) {
-    //       startPlayer();
-    //       return;
-    //     }
-
-    //     if (ytPlayer?.error) {
-    //       console.log('There was a ytPlayer error, retry..', ytPlayer?.error);
-    //       startPlayer();
-    //     }
-
-    //     ytPlayer?.playVideo();
+    //   if(promiseToCancel?.cancel) {
+    //     promiseToCancel.cancel();
     //   }
-    // } catch (error) {
-    //   setStatus('error', `usePlayer::play- ${error.message}`);
-    //   console.log('Player play() error: ', error);
+      
+    //   promiseToCancel = null;
     // }
-  };
 
-  const stop = () => {
-    console.log('stop');
-    ytPlayer?.stopVideo();
-  };
+    if(ytpStatus !== ytpStatusCode.READY) {
+      setStopRequest(true);
+      printLog('queue stop request');
+
+      return;
+    }
+    
+    setStopRequest(false);
+    pause();
+  }
 
   const mute = () => {
-    console.log('mute');
+    printLog('mute');
     ytPlayer?.mute();
   };
 
   const unMute = () => {
-    console.log('unMute');
+    printLog('unMute');
     ytPlayer?.unMute();
   };
 

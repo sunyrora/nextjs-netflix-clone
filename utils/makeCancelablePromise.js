@@ -1,14 +1,25 @@
-const makeCancelablePromise = ((promise, cancelChain = null, name='') => {
+const makeCancelablePromise = (({
+    promise, 
+    cancelChain = null, 
+    clearCallback = null,
+    name=''
+}) => {
     let hasCanceled_ = false;
+    let cancelChain_ = cancelChain;
 
-    console.log('makeCancelabelPromise: ', 'name: ', name);
-    console.log('makeCancelabelPromise: ', 'ncancelChainame: ', cancelChain);
+    // console.log('makeCancelabelPromise: ', 'name: ', name);
+    // console.log('makeCancelabelPromise: ', 'cancelChain_: ', cancelChain_);
 
     const wrappedPromise = () => new Promise((resolve, reject) => {
         promise().then(res => {
 
-            console.log("wrappedPromise.then hasCanceled: ", hasCanceled_, name);
-            hasCanceled_ ? reject(new Error('canceled')) : resolve(res)
+            // console.log("wrappedPromise.then hasCanceled: ", hasCanceled_, name);
+            if(hasCanceled_) {
+                reject(new Error('canceled'));
+                clearCallback && clearCallback();
+            } else {
+                resolve(res);
+            }
         },
         error => {
             // hasCanceled_ ? reject(error) :
@@ -20,11 +31,12 @@ const makeCancelablePromise = ((promise, cancelChain = null, name='') => {
     return {
         hasCanceled_,
         promise: wrappedPromise,
+        setCancelChain: (cancel) => cancelChain_ = cancel,
         cancel: () => {
-            console.log('cancel promise: ', name);
-            console.log('cancelChain? ::', !!cancelChain);
+            // console.log('cancel promise: ', name);
+            // console.log('cancelChain? ::', !!cancelChain_);
             hasCanceled_ = true;
-            cancelChain && cancelChain();
+            cancelChain_ && cancelChain_();
         }
     };
 

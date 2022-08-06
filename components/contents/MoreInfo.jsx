@@ -67,8 +67,9 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
     console.log('showModal ', showModal);
 
     if (showModal) {
-      if (!player && startPlayer) startPlayer();
-      if(player) player?.playVideo();
+      startPlayer && startPlayer();
+      // if (!player && startPlayer) startPlayer();
+      // if(player) player?.playVideo();
     } else {
       player?.stopVideo();
     }
