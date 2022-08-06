@@ -7,7 +7,7 @@ const useScrollX = () => {
   const [isScrollPosEnd, setIsScrollPosEnd] = useState(false);
   const [scrollMax, setScrollMax] = useState(0);
   const [paddingLeft, setPaddingLeft] = useState(0);
-  const refComponent = useRef(); 
+  const refComponent = useRef();
 
 
   const ref = useCallback((node) => {
@@ -16,8 +16,6 @@ const useScrollX = () => {
     }
   }, []);
 
-
-
   useEffect(() => {
     const init = () => {
       setPosLeft(0);
@@ -25,12 +23,16 @@ const useScrollX = () => {
         refComponent.current.scrollLeft = 0;
         setScrollMax(calculScrollMax());
         setPaddingLeft(parseFloat(window.getComputedStyle(refComponent.current).scrollPaddingLeft));
-        console.log('useEffect:: refComponent.current.scrollLeft: ', refComponent?.current?.scrollLeft);
-        console.log('padding left: ', paddingLeft);
-
+        // console.log('useEffect:: refComponent.current.scrollLeft: ', refComponent?.current?.scrollLeft);
+        // console.log('padding left: ', paddingLeft)
+        ;
+        
       }
     }
     init();
+
+    const {add: addScrollEvent, remove: removeScrollEvent} = handleScrollStoppedEvent(refComponent?.current);
+    addScrollEvent && addScrollEvent();
     
     return () => {
       setPosLeft(0);
@@ -38,6 +40,8 @@ const useScrollX = () => {
       setScrollMax(0);
       setIsScrollPosEnd(false);
       setIsScrollPosStart(true);
+      removeScrollEvent && removeScrollEvent();
+    //   if(handleScrollStopped) refComponent?.current?.removeEventListener('scroll', handleScrollStopped);
     }
   }, []);
 
@@ -49,10 +53,35 @@ const useScrollX = () => {
   }, [scrollMax]);
 
   useEffect(() => {
+    // console.log('useEffect:: posLeft: ', posLeft);
     setIsScrollPosEnd(checkScrollPosEnd());
     setIsScrollPosStart(checkScrollPosStart());
   }, [posLeft]);
 
+  const handleScrollStoppedEvent = (element) => {
+    if(!element) return;
+
+    let handleScrollStopped = null;
+
+    const onScroll = (callBack, timeOut = 150) => {
+      let scrollStopTimer;
+
+      return (e) => {
+          scrollStopTimer && clearTimeout(scrollStopTimer);
+          scrollStopTimer = setTimeout(callBack, timeOut);
+        };
+    }
+
+    handleScrollStopped = onScroll(() => {
+      // console.log('Scroll stopped: scrollLeft: ', refComponent?.current?.scrollLeft);
+      setPosLeft(element?.scrollLeft);
+    });
+
+    return {
+      add: () => element?.addEventListener('scroll', handleScrollStopped),
+      remove: () => element.removeEventListener('scroll', handleScrollStopped),
+    }    
+  }
 
   const calculScrollMax = () => {
     if(!refComponent) return 0;
@@ -60,30 +89,30 @@ const useScrollX = () => {
      const { clientWidth, scrollWidth } = refComponent.current;
     const max = round2((scrollWidth - clientWidth));
     //  - paddingLeft);
-    console.log('scrollMax: ', max);
+    // console.log('scrollMax: ', max);
 
     return max;
   }
 
 
   const checkScrollPosEnd = () => {
-    console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
+    // console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
 
     if(Math.round(posLeft) >= scrollMax) {
-      console.log('isScrollEnd true');
+      // console.log('isScrollEnd true');
       return true;
     }      
-    console.log('isScrollEnd false');
+    // console.log('isScrollEnd false');
     return false;
   }
     
   const checkScrollPosStart = () => {
-    console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
+    // console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
     if(Math.round(posLeft) <= paddingLeft) {
-      console.log('isScrollPosStart true');
+      // console.log('isScrollPosStart true');
       return true;
     }      
-    console.log('isScrollPosStart false');
+    // console.log('isScrollPosStart false');
     return false;
   }
 
@@ -95,8 +124,8 @@ const useScrollX = () => {
       const targetElement = ref?.current ?? refComponent?.current;
 
       if (targetElement) {
-        console.log('scroll before : ', targetElement.scrollLeft);
-        console.log('scroll Max : ', scrollMax);
+        // console.log('scroll before : ', targetElement.scrollLeft);
+        // console.log('scroll Max : ', scrollMax);
         // console.log('targetElement.clientWidth? : ', targetElement.clientWidth);
         // console.log('targetElement.scrollWidth? : ', targetElement.scrollWidth);
 
@@ -108,14 +137,14 @@ const useScrollX = () => {
           offsetX = -offsetX;
         }
         
-        console.log('offestX : ', offsetX);
+        // console.log('offestX : ', offsetX);
         
         const scrollTo = scrollLeft + offsetX;
 
         targetElement.scrollTo({left: scrollTo, behavior: 'smooth'});
 
         setPosLeft(scrollTo);
-        console.log('scroll after : ', targetElement.scrollLeft);
+        // console.log('scroll after : ', targetElement.scrollLeft);
       
       }
     }, []);
