@@ -18,7 +18,7 @@ const Home = () => {
   if (session) return <></>;
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="relative flex justify-center items-center w-full">
       <div className="flex flex-col justify-center items-center w-full">
         <div className="w-[90vw] md:max-w-xl">
           <div className="flex flex-col w-full items-center justify-start px-0 mt-[30vw] xsm:mt-[25vw] mmd:mt-[22vw] lg:mt-[14vw] mx-auto text-center font-medium h-full min-h-full">

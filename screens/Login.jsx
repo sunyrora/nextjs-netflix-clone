@@ -9,6 +9,7 @@ const Login = () => {
   const { redirect } = router.query;
 
   useEffect(() => {
+    console.log('login........');
     if (session) {
       router.push(redirect ?? `${process.env.contentsBasePath}`);
     }
@@ -31,7 +32,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full p-5 m-5 mt-20">
+    <div className="relative flex flex-col items-center justify-center w-full p-5 m-5 mt-20">
       {!session && (
         <button
           className="primary-button m-2 text-lg"

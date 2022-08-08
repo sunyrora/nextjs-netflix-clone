@@ -24,15 +24,14 @@ import { classNames } from '../utils/utils';
 
 const BackgroundImage = ({
   bgImg = null,
-  zIndex = undefined,
   className = '',
 }) => {
   const imgFallback = '/images/bg.jpeg';
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
   const [imgWidth, setImgWidth] = useState(3000);
   const [imgHeight, setImgHeight] = useState(600);
-  const bgZIndex =
-    zIndex && typeof zIndex === 'number' ? `z-[${zIndex}]` : 'z-[-10]';
+  // const bgZIndex =
+  //   zIndex && typeof zIndex === 'number' ? `z-[${zIndex}]` : '-z-[10]';
 
   useEffect(() => {
     setImgSrc(bgImg ?? imgFallback);
@@ -49,7 +48,7 @@ const BackgroundImage = ({
   return (
     <div
       className={classNames(
-        `absolute overflow-hidden ${bgZIndex} w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200`,
+        `absolute overflow-hidden -z-[10] w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200`,
         className
       )}
     >

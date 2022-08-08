@@ -13,14 +13,15 @@ const ContentIndexPage = ({ videos, bgIndex }) => {
   const { path } = router.query;
   // console.log('ContentPage:: path: ', path);
 
-  console.log('ContentPage:: router.query: ', router.query);
+  // console.log('ContentPage:: router.query: ', router.query);
   // console.log('ContentPage:: props: ', props);
 
   const videosMap = new Map(Object.entries(videos));
   return <ContentLayout videos={videosMap} bgIndex={bgIndex} />;
 };
 
-if (process.env.NODE_ENV !== 'development') ContentIndexPage.auth = true;
+if (process.env.NODE_ENV !== 'development') 
+ContentIndexPage.auth = true;
 export default ContentIndexPage;
 
 export const getServerSideProps = async ({ query }) => {
@@ -35,7 +36,7 @@ export const getServerSideProps = async ({ query }) => {
     const [firstMenu] = menus.keys();
     menuId = firstMenu;
   }
-  console.log('******************************** menuId: ', menuId);
+  // console.log('******************************** menuId: ', menuId);
   const pageInfo = menuId ? menus.get(menuId) : 'home';
 
   if (!pageInfo) {

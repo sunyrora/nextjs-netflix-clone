@@ -5,7 +5,7 @@ function Unauthorized() {
   const router = useRouter();
   const { message, redirect } = router.query;
   return (
-    <div className="flex flex-col items-center space-y-3">
+    <div className="relative flex flex-col items-center justify-center space-y-3 mt-40">
       <h1 className="text-xl">Access Denied</h1>
       {message && <div className="error-message">{message}</div>}
       <Link

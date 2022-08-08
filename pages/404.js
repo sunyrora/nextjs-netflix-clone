@@ -24,7 +24,7 @@ const PageNotFound = () => {
   }, [count]);
 
   return (
-    <div className="text-center">
+    <div className="relative flex flex-col justify-center items-center text-center mt-40">
       <div className="text-3xl">404 - Page Not Found</div>
       <div className="text-2xl">Redirect to Home...{count}</div>
     </div>
