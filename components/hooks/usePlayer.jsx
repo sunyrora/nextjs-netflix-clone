@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import makeCancelablePromise from '../../utils/makeCancelablePromise';
 import { randomNumber } from '../../utils/utils';
 import useFetch from './useFetch';
+import useStateRef from './useStateRef';
 import useYTPlayer from './useYTPlayer';
 
 const playerInitialOption = {
@@ -24,9 +24,6 @@ export const PlaystateType = {
   CUED: 5, // video cued
 };
 
-  let promiseToCancel = null;
-
-
 const usePlayer = ({
   videos = null,
   url = {
@@ -39,20 +36,22 @@ const usePlayer = ({
 }) => {
   const refComponent = useRef(null);
   const [data, setData] = useState(null);
-  const [playerStatus, setPlayerStatus] = useState('init');
+  // const [playerStatus, setPlayerStatus] = useState('init');
+  const [playerStatus, setPlayerStatus, playerStatusRef] = useStateRef('init');
   const [error, setError] = useState('');
   const [playState, setPlayState] = useState(-1);
   const [stopRequest, setStopRequest] = useState(false);
+  const [player, setPlayer, playerRef] = useStateRef(null);
+  // const [player, setPlayer] = useState();
   const uniqueId = useId();
   // let promiseToCancel = null;
 
-  const { startYTPlayer, destroyPlayer, player: ytPlayer, status: ytpStatus, ytpStatusCode, error: ytpError } = useYTPlayer();
+  const { startYTPlayer, player : ytPlayer, status: ytpStatus, ytpStatusCode, error: ytpError } = useYTPlayer();
 
   let videoId = '';
   let playerId = '';
   let ytpOption = option;
   let ytpHandlers = handlers;
-  // let currVideo = null;
   let currVideoTitle = '';
 
   const printLog = (...args) => {
@@ -79,7 +78,7 @@ const usePlayer = ({
     if (node) {
       refComponent.current = node;
     }
-  }, []);
+  }, [refComponent]);
 
 
   useEffect(() => {
@@ -91,63 +90,63 @@ const usePlayer = ({
     }
   }, []);
 
+  // useEffect(() => {
+  //   printLog('ytpStatus changed', ytpStatus, ytPlayer );
+  //   if(ytpStatus === ytpStatusCode.READY) {
+
+  //     if(ytPlayer?.videoTitle)
+  //       currVideoTitle = ytPlayer.videoTitle;
+
+  //     // console.log('stopRequest? ', stopRequest);
+  //     if(stopRequest) {
+  //       printLog('stopRequest? ', stopRequest);
+  //       // destroyPlayer && destroyPlayer();
+  //       pause();
+  //       setStopRequest(false);
+  //       promiseToCancel= null;
+  //     }
+  //   }
+
+  // }, [ytpStatus]);
+  
   useEffect(() => {
-    if(ytpStatus === ytpStatusCode.READY) {
+    // printLog('player has set', player, 'playerRef: ',playerRef );
+    if(playerRef.current) {
+      setStatus('ready');
+      if(player?.videoTitle)
+        currVideoTitle = player.videoTitle;
 
-      if(ytPlayer?.videoTitle)
-        currVideoTitle = ytPlayer.videoTitle;
-
-      // console.log('stopRequest? ', stopRequest);
       if(stopRequest) {
-        printLog('stopRequest? ', stopRequest);
-        destroyPlayer && destroyPlayer();
-        // pause();
+        // printLog('stopRequest? ', stopRequest);
+        pause();
         setStopRequest(false);
-        promiseToCancel= null;
       }
     }
 
-  }, [ytpStatus]);
+  }, [player]);
 
-
-  const resetPlayer = useCallback(() => {
-    setData(null);
-    videoId = '';
-    playerId = '';
-    ytpOption = option;
-    ytpHandlers = handlers;
-
-    setPlayerStatus('init');
-    setError('');
-  }, []);
 
   const setStatus = (player, error = '') => {
     // console.info('Player status chaged: ', player, ', ', player?.videoTitle, );
-    printLog('Player status chaged: ', player);
+    // printLog('Player status changed: ', player);
     error && printError('error_message: ', error);
     setPlayerStatus(player);
     setError(error);
   };
 
-  // const wrapperHandler = (resolve, handler = null) => (e) => {
-  //   resolve(handler && handler(e))
-  // }
 
   const playerEventHandlers = {
     onReady: (event) => {
-      // setStatus('player ready');
-      console.log(
-        `======usePlyaer's YTPlayer is ready===== event.target`,
-        event.target
-      );
+      // console.log(
+      //   `======usePlayer's YTPlayer is ready===== event.target`,
+      //   event.target
+      // );
 
+      setPlayer(event.target);
       return event.target;
     },
     onStateChange: (event) => {
-      printLog(
-        `This is usePlayer's onStateChange ----: `, event.data, ', ', event.target.videoTitle,
-         
-      );
+
       switch (event.data) {
         case YT.PlayerState.ENDED:
           {
@@ -157,37 +156,43 @@ const usePlayer = ({
           break;
         case YT.PlayerState.UNSTARTED:
           {
-            printLog('Video unstarted');
+            // printLog(
+            //   'player state change: UNSTARTED ',
+            //   YT.PlayerState.UNSTARTED
+            // );
+          //   printLog('Video unstarted:: player', player);
+          //   printLog('Video unstarted:: refPlayer', playerRef);
+          //   printLog('Video unstarted', event.target);
             setPlayState(YT.PlayerState.UNSTARTED);
           }
           break;
         case YT.PlayerState.PLAYING:
           {
-            printLog(
-              'player state change: playing ',
-              YT.PlayerState.PLAYING
-            );
+            // printLog(
+            //   'player state change: playing ',
+            //   YT.PlayerState.PLAYING
+            // );
             setPlayState(YT.PlayerState.PLAYING);
           }
           break;
         case YT.PlayerState.PAUSED:
           {
-            printLog('player state chaged paused: ', YT.PlayerState.PAUSED);
+            // printLog('player state chaged paused: ', YT.PlayerState.PAUSED);
             setPlayState(YT.PlayerState.PAUSED);
           }
           break;
         case YT.PlayerState.BUFFERING:
           {
-            printLog(
-              'player state chaged buffering: ',
-              YT.PlayerState.BUFFERING
-            );
+            // printLog(
+            //   'player state chaged buffering: ',
+            //   YT.PlayerState.BUFFERING
+            // );
             setPlayState(YT.PlayerState.BUFFERING);
           }
           break;
         case YT.PlayerState.CUED:
           {
-            printLog('player state chaged cued: ', YT.PlayerState.CUED);
+            // printLog('player state chaged cued: ', YT.PlayerState.CUED);
             setPlayState(YT.PlayerState.BUFFERING);
           }
           break;
@@ -203,11 +208,12 @@ const usePlayer = ({
 
 
   const prepareDataForYTP = (videoData) => {
+    // setStatus('prepareDataForYTP');
+    // printLog('videoData', videoData);
+    
     if (videoData?.length) {
-      setStatus('prepareDataForYTP');
-
       const length = videoData?.length;
-      printLog('Player:: videoData.length: ', length);
+      // printLog('Player:: videoData.length: ', length);
       const randomIdx = length > 1 ? randomNumber(0, length - 1) : 0;
       // console.log('random video===== randomIdx : ', randomIdx);
       const randomVideo = videoData[randomIdx];
@@ -238,7 +244,7 @@ const usePlayer = ({
         try {
           setStatus('fetch request');
           const res = await startFetch({ query: { url: requestData.url } });
-          printLog(`********* Player fetchvideo res: ${uniqueId}`, res);
+          // printLog(`********* Player fetchvideo res: ${uniqueId}`, res);
           if (!res || res.length <= 0) {
             throw new Error('No video data');
           }
@@ -277,50 +283,35 @@ const startPlayerPromise =  () => {
               setData(res);
               videoData = res;
           }
-            prepareDataForYTP(videoData);
 
         } else {
 
-          if ((!videoId || !playerId)) {
-            // console.log('lets prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
-            videoData = data;
-            prepareDataForYTP(data);
-            // console.log('after prepareDataForYTP:: videoId: ', videoId, 'playerId: ', playerId);
-          }
+          videoData = data;
         }
+
+        prepareDataForYTP(videoData);
+
         setStatus('startYTPlayer loading');
 
-        ytpHandlers = (Object.keys(handlers).length > 0) ? handlers : playerEventHandlers;
-        
-        // console.log('ytpHandlers:::: ', ytpHandlers);
-        
-        const ytPlayerPromise = startYTPlayer(
+        if(!ytpHandlers || !Object.keys(ytpHandlers).length) {
+          ytpHandlers = playerEventHandlers;
+        }
+       
+        const res =  await startYTPlayer(
           videoId,
           playerId,
           ytpOption,
           ytpHandlers
         );
 
-        if(!ytPlayerPromise) return reject('start YTPlayer error');
-        ytPlayerPromise.setCancelChain(promiseToCancel?.cancel);
-      
-        const prevCancel = promiseToCancel;
-        promiseToCancel = ytPlayerPromise;
-        
-        const res = await ytPlayerPromise.promise();
-        printLog('ytPlayerPromise res: ', res);
-        promiseToCancel = prevCancel;
         resolve(res);
-
       } catch (error) {
         printError('Player StartPlayer Promise error : ', error);
         setStatus('error', `startPlayer:: ${error.message}`);
-        promiseToCancel = null;
 
         return reject(error);
       }
-          
-    });
+    })
   }
 
   const startPlayer = async () => {
@@ -328,82 +319,69 @@ const startPlayerPromise =  () => {
       setStopRequest(false);
       setStatus('init');
 
-      if (ytPlayer && ytPlayer instanceof YT.Player && playState !== YT.PlayerState.UNSTARTED) {
-        printLog('YTPlayer already exist', ytPlayer);('Player ready');
+      if (playerRef.current && playerRef.current instanceof YT.Player /* && playState !== YT.PlayerState.UNSTARTED */) {
+        // printLog('Player already exist', player);('Player ready');
         setStatus('ready');
         return play();
       }
+      const res = await startPlayerPromise();
 
-      const startPromise = makeCancelablePromise({
-        promise: startPlayerPromise,
-        name: 'startPlayerPromise'
-      });
-      promiseToCancel = startPromise;
-      const res = await startPromise.promise();
-      promiseToCancel = null;
-
-      setStatus('ready');      
-      printLog('startPlayer res: ', res);
+      // printLog('startPlayer res: ', res);
       
     } catch (error) {
       console.error('starPlayer error: ', error);
-      // printLog('ytPlayer has created? ', ytPlayer);
-      promiseToCancel = null;
       setStatus('error', error);
     }
   }
 
   const play = () => {
-    // if(playerStatus === 'error') {
-    //   pause();
-    // }
 
-    ytPlayer?.playVideo();
+    // console.log('play:: player: ', player, 'refPlayer.current: ', playerRef.current)
+
+    playerRef?.current?.playVideo();
   };
 
   const pause = () => {
-    printLog('pause');
-    ytPlayer?.pauseVideo();
+    // printLog('pause player', player);
+    // console.log('play:: player: ', player, 'refPlayer.current: ', playerRef.current)
+
+    playerRef?.current?.pauseVideo();
   };
 
-  const stopPlayer = () => {
-    // console.log('stopPlayer cancel promiseToCancel: ', promiseToCancel?.cancel);
-    // if(promiseToCancel) {
+  const stopPlayer = useCallback( () => {
+    // printLog('stopPlayer player', player);
+    // console.log('stopPlayer player: ', player, 'refPlayer.current: ', playerRef.current)
 
-    //   if(promiseToCancel?.cancel) {
-    //     promiseToCancel.cancel();
-    //   }
-      
-    //   promiseToCancel = null;
-    // }
+    // console.log('stopPlayer playerStatus: ', playerStatus, 'playerStatusRef.current: ', playerStatusRef.current);
 
-    if(ytpStatus !== ytpStatusCode.READY) {
-      setStopRequest(true);
-      printLog('queue stop request');
+    if(playerStatusRef.current !== 'ready' && playerStatusRef.current !== 'init') {
+        setStopRequest(true);
+        // printLog('queue stop request');
 
       return;
     }
     
     setStopRequest(false);
     pause();
-  }
+
+  }, [playerStatus]);
 
   const mute = () => {
     printLog('mute');
-    ytPlayer?.mute();
+    playerRef?.current?.mute();
   };
 
   const unMute = () => {
     printLog('unMute');
-    ytPlayer?.unMute();
+    playerRef?.current?.unMute();
   };
 
   const isMuted = () => {
-    return ytPlayer?.isMuted();
+    return playerRef?.current?.isMuted();
   };
 
   const getDuration = () => {
-    return ytPlayer?.getDuration();
+    return playerRef?.current?.getDuration();
   };
 
   // const playerControls = {
@@ -418,7 +396,7 @@ const startPlayerPromise =  () => {
   //   error,
   // };
 
-  return {ref, startPlayer, stopPlayer, player: ytPlayer, playerStatus, playState, error};
+  return {ref, startPlayer, stopPlayer, player, playerStatus, playState, error};
 };
 
 export default usePlayer;

@@ -64,19 +64,20 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
   }, [show]);
 
   useEffect(() => {
-    console.log('showModal ', showModal);
+    // console.log('showModal ', showModal);
 
     if (showModal) {
       startPlayer && startPlayer();
       // if (!player && startPlayer) startPlayer();
       // if(player) player?.playVideo();
     } else {
-      player?.stopVideo();
+      if(player)
+        player?.stopVideo();
     }
   }, [showModal]);
 
   useEffect(() => {
-    console.log('MoreInfo playState: ', playState);
+    // console.log('MoreInfo playState: ', playState);
 
     if (
       !playState ||
@@ -99,7 +100,6 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
   const toggleMute = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    e.stopPro;
     isMuted ? player?.unMute() : player?.mute();
     setMuted((prev) => !prev);
   };

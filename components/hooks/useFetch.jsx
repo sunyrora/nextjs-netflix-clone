@@ -14,7 +14,7 @@ const useFetch = ({ url, requestData = null, shouldStart = false }) => {
   );
 
   const startFetch = (request) => {
-    console.log('startFetch: request: ', request);
+    // console.log('startFetch: request: ', request);
     return new Promise(async (resolve, reject) => {
       if (status === 'pending' || data) {
         resolve(data);

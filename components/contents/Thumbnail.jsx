@@ -1,6 +1,6 @@
 import Image from 'next/future/image';
 import Link from 'next/link';
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 // const Player = lazy(() => import('../Player'));
 
 import {
@@ -9,7 +9,9 @@ import {
   TMDB_THUMB_IMG_BASE_URL,
 } from '../../utils/movieRequests';
 import { classNames } from '../../utils/utils';
+import useMouseEvent from '../hooks/useMouseEvent';
 import usePlayer, { PlaystateType } from '../hooks/usePlayer';
+import useStateRef from '../hooks/useStateRef';
 
 const shimmer = (w, h) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -54,11 +56,15 @@ const ThumbImage = ({ video = null }) => {
 };
 
 export const Thumbnail = ({ video, ...props }) => {
-  const [hover, setHover] = useState(false);
+  // const [hover, setHover] = useState(false);
+  // const hover = useRef(false);
+  const [hover, setHover, hoverRef] = useStateRef(false);
   const [showPlayer, setShowPlayer] = useState(false);
   // const refPlayer = useRef(null);
   const { setHover: setWrapperHover } = props;
   let hoverTimer = null;
+
+  const { ref: refMouseEvent, addEventListeners: addMouseEvents } = useMouseEvent();
 
   const { ref: refPlayer, startPlayer, stopPlayer, player, playerStatus, playState, error } =
   usePlayer({
@@ -74,21 +80,26 @@ export const Thumbnail = ({ video, ...props }) => {
       autohide: 1,
       displaykb: 1,
       fs: 0,
-      mute: 1,
+      mute: 0,
     },
     playOnMount: false,
   });
 
+  useEffect(() => {
+    const addMouseEventListeners = () => addMouseEvents([
+      { type: 'mouseover', handler: handleMouseOver },
+      { type: 'mouseleave', handler: handleMouseLeave }
+    ]);
+
+    addMouseEventListeners();
+
+  }, []);
 
   useEffect(() => {
     const show = shouldShowPlayer();
     setShowPlayer(show);
   }, [playState, playerStatus, hover]);
   
-  // useEffect(() => {
-  //   shouldShowPlayer();
-  // }, [refPlayer?.current?.playerStatus, hover]);
-
   useEffect(() => {
     // console.log('showPlayer? ', showPlayer);
   }, [showPlayer]);
@@ -97,6 +108,7 @@ export const Thumbnail = ({ video, ...props }) => {
     if (
       !hover ||
       !playState ||
+      !player ||
       playState === PlaystateType.UNSTARTED ||
       playState === PlaystateType.ENDED ||
       playState === PlaystateType.CUED ||
@@ -110,8 +122,58 @@ export const Thumbnail = ({ video, ...props }) => {
     }
   };
 
+  const handleStartPlayer = useCallback(() => {
+    hoverTimer = null;
+    // if (!hover) {
+      setHover(true);
+      // hover.current = true;
+      // console.log('hover:::::: ', hover.current);
+      setWrapperHover && setWrapperHover(true);
+      
+      // if(hover)
+        startPlayer && startPlayer();
+
+      // if (!player && startPlayer) startPlayer();
+      // if(player) player?.playVideo();
+    // }
+  }, [hover, hoverTimer]);
+
+  const handleMouseOver = useCallback((e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    // console.log('handleMouseOver');
+
+    if (!hoverRef.current) {
+      // setHover(true);
+      if(!hoverTimer){
+        // console.log('hover: ', hoverRef.current, 'hoverTimer: ', hoverTimer);
+        hoverTimer = setTimeout(handleStartPlayer, 700);
+      }
+    }
+  }
+, [hover, hoverTimer]);
+  
+  const handleMouseLeave = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // console.log('handleMouseLeave');
+    
+    if (hoverTimer) {
+      // console.log('clear hoverTimer: ', hoverTimer);
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
+    
+    setHover(false);
+    // hover.current =false;
+    stopPlayer && stopPlayer();
+    setWrapperHover && setWrapperHover(false);
+  }
+
   return (
     <div
+    ref = {refMouseEvent}
       className={classNames(
         `relative`,
         // 'pr-1.5',
@@ -122,48 +184,15 @@ export const Thumbnail = ({ video, ...props }) => {
         hover ? 'z-[27]' : 'z-[10]',
         'snap-start'
       )}
-      onMouseOver={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (!hover) {
-          hoverTimer = setTimeout(() => {
-            if (!hover) { 
-              setHover(true);
-              startPlayer && startPlayer();
-              setWrapperHover && setWrapperHover(true);
-            }
-          }, 700);
-        }
-      }}
-      onMouseOut={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (hoverTimer) {
-          clearTimeout(hoverTimer);
-          hoverTimer = null;
-        }
-
-        // setHover(false);
-        // player?.stop();
-        // setWrapperHover && setWrapperHover(false);
-      }}
-      onMouseLeave={(e) => {
-         e.stopPropagation();
-        e.preventDefault();
-        if (hoverTimer) {
-          clearTimeout(hoverTimer);
-          hoverTimer = null;
-        }
-
-        setHover(false);
-        stopPlayer && stopPlayer();
-        // player?.stopVideo();
-        setWrapperHover && setWrapperHover(false);
-      }}
     >
       {video ? (
         <div className={classNames('relative', 'thumbnail-container')}>
+          {/* {
+            process.env.NODE_ENV === 'development' &&
+           <span className="align-middle">
+              {video?.title ?? video?.original_title ?? video?.name ?? video?.original_name}
+          </span>
+          } */}
           <div
             className={classNames(
               'absolute flex flex-col',
@@ -296,7 +325,18 @@ export const Thumbnail = ({ video, ...props }) => {
                       </svg>
                     </Link>
                   </div>
-                  <div className="thumb-controller-button-outline-container ">
+
+                  {/* thumb up button */}
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+
+                      player?.playVideo();
+
+                    }}
+                    className="thumb-controller-button-outline-container "
+                  >
                     <svg
                       width={24}
                       height={24}
@@ -312,7 +352,16 @@ export const Thumbnail = ({ video, ...props }) => {
                       />
                     </svg>
                   </div>
-                  <div className="thumb-controller-button-outline-container ">
+
+                  {/* x-butonn */}
+                  <div onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    player?.stopVideo();
+
+                  }}
+                  className="thumb-controller-button-outline-container ">
                     <svg
                       width={24}
                       height={24}

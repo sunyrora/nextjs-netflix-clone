@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import makeCancelablePromise from '../../utils/makeCancelablePromise';
 
 // Player events
 // [
@@ -17,14 +16,13 @@ const useYTPlayer = () => {
   const [status, setYtStatus] = useState('init');
   const [error, setError] = useState('');
   const [player, setPlayer] = useState();
-  let eventHandlers = null;
 
   const ytpStatusCode = {
     INIT: 'init',
     API_LOADED: 'YT api ready loaded',
     API_READY: 'YTP_API_ready',
     LOADING: 'loading',
-    CREATING_PLAYER: 'createing_player',
+    CREATING_PLAYER: 'creating_player',
     READY: 'ready',
     ERROR: 'error',
 } 
@@ -34,8 +32,7 @@ const useYTPlayer = () => {
     onReady: (event) => {
       setPlayer(event.target);
       setStatus(ytpStatusCode.READY);
-      setError('');
-      console.log('======YTPlayer is ready===== event.target', event.target);
+      // printLog('======YTPlayer is ready===== event.target', event.target);
     },
     // 5. The API calls this function when the player's state changes.
     //    The function indicates that when playing a video (state=1),
@@ -47,14 +44,27 @@ const useYTPlayer = () => {
     },
   };
 
+  const printLog = (...args) => {
+    console.log(...args, ': ', player?.videoTitle);
+  }
+
+  const printError = (...args) => {
+    console.error(...args, ': ', currVideoTitle);
+  }
+
   useEffect(() => {
+    setStatus(ytpStatusCode.INIT);
+    
 
     return () => {
+      // printLog('~destroy Player');
+      // destroyPlayer();
       window.onYouTubeIframeAPIReady = null;
     };
   }, []);
 
   useEffect(() => {
+    // printLog('YTPlayer hook player: ', player);
 
     if(player) {
       setStatus(ytpStatusCode.READY);
@@ -65,32 +75,42 @@ const useYTPlayer = () => {
 
   const setStatus = useCallback(
     (status = ytpStatusCode.INIT, error = '') => {
-      console.log(`ytPlayer setStatus:`, status, ', error: ', error);
+      // printLog(`ytPlayer setStatus:`, status)
+      if(error) printError('error: ', error);
+
       setYtStatus(status);
       setError(error);
     },
     [status, error]
   );
 
-  const wrapperHandler = (resolve, handler = null) => (e) => {
-    setPlayer(e.target);
-    // console.log('YTPlayer ready: ', e.target);
-    // setStatus(ytpStatusCode.READY);
-    // setError('');
-   resolve(handler && handler(e));
-  }
+  // const wrapperHandler = (resolve, handler = null, callback = null) => (e) => {
+  //   printLog('wrapperHandler: lets setPlayer: ', e.target)
+  //   // setPlayer(e.target);
+  //   callback && callback(e.target);
+  //   printLog('wrapperHandler YTPlayer ready: ', e.target);
+  //   // printLog('wrapperHandler YTPlayer ready handler?: ', handler);
+  //   // setStatus(ytpStatusCode.READY);
+  //   // setError('');
+  //  resolve(handler ? handler(e) : e.target);
+  // }
 
 
-const startYTPlayerPromise = (videoId, playerId, option, eventHandlers) => {
-  return () => {
-  return new Promise(async (resolve, reject) => {
+const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
+   return new Promise(async (resolve, reject) => {
       try {
-        setStatus(ytpStatusCode.INIT);
+        // setStatus(ytpStatusCode.INIT);
         setStatus(ytpStatusCode.LOADING);
 
-        player && destroyPlayer();
-        
-        console.log('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
+          // printLog('player: ', player);
+
+        if(player) {
+          // await destroyPlayer();
+          printLog('player destroy: ', player);
+          await player.destroy();
+        }
+
+        // printLog('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
         let errorMessage = '';
 
         if (!videoId) {
@@ -113,11 +133,8 @@ const startYTPlayerPromise = (videoId, playerId, option, eventHandlers) => {
 
         setStatus(ytpStatusCode.CREATING_PLAYER);
 
-        const handlers = eventHandlers ? {...eventHandlers} : {...initialEventHandlers};
-        handlers.onReady = wrapperHandler(resolve, handlers.onReady);
+        const handlers = eventHandlers ? eventHandlers : initialEventHandlers;
         const newPlayer = await new YT.Player(playerId, {
-          // host: `${window.location.protocol}//www.youtube.com`,
-          // origin: 'https://192.168.1.76:3000',
           height: '100%',
           width: '100%',
           videoId: videoId,
@@ -125,24 +142,18 @@ const startYTPlayerPromise = (videoId, playerId, option, eventHandlers) => {
           events: handlers,
         });
 
-        console.log('YTPlayer hook: is player ready? :', newPlayer);
-        // resolve(newPlayer);
+        // printLog('YTPlayer hook: is player ready? :', newPlayer);
+        setPlayer(newPlayer);
+        resolve(newPlayer);
 
       } catch (error) {
-        console.error('useYTPlayer start error: ', error);        
+        printError('useYTPlayer start error: ', error);        
         pauseVideo();
         setStatus(ytpStatusCode.ERROR, error.message);        
         reject(error);
       }
     })
-  }
-}
-
-const startYTPlayer = useCallback((videoId, playerId, option, eventHandlers) => makeCancelablePromise({
-  promise: startYTPlayerPromise(videoId, playerId, option, eventHandlers),
-  name: 'YTPlayer hooks: startYTPlayerPromise'
-})
-, [initialEventHandlers]);
+};
 
   const onYouTubeIframeAPIReady = (resolve) => () => {
     setStatus(ytpStatusCode.API_READY);
@@ -161,12 +172,12 @@ const startYTPlayer = useCallback((videoId, playerId, option, eventHandlers) => 
         return resolve(window.YT);
       }
 
-      const youtubeAPI = 'http://www.youtube.com/iframe_api';
+      const youtubeAPI = '//www.youtube.com/iframe_api';
       const apiNotLoaded = [...document.getElementsByTagName('script')].every(
         (elem) => elem.src !== youtubeAPI
       );
-
-      console.log('apiNotLoaded: ', apiNotLoaded);
+      
+      // printLog('apiNotLoaded: ', apiNotLoaded);
 
       if (apiNotLoaded) {
         const tag = document.createElement('script');
@@ -176,12 +187,14 @@ const startYTPlayer = useCallback((videoId, playerId, option, eventHandlers) => 
       }
 
       window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady(resolve);
-      });
-};
-const destroyPlayer = () => {
-  console.log('************************** destroy player');
-  player?.destroy();
-}
+    });
+  };
+
+// const destroyPlayer = async () => {
+//   printLog('************************** destroy player');
+//   await player?.destroy();
+//   setPlayer(null);
+// }
 
   // const stopVideo = () => {
   //   console.log('YTPlayer hook stopVideo: ', player);
@@ -189,21 +202,21 @@ const destroyPlayer = () => {
   // };
 
   const pauseVideo = () => {
-    console.log('YTPlayer hook pauseVideo: ', player);
+    printLog('YTPlayer hook pauseVideo: ', player);
     player?.pauseVideo();
   };
 
   const addListeners = useCallback((events) => {
-    console.log('addListener!! player:', player);
+    printLog('addListener!! player:', player);
     if (player) {
       for (const key in events) {
-        console.log('addListener!! ', key, events[key]);
+        printLog('addListener!! ', key, events[key]);
         player.addEventListener(key, events[key]);
       }
     }
   }, []);
 
-  return { startYTPlayer, destroyPlayer, player, status, ytpStatusCode, error };
+  return { startYTPlayer, player, status, ytpStatusCode, error };
 };
 
 export default useYTPlayer;

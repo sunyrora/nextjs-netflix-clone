@@ -54,7 +54,7 @@ const Banner = ({ video }) => {
   // console.log('banner: video: ', video);
 
   useEffect(() => {
-    console.log('Banner showMoreInfo: ', showMoreInfo);
+    // console.log('Banner showMoreInfo: ', showMoreInfo);
   }, [showMoreInfo]);
 
   return (
@@ -119,7 +119,7 @@ const Banner = ({ video }) => {
                   </svg>
                   <button
                     type="button"
-                    onClick={() => console.log('play button click')}
+                    // onClick={() => console.log('play button click')}
                     className="content-banner-button w-full text-black"
                   >
                     Play
@@ -147,7 +147,7 @@ const Banner = ({ video }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    console.log('click more Info');
+                    // console.log('click more Info');
                     setShowMoreInfo(true);
                   }}
                   className="content-banner-button w-full text-white"

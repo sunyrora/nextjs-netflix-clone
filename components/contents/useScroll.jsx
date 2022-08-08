@@ -46,7 +46,7 @@ const useScrollX = () => {
   }, []);
 
   useEffect(() => {
-    console.log('useEffect:: scrollMax: ', scrollMax);
+    // console.log('useEffect:: scrollMax: ', scrollMax);
     setIsScrollPosEnd(checkScrollPosEnd());
     setIsScrollPosStart(checkScrollPosStart());
     

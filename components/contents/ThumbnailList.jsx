@@ -108,10 +108,16 @@ const ThumbnailList = ({ videoList }) => {
             </div> */}
 
             <div className="relative -z-20 w-[var(--default-left-padding)]"></div>
-            {videoList.map((video) =>
-              video ? (
-                <Thumbnail key={video.id} video={video} setHover={setHover} />
+            {/* {
+              videoList[0] ? (
+                <Thumbnail key={videoList[0].id} video={videoList[0]} setHover={setHover} />
               ) : null
+            } */}
+            {
+              videoList.map((video) =>
+                video ? (
+                  <Thumbnail key={video.id} video={video} setHover={setHover} />
+                ) : null
             )}
             <div className="relative -z-20 w-[var(--default-left-padding)]"></div>
           </div>
