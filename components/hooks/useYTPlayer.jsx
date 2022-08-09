@@ -57,15 +57,11 @@ const useYTPlayer = () => {
     
 
     return () => {
-      // printLog('~destroy Player');
-      // destroyPlayer();
       window.onYouTubeIframeAPIReady = null;
     };
   }, []);
 
   useEffect(() => {
-    // printLog('YTPlayer hook player: ', player);
-
     if(player) {
       setStatus(ytpStatusCode.READY);
     }
@@ -84,25 +80,11 @@ const useYTPlayer = () => {
     [status, error]
   );
 
-  // const wrapperHandler = (resolve, handler = null, callback = null) => (e) => {
-  //   printLog('wrapperHandler: lets setPlayer: ', e.target)
-  //   // setPlayer(e.target);
-  //   callback && callback(e.target);
-  //   printLog('wrapperHandler YTPlayer ready: ', e.target);
-  //   // printLog('wrapperHandler YTPlayer ready handler?: ', handler);
-  //   // setStatus(ytpStatusCode.READY);
-  //   // setError('');
-  //  resolve(handler ? handler(e) : e.target);
-  // }
-
 
 const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
    return new Promise(async (resolve, reject) => {
       try {
-        // setStatus(ytpStatusCode.INIT);
         setStatus(ytpStatusCode.LOADING);
-
-          // printLog('player: ', player);
 
         if(player) {
           // await destroyPlayer();
@@ -110,7 +92,6 @@ const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
           await player.destroy();
         }
 
-        // printLog('startYTPlayer: videoId: ', videoId, 'playerId: ', playerId);
         let errorMessage = '';
 
         if (!videoId) {
@@ -147,7 +128,7 @@ const startYTPlayer = (videoId, playerId, option, eventHandlers) => {
         resolve(newPlayer);
 
       } catch (error) {
-        printError('useYTPlayer start error: ', error);        
+        printError('useYTPlayer start error: ', error.message);        
         pauseVideo();
         setStatus(ytpStatusCode.ERROR, error.message);        
         reject(error);

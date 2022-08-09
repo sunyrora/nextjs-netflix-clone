@@ -27,7 +27,7 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
   const [isMuted, setMuted] = useState(playerOption.mute);
   const [duration, setDuration] = useState(0);
 
-  const {ref: refPlayer, startPlayer, player, playerStatus, playState, error} =
+  const {ref: refPlayer, startPlayer, stopPlayer, player, playerStatus, playState, error} =
     usePlayer({
       url: {
         url: `${TMDB_BASE_URL}/${video.media_type}/${video.id}/videos?api_key=${TMDB_API_KEY}`,
@@ -52,10 +52,21 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
   useEffect(() => {
     setShow(show);
 
+    let handler = null;
+    if(typeof window !== 'undefined') {
+      handler = (event) => {
+        console.log(event); // do better logging here
+      };
+      window.addEventListener('error', handler);
+      window.addEventListener('unhandledrejection', handler);
+    }
+
     return () => {
-      // refPlayer?.current?.stop();
-      // player.destroy();
-    };
+      if(handler) {
+        window.removeEventListener('error', handler);
+        window.removeEventListener('unhandledrejection', handler);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -92,7 +103,7 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
     } else {
       setShowPlayer(true);
 
-      const dur = player?.getDuration();
+      const dur = player ? player?.getDuration() : 0;
       setDuration(isNaN(dur) ? 0 : dur);
     }
   }, [playState, playerStatus]);
@@ -275,7 +286,8 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
                           e.stopPropagation();
                           e.preventDefault();
                           // console.log('Plus button click');
-                          player?.playVideo();
+                          // player?.playVideo();
+                          startPlayer && startPlayer();
                         }}
                       >
                         <svg
@@ -302,7 +314,8 @@ const MoreInfo = ({ video, show = true, setShowMoreInfo = null }) => {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                          player?.stopVideo();
+                          stopPlayer && stopPlayer();
+                          // player?.stopVideo();
                         }}
                       >
                         <svg

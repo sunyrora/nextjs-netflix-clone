@@ -93,6 +93,22 @@ export const Thumbnail = ({ video, ...props }) => {
 
     addMouseEventListeners();
 
+    let handler = null;
+    if(typeof window !== 'undefined') {
+      handler = (event) => {
+        console.log(event); // do better logging here
+      };
+      window.addEventListener('error', handler);
+      window.addEventListener('unhandledrejection', handler);
+    }
+
+    return () => {
+      if(handler) {
+        window.removeEventListener('error', handler);
+        window.removeEventListener('unhandledrejection', handler);
+      }
+    }
+
   }, []);
 
   useEffect(() => {
@@ -332,7 +348,8 @@ export const Thumbnail = ({ video, ...props }) => {
                       e.stopPropagation();
                       e.preventDefault();
 
-                      player?.playVideo();
+                      startPlayer && startPlayer();
+                      // player?.playVideo();
 
                     }}
                     className="thumb-controller-button-outline-container "
@@ -358,7 +375,8 @@ export const Thumbnail = ({ video, ...props }) => {
                     e.stopPropagation();
                     e.preventDefault();
 
-                    player?.stopVideo();
+                    stopPlayer && stopPlayer();
+                    // player?.stopVideo();
 
                   }}
                   className="thumb-controller-button-outline-container ">

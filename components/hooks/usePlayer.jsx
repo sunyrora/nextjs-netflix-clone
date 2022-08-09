@@ -85,30 +85,25 @@ const usePlayer = ({
     if(playOnMount) {
         startPlayer();
     }
-    return () => {
 
+    let handler = null;
+    if(typeof window !== 'undefined') {
+      handler = (event) => {
+        console.log(event); // do better logging here
+      };
+      window.addEventListener('error', handler);
+      window.addEventListener('unhandledrejection', handler);
+    }
+
+    return () => {
+      if(handler) {
+        window.removeEventListener('error', handler);
+        window.removeEventListener('unhandledrejection', handler);
+      }
     }
   }, []);
 
-  // useEffect(() => {
-  //   printLog('ytpStatus changed', ytpStatus, ytPlayer );
-  //   if(ytpStatus === ytpStatusCode.READY) {
-
-  //     if(ytPlayer?.videoTitle)
-  //       currVideoTitle = ytPlayer.videoTitle;
-
-  //     // console.log('stopRequest? ', stopRequest);
-  //     if(stopRequest) {
-  //       printLog('stopRequest? ', stopRequest);
-  //       // destroyPlayer && destroyPlayer();
-  //       pause();
-  //       setStopRequest(false);
-  //       promiseToCancel= null;
-  //     }
-  //   }
-
-  // }, [ytpStatus]);
-  
+ 
   useEffect(() => {
     // printLog('player has set', player, 'playerRef: ',playerRef );
     if(playerRef.current) {
@@ -129,7 +124,7 @@ const usePlayer = ({
   const setStatus = (player, error = '') => {
     // console.info('Player status chaged: ', player, ', ', player?.videoTitle, );
     // printLog('Player status changed: ', player);
-    error && printError('error_message: ', error);
+    // error && printError('error_message: ', error);
     setPlayerStatus(player);
     setError(error);
   };
@@ -137,10 +132,6 @@ const usePlayer = ({
 
   const playerEventHandlers = {
     onReady: (event) => {
-      // console.log(
-      //   `======usePlayer's YTPlayer is ready===== event.target`,
-      //   event.target
-      // );
 
       setPlayer(event.target);
       return event.target;
@@ -156,43 +147,30 @@ const usePlayer = ({
           break;
         case YT.PlayerState.UNSTARTED:
           {
-            // printLog(
-            //   'player state change: UNSTARTED ',
-            //   YT.PlayerState.UNSTARTED
-            // );
-          //   printLog('Video unstarted:: player', player);
-          //   printLog('Video unstarted:: refPlayer', playerRef);
           //   printLog('Video unstarted', event.target);
             setPlayState(YT.PlayerState.UNSTARTED);
           }
           break;
         case YT.PlayerState.PLAYING:
           {
-            // printLog(
-            //   'player state change: playing ',
-            //   YT.PlayerState.PLAYING
-            // );
             setPlayState(YT.PlayerState.PLAYING);
           }
           break;
         case YT.PlayerState.PAUSED:
           {
-            // printLog('player state chaged paused: ', YT.PlayerState.PAUSED);
+            
             setPlayState(YT.PlayerState.PAUSED);
           }
           break;
         case YT.PlayerState.BUFFERING:
           {
-            // printLog(
-            //   'player state chaged buffering: ',
-            //   YT.PlayerState.BUFFERING
-            // );
+            
             setPlayState(YT.PlayerState.BUFFERING);
           }
           break;
         case YT.PlayerState.CUED:
           {
-            // printLog('player state chaged cued: ', YT.PlayerState.CUED);
+           
             setPlayState(YT.PlayerState.BUFFERING);
           }
           break;
@@ -252,7 +230,7 @@ const usePlayer = ({
           setStatus('data fetched');
           resolve(res);
         } catch (error) {
-          printError('Player fetch video error: ', error);
+          // printError('Player fetch video error: ', error.message);
           setStatus('error', error.message);
           reject(error);
         }
@@ -269,7 +247,7 @@ const startPlayerPromise =  () => {
         if (!data) {
           if (!videos && !url.url) {
             const message = 'No videos data or invalid fetch url';
-            setStatus('error', message);
+            // setStatus('error', message);
             return reject(new Error(message));
           }
     
@@ -306,8 +284,8 @@ const startPlayerPromise =  () => {
 
         resolve(res);
       } catch (error) {
-        printError('Player StartPlayer Promise error : ', error);
-        setStatus('error', `startPlayer:: ${error.message}`);
+        // printError('Player StartPlayer Promise error : ', error.message);
+        // setStatus('error', `startPlayer:: ${error.message}`);
 
         return reject(error);
       }
@@ -329,30 +307,20 @@ const startPlayerPromise =  () => {
       // printLog('startPlayer res: ', res);
       
     } catch (error) {
-      console.error('starPlayer error: ', error);
-      setStatus('error', error);
+      console.error('Start Player error: ', error.message);
+      setStatus('error', error.message);
     }
   }
 
   const play = () => {
-
-    // console.log('play:: player: ', player, 'refPlayer.current: ', playerRef.current)
-
     playerRef?.current?.playVideo();
   };
 
   const pause = () => {
-    // printLog('pause player', player);
-    // console.log('play:: player: ', player, 'refPlayer.current: ', playerRef.current)
-
     playerRef?.current?.pauseVideo();
   };
 
   const stopPlayer = useCallback( () => {
-    // printLog('stopPlayer player', player);
-    // console.log('stopPlayer player: ', player, 'refPlayer.current: ', playerRef.current)
-
-    // console.log('stopPlayer playerStatus: ', playerStatus, 'playerStatusRef.current: ', playerStatusRef.current);
 
     if(playerStatusRef.current !== 'ready' && playerStatusRef.current !== 'init') {
         setStopRequest(true);
