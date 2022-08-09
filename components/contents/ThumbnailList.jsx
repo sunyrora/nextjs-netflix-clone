@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { classNames } from '../../utils/utils';
 import Thumbnail from './Thumbnail';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import useScrollX from './useScroll';
+import useScrollX from './useScrollX';
 
 const ThumbnailList = ({ videoList }) => {
   const [hover, setHover] = useState(false);
@@ -11,14 +11,10 @@ const ThumbnailList = ({ videoList }) => {
   const thumbsTopOffset = 14;
 
   const handleLeftButton = (e) => {
-    // console.log('Left button thumbnailsRef!: ', thumbnailsRef);
-    // setPosLeft((prev) => Math.round(prev + 900));
-
     if (scrollX) scrollX({ to: 'left' });
   };
 
   const handleRightButton = (e) => {
-    // setPosLeft(Math.round(posLeft - 90));
     if (scrollX) scrollX({ to: 'right' });
   };
 

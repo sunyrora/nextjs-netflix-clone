@@ -35,11 +35,11 @@ const useScrollX = () => {
     addScrollEvent && addScrollEvent();
     
     return () => {
+      setScrollMax(0);
       setPosLeft(0);
       if(refComponent) refComponent.current.scrollLeft = 0;
-      setScrollMax(0);
-      setIsScrollPosEnd(false);
-      setIsScrollPosStart(true);
+      // setIsScrollPosEnd(false);
+      // setIsScrollPosStart(true);
       removeScrollEvent && removeScrollEvent();
     //   if(handleScrollStopped) refComponent?.current?.removeEventListener('scroll', handleScrollStopped);
     }
@@ -108,6 +108,7 @@ const useScrollX = () => {
     
   const checkScrollPosStart = () => {
     // console.log('posLeft: ', posLeft, 'scrollMax: ', scrollMax);
+    // console.log('posLeft: ', posLeft, 'paddingLeft: ', paddingLeft);
     if(Math.round(posLeft) <= paddingLeft) {
       // console.log('isScrollPosStart true');
       return true;
