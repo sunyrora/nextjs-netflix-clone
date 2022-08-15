@@ -20,7 +20,6 @@ const ContentIndexPage = ({ videos, bgIndex }) => {
   return <ContentLayout videos={videosMap} bgIndex={bgIndex} />;
 };
 
-if (process.env.NODE_ENV !== 'development') 
 ContentIndexPage.auth = true;
 export default ContentIndexPage;
 

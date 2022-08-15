@@ -49,22 +49,6 @@ const Header = () => {
                   {lang.text}
                 </option>
               ))}
-              {/* <option
-                lang="fr"
-                value="/fr/"
-                data-language="fr"
-                data-country="FR"
-              >
-                Français
-              </option>
-              <option
-                lang="en"
-                value="/fr-en/"
-                data-language="en"
-                data-country="FR"
-              >
-                English
-              </option> */}
             </select>
           </div>
 

@@ -39,9 +39,7 @@ const Layout = ({ title, bgImg, children }) => {
           )}></div>
         </div>
         <header>
-          {process.env.NODE_ENV === 'development' ? (
-            <HeaderLogedIn />
-          ) : session ? (
+          {session ? (
             <HeaderLogedIn />
           ) : (
             <Header />

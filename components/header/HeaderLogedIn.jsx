@@ -16,17 +16,17 @@ const HeaderLogedIn = () => {
   const { pathname } = router;
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') {
-      if (!session) {
-        router.push({
-          pathname: '/unauthorized',
-          query: {
-            message: 'Login required',
-            redirect: pathname ?? '/',
-          },
-        });
-      }
-    }
+    // // if (process.env.NODE_ENV !== 'development') {
+    //   if (!session) {
+    //     router.push({
+    //       pathname: '/unauthorized',
+    //       query: {
+    //         message: 'Login required',
+    //         redirect: pathname ?? '/',
+    //       },
+    //     });
+    //   }
+    // // }
 
     let handleScroll = null;
     const addScrollEvent = () => {

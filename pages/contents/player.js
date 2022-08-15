@@ -15,7 +15,7 @@ const playerPage = ({ videos }) => {
   );
 };
 
-if (process.env.NODE_ENV !== 'development') playerPage.auth = true;
+playerPage.auth = true;
 
 export default playerPage;
 
@@ -32,7 +32,7 @@ export const getServerSideProps = async ({ query }) => {
 
   console.log('video fetch data: ', data);
 
-  https: return {
+  return {
     props: {
       showHeader: false,
       videos: data,

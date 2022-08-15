@@ -25,41 +25,36 @@ import { classNames } from '../utils/utils';
 const BackgroundImage = ({
   bgImg = null,
   className = '',
+  imgClassName = '',
+  imgProps = {},
 }) => {
   const imgFallback = '/images/bg.jpeg';
   const [imgSrc, setImgSrc] = useState(bgImg ?? imgFallback);
   const [imgWidth, setImgWidth] = useState(3000);
   const [imgHeight, setImgHeight] = useState(600);
-  // const bgZIndex =
-  //   zIndex && typeof zIndex === 'number' ? `z-[${zIndex}]` : '-z-[10]';
 
   useEffect(() => {
     setImgSrc(bgImg ?? imgFallback);
   }, [bgImg]);
 
-  // useEffect(() => {
-  //   console.log('imgWidth, imgHeight: ', imgWidth, imgHeight);
-  // }, [imgWidth]);
 
-  // useEffect(() => {
-  //   // console.log('imgSrc changed: ', imgSrc);
-  // }, [imgSrc]);
 
   return (
     <div
       className={classNames(
-        `absolute overflow-hidden -z-[10] w-full h-fit bg-gradient-to-t from-gray-900 to-gray-200`,
+        `absolute inset-0 overflow-hidden -z-[10] w-full h-auto bg-gradient-to-t from-gray-900 to-gray-200`,
         className
       )}
     >
       <Image
         src={imgSrc}
         priority={true}
-        // layout="cover"
         width={imgWidth}
         height={imgHeight}
-        className={`mix-blend-multiply`}
-        // objectFit="contain"
+        className={classNames(
+          `mix-blend-multiply`,
+          imgClassName
+        )}
         quality={100}
         // placeholder="blur"
         blurDataURL={imgSrc ?? imgFallback}
@@ -67,10 +62,10 @@ const BackgroundImage = ({
           console.log('Image loading error: ', error);
           setImgSrc(imgFallback);
         }}
-        // objectPosition="center"
+        {...imgProps}
       />
     </div>
   );
-};;;
+};
 
 export default BackgroundImage;

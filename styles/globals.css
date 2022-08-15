@@ -22,6 +22,10 @@
   .login-button {
     @apply rounded md:h-9 tracking-[0.028rem] bg-[#e50914] text-sm md:px-4 p-2;
   }
+  .form-error-message {
+    @apply text-red-500 text-sm mt-0 !important;
+  }
+
 
   .content-body {
     --default-left-padding: calc(100vw * 0.04);
