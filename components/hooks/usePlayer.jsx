@@ -72,7 +72,7 @@ const usePlayer = ({
     status: fetchStatus,
     error: fetchError,
     startFetch,
-  } = useFetch({ url: fetchVideoHost, shouldStart: url.lazyFetch });
+  } = useFetch({ /* url: fetchVideoHost, */ shouldStart: url.lazyFetch });
 
   const ref = useCallback((node) => {
     if (node) {
@@ -221,7 +221,10 @@ const usePlayer = ({
       return new Promise(async (resolve, reject) => {
         try {
           setStatus('fetch request');
-          const res = await startFetch({ query: { url: requestData.url } });
+          const res = await startFetch({ 
+            fetchUrl: fetchVideoHost, 
+            request: { url: requestData.url },
+           });
           // printLog(`********* Player fetchvideo res: ${uniqueId}`, res);
           if (!res || res.length <= 0) {
             throw new Error('No video data');
