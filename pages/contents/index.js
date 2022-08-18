@@ -1,20 +1,12 @@
 import { TMDB_IMG_BASE_URL } from '../../utils/movieRequests';
 import { randomNumber } from '../../utils/utils';
 
-import { useRouter } from 'next/router';
 import ContentLayout from '../../screens/contents/ContentLayout';
 import menus from '../../components/header/menus';
 import { fetchVideos } from '../api/videos/fetchVideos';
 
 const ContentIndexPage = ({ videos, bgIndex }) => {
   if (!videos || Object.keys(videos).length <= 0) return <div>No data</div>;
-
-  const router = useRouter();
-  const { path } = router.query;
-  // console.log('ContentPage:: path: ', path);
-
-  // console.log('ContentPage:: router.query: ', router.query);
-  // console.log('ContentPage:: props: ', props);
 
   const videosMap = new Map(Object.entries(videos));
   return <ContentLayout videos={videosMap} bgIndex={bgIndex} />;
@@ -68,8 +60,6 @@ export const getServerSideProps = async ({ query }) => {
     };
   }
 
-  // console.log('contents server side: fetchRes: ', fetchRes);
-
   const [firstSection] = Object.values(fetchRes);
   // console.log('################ firstSection: ', firstSection);
   if (firstSection) {
@@ -79,7 +69,7 @@ export const getServerSideProps = async ({ query }) => {
       pickedMovie?.backdrop_path ?? pickedMovie?.poster_path
     }`;
   }
-  console.log('bgImg: ', bgImg);
+  // console.log('bgImg: ', bgImg);
 
   const title = menus.get(menuId).name;
   menus.setSelected(menuId);
@@ -92,5 +82,5 @@ export const getServerSideProps = async ({ query }) => {
       videos: fetchRes,
     },
   };
-};
+};;
 
