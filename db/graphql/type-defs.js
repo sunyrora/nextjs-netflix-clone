@@ -16,6 +16,7 @@ const typeDefs = gql`
   input CreateUserInput {
     email: String!
     password: String!
+    provider: String!
     image: String
   }
 

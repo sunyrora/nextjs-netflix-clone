@@ -46,8 +46,8 @@ function MyApp({
   return redirect ? (
     <></>
   ) : (
-    <SessionProvider session={session}>
-      <ApolloProvider client={apolloClient}>
+    <ApolloProvider client={apolloClient}>
+      <SessionProvider session={session}>
       {Component.auth ? (
         <Auth>
           <PrintComponent />
@@ -55,8 +55,8 @@ function MyApp({
       ) : (
         <PrintComponent />
       )}
-      </ApolloProvider>
-    </SessionProvider>
+      </SessionProvider>
+    </ApolloProvider>
   );
 }
 export default MyApp;

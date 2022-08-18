@@ -1,18 +1,16 @@
 import Link from 'next/link';
-import { signIn, useSession } from 'next-auth/react';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import BackgroundImage from '../components/BackgroundImage';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { classNames } from '../utils/utils';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import InputFeild from '../components/login/InputFeild';
-import {
-  ERROR_USER_EXIST,
-  LOGIN_ERROR_INVALID_PASSWORD,
-  LOGIN_ERROR_USER_NOT_EXIST,
-} from '../utils/errorMessages';
+import { useMutation } from '@apollo/client';
+import { MUTATION_CREATE_USER } from '../db/graphql/mutaions';
+import { useEffect } from 'react';
+import { ERROR_USER_EXIST } from '../utils/errorMessages';
 
-const Login = ({ bgImg }) => {
+const Register = ({ bgImg }) => {
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const { redirect } = router.query;
@@ -24,13 +22,14 @@ const Login = ({ bgImg }) => {
     setError: setFormError,
     formState: { errors },
   } = useForm();
-
-  useEffect(() => {
-    console.log('login........');
-    // if (session) {
-    //   router.push(redirect ?? `${process.env.contentsBasePath}`);
-    // }
-  }, []);
+  const [
+    createUser,
+    {
+      data: createUserData,
+      loading: createUserLoading,
+      error: createUserError,
+    },
+  ] = useMutation(MUTATION_CREATE_USER);
 
   useEffect(() => {
     if (session?.user) {
@@ -38,19 +37,56 @@ const Login = ({ bgImg }) => {
     }
   }, [session]);
 
-  const handleAuth = async (e, providerID) => {
-    e.preventDefault();
-
+  const requestCreateUser = async ({
+    email,
+    password,
+    provider = 'credentials',
+    image = '',
+  }) => {
     try {
-      const { error, status, ok } = await signIn(providerID, {
-        callbackUrl: redirect ?? `${process.env.contentsBasePath}`,
-      });
+      const input = {
+        email,
+        password,
+        provider,
+        image,
+      };
+
+      const { data } = await createUser({ variables: { input } });
+      return data;
     } catch (error) {
-      console.error('Login error: ', error);
+      console.log('createUser error: ', error.message);
+      if (error.statusCode && error.statusCode === 409) {
+        switch (error) {
+          case ERROR_USER_EXIST: {
+            // return onSubmit({ email, password });
+          }
+        }
+      }
+
+      if (error.message === ERROR_USER_EXIST) {
+        // return onSubmit({ email, password });
+      }
     }
   };
 
-  const onSubmit = async ({ email, password }) => {
+  const handleCreateAccount = async (e) => {
+    try {
+      const [email, password] = getFormValues(['email', 'password']);
+
+      //   console.log('handleCreateAccount: ', email, password);
+      const res = await requestCreateUser({ email, password });
+
+      console.log('createUserError: ', createUserError);
+
+      if (!createUserError && res) {
+        return handleSignIn({ email, password });
+      }
+    } catch (error) {
+      console.error('createAccount error: ', error);
+    }
+  };
+
+  const handleSignIn = async ({ email, password }) => {
     try {
       const { status, error, ok } = await signIn('credentials', {
         redirect: false,
@@ -58,33 +94,31 @@ const Login = ({ bgImg }) => {
         password,
       });
 
-      // console.log('signin status: ', status, 'error: ', error);
-      if (!ok) {
-        if (status === 401) {
-          switch (error) {
-            case LOGIN_ERROR_USER_NOT_EXIST:
-              {
-                setFormError('email', {
-                  type: 'custom',
-                  message: 'No account with this email.',
-                });
-              }
-              break;
-            case LOGIN_ERROR_INVALID_PASSWORD: {
-              setFormError('password', {
-                type: 'custom',
-                message: "Password doesn't match",
-              });
-            }
-          }
-        }
-      }
+      //   // console.log('signin status: ', status, 'error: ', error);
+      //   if (!ok) {
+      //     if (status === 401) {
+      //       switch (error) {
+      //         case LOGIN_ERROR_USER_NOT_EXIST:
+      //           {
+      //             setFormError('email', {
+      //               type: 'custom',
+      //               message: 'No account with this email.',
+      //             });
+      //           }
+      //           break;
+      //         case LOGIN_ERROR_INVALID_PASSWORD: {
+      //           setFormError('password', {
+      //             type: 'custom',
+      //             message: "Password doesn't match",
+      //           });
+      //         }
+      //       }
+      //     }
+      //   }
     } catch (error) {
       console.log('sign in errror: ', error);
     }
   };
-
-  const handleCredentialAuth = handleSubmit(onSubmit);
 
   return (
     <div
@@ -125,10 +159,10 @@ const Login = ({ bgImg }) => {
           )}
         >
           <div className="flex flex-col items-between w-full h-full">
-            <h1 className="text-4xl font-semibold mb-[28px]">Sign In</h1>
+            <h1 className="text-4xl font-semibold mb-[28px]">Create Account</h1>
             <form
-              id="login-form"
-              onSubmit={handleCredentialAuth}
+              id="register-form"
+              onSubmit={handleSubmit(handleCreateAccount)}
               className="flex flex-col space-y-4 w-full"
             >
               <InputFeild
@@ -164,10 +198,10 @@ const Login = ({ bgImg }) => {
                 type="submit"
                 className="rounded bg-[#e50914] text-[1rem] w-full h-[50px]"
               >
-                Sign In
+                Create
               </button>
               <div className="text-sm">
-                Don't have an account? <Link href={'/register'}>Register</Link>
+                Alreadt have an account? <Link href={'/login'}>Sign In</Link>
               </div>
             </form>
           </div>
@@ -178,15 +212,13 @@ const Login = ({ bgImg }) => {
               onClick={handleCreateAccount}
             >
               Create an account
+            </button>
+            <button
+              className="rounded bg-[#333]/60 hover:bg-[#333] text-[1rem] w-full h-[50px]"
+              onClick={(e) => handleAuth(e, 'google')}
+            >
+              SignIn with Google
             </button> */}
-            {process.env.NODE_ENV === 'development' && (
-              <button
-                className="rounded bg-[#333]/60 hover:bg-[#333] text-[1rem] w-full h-[50px]"
-                onClick={(e) => handleAuth(e, 'google')}
-              >
-                SignIn with Google
-              </button>
-            )}
             <Link href={'/'}>
               <a className="text-white text-sm">Go to Main</a>
             </Link>
@@ -195,6 +227,6 @@ const Login = ({ bgImg }) => {
       </div>
     </div>
   );
-};;
+};
 
-export default Login;
+export default Register;

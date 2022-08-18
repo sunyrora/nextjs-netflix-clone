@@ -102,7 +102,7 @@ export const getUser = async (option = {}, withPassword = false) => {
 export const registerUser = async (input) => {
     try {
         const { email, password, provider = 'credentials' } = input;
-        console.log('create user...', input);
+        // console.log('create user...', input);
         
         // if(!isValid(email, password)) {
         //     const error = new Error(LGOIN_ERROR_VALIDATION_ERROR);

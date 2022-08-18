@@ -36,7 +36,7 @@ const Header = () => {
           </div>
         </Link>
         <div className="flex items-center ml-auto space-x-5">
-          <div className="" id="lang-switcher">
+          {/* <div className="" id="lang-switcher">
             <select
               className="h-9 rounded bg-transparent text-white border-white border p-2"
               tabIndex={0}
@@ -50,7 +50,7 @@ const Header = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           <button
             className="login-button"

@@ -46,7 +46,12 @@ const Home = () => {
                   placeholder="Emai address"
                   className="w-full grow md:grow-[2] mx-1 p-3 md:p-4"
                 />
-                <button className="md:grow-[1] whitespace-nowrap	 font-light tracking-[0.023rem] primary-button md:h-14 text-sm md:text-2xl rounded-none">
+                <button
+                  onClick={() => {
+                    router.push('/register');
+                  }}
+                  className="md:grow-[1] whitespace-nowrap	 font-light tracking-[0.023rem] primary-button md:h-14 text-sm md:text-2xl rounded-none"
+                >
                   Get Started {'>'}
                 </button>
               </div>
