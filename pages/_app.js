@@ -4,30 +4,13 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { ApolloProvider } from '@apollo/client';
-import apolloClient from '../db/graphql/ApolloClient';
+import apolloClient from '../db/graphql/apolloClient';
 
-function MyApp({
-  Component,
-  pageProps
-  // pageProps: {
-  //   session,
-  //   title,
-  //   bgImg,
-  //   redirect,
-  //   showHeader = true,
-  //   ...pageProps
-  // },
-}) {
+function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   // console.log('showHeader: ', showHeader);
-  const {
-    session,
-    title,
-    bgImg,
-    redirect,
-    showHeader=true
-  } = pageProps;
+  const { session, title, bgImg, redirect, showHeader = true } = pageProps;
 
   useEffect(() => {
     if (redirect) {
@@ -48,13 +31,13 @@ function MyApp({
   ) : (
     <ApolloProvider client={apolloClient}>
       <SessionProvider session={session}>
-      {Component.auth ? (
-        <Auth>
+        {Component.auth ? (
+          <Auth>
+            <PrintComponent />
+          </Auth>
+        ) : (
           <PrintComponent />
-        </Auth>
-      ) : (
-        <PrintComponent />
-      )}
+        )}
       </SessionProvider>
     </ApolloProvider>
   );
