@@ -16,6 +16,7 @@
     "apollo-server-micro": "^3.10.0",
     "bcryptjs": "^2.4.3",
     "graphql": "^16.5.0",
+    "micro": "^9.4.1",
     "micro-cors": "^0.1.1",
     "mongoose": "^6.5.2",
     "next": "12.2.2",
